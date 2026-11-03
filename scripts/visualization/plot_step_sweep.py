@@ -341,9 +341,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--ctx-ablation-dir",
-        default=str(
-            PROJECT_ROOT / "experiments" / "nocturnal_forecasting_ctx_ablation"
-        ),
+        default=str(PROJECT_ROOT / "experiments" / "nocturnal_forecasting"),
         help="Directory containing optional zero-shot results_summary.json outputs.",
     )
     parser.add_argument(

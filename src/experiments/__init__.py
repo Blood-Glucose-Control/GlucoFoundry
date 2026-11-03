@@ -1,8 +1,8 @@
 # Copyright (c) 2025 Blood-Glucose-Control
 # Licensed under Custom Research License (see LICENSE file)
 
-from .standard_forecasting.summarize import StandardForecastingSummarizer
+"""Core experiment summarization framework.
 
-__all__ = [
-    "StandardForecastingSummarizer",
-]
+Experiment-specific summarizers live in their own recipes under
+``experiments/<name>/`` and extend :class:`.base.experiment.ExperimentSummarizer`.
+"""

@@ -3,17 +3,15 @@
 # For commercial licensing, contact: christopher/cjrisi AT gluroo/uwaterloo DOT com/ca
 
 """
-Episode builders for different evaluation protocols.
+Episode builders for task-specific evaluation.
 
 Each evaluation task (nocturnal hypo prediction, post-meal forecasting, etc.)
 needs its own episode construction logic — different context anchoring, different
-horizons, different covariate requirements. This module collects those builders.
+horizons, different covariate requirements.
 
 DESIGN RATIONALE:
 
-Sliding-window evaluation (iter_episodes in holdout_eval.py) measures general
-forecast accuracy across all times of day. Task-specific evaluation requires
-clinically meaningful anchoring:
+Task-specific evaluation requires clinically meaningful anchoring:
 
   - Nocturnal hypo: context ends at midnight, 6h forecast (overnight window)
   - Post-meal: context ends at meal start, forecast covers postprandial period

@@ -31,10 +31,7 @@ from experiments.nocturnal.grand_summary_split import (  # noqa: E402
     build_best_split_breakdown,
 )
 
-DEFAULT_SUMMARIES = (
-    "experiments/nocturnal_forecasting/summary.csv",
-    "experiments/nocturnal_forecasting_ctx_ablation/summary.csv",
-)
+DEFAULT_SUMMARIES = ("experiments/nocturnal_forecasting/summary.csv",)
 DEFAULT_OUTPUT_DIR = "results/grand_summary"
 DEFAULT_CONFIG_DIR = "configs/data/holdout_10pct"
 

@@ -6,7 +6,7 @@
 # across the three IOB datasets: lynch_2022, aleppo_2017, brown_2019.
 #
 # Zero-shot (step 0) results already exist in
-#   experiments/nocturnal_forecasting_ctx_ablation/
+#   experiments/nocturnal_forecasting/
 # and are re-used by the plotting script — no re-evaluation needed.
 #
 # All runs use --episode-context-length 512 (fair fixed-episode set, same as

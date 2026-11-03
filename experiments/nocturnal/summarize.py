@@ -164,8 +164,8 @@ class NocturnalSummarizer(ExperimentSummarizer):
             "forecast_length": cfg.get("forecast_length"),
             "rmse": overall_rmse,
             # MAE / MAPE / MSE are not reported at the overall level for
-            # nocturnal evaluation — set to NaN so the column schema is
-            # consistent with StandardForecastingSummarizer.
+            # nocturnal evaluation — set to NaN so the column schema stays
+            # consistent across runs.
             "mae": float("nan"),
             "mape": float("nan"),
             "mse": float("nan"),
