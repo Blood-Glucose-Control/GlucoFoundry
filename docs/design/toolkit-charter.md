@@ -146,8 +146,9 @@ experiment-specific logic currently in `src/evaluation/nocturnal.py`,
   spaces** into the owning `experiments/<experiment>/configs/`.
 - **Top-level `experiments/`:** **repurpose** as the home for droppable
   experiment recipes (not stripped). The current experiment-output dirs
-  (`nocturnal_forecasting*`, `standard_forecasting`, `gpu_optimization`) are
-  removed/replaced by the clean recipe structure.
+  (`nocturnal_forecasting*`, `gpu_optimization`) are removed/replaced by the
+  clean recipe structure. (The `standard_forecasting` experiment was a dead end
+  and has been pruned entirely.)
 - **`results/`, `trained_models/`:** ship as empty scaffolded directories.
 - **`workflows/` stays generic core:** experiments plug in their
   evaluation/anchoring via the registration interface; `workflows` never imports

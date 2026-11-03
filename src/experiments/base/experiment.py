@@ -6,7 +6,7 @@
 Base class for experiment summarizers.
 
 Provides generic directory-walking and CSV aggregation logic that concrete
-experiment summarizers (standard_forecasting, nocturnal_forecasting, …) build
+experiment summarizers (nocturnal_forecasting, …) build
 on by implementing ``_parse_run_dir``.
 
 Module: experiments.base.experiment
@@ -29,8 +29,8 @@ import pandas as pd
 log = logging.getLogger(__name__)
 
 # Conventional run-directory naming: YYYY-MM-DD_HHMM[SS]_<dataset>_<mode>
-# nocturnal_hypo_eval*.py use %H%M%S (6 digits); sliding_window_eval.py uses
-# %H%M (4 digits).  Both formats are accepted.
+# nocturnal eval entrypoints use %H%M%S (6 digits); some runs use %H%M
+# (4 digits).  Both formats are accepted.
 _RUN_DIR_RE = re.compile(r"^\d{4}-\d{2}-\d{2}_\d{4,6}_\S+$")
 
 VALID_METRICS = {
@@ -57,7 +57,7 @@ class ExperimentSummarizer(ABC):
     Directory layout expected::
 
         <experiments_root>/
-          <experiment_type>/          e.g. standard_forecasting
+          <experiment_type>/          e.g. nocturnal_forecasting
             <ctx_fh>/                 e.g. 512ctx_96fh
               <model>/                e.g. ttm, sundial
                 <run_dir>/           e.g. 2026-02-16_1808_aleppo_2017_finetuned
@@ -67,7 +67,7 @@ class ExperimentSummarizer(ABC):
     experiments_root:
         Absolute or relative path to the top-level ``experiments/`` folder.
     experiment_type:
-        Name of the experiment subdirectory (e.g. ``"standard_forecasting"``).
+        Name of the experiment subdirectory (e.g. ``"nocturnal_forecasting"``).
     """
 
     def __init__(self, experiments_root: str | Path, experiment_type: str) -> None:
