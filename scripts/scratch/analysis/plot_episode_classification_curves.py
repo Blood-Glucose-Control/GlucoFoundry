@@ -32,10 +32,10 @@ from sklearn.metrics import precision_recall_curve, roc_curve
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from src.experiments.nocturnal.episode_classification import (  # noqa: E402
+from experiments.nocturnal.episode_classification import (  # noqa: E402
     load_run_classification_data,
 )
-from src.experiments.nocturnal.grand_summary import DATASETS  # noqa: E402
+from experiments.nocturnal.grand_summary import DATASETS  # noqa: E402
 
 DEFAULT_BREAKDOWN = (
     "results/grand_summary/best_runs_episode_classification_holdout_10pct_512ctx.csv"

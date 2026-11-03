@@ -32,7 +32,7 @@ import pandas as pd
 # Allow running from the repo root without `pip install -e .`
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from src.experiments.nocturnal.grand_summary import (  # noqa: E402
+from experiments.nocturnal.grand_summary import (  # noqa: E402
     COV_BUCKET_LABELS,
     DATASETS,
     DEFAULT_METRICS,

@@ -26,8 +26,8 @@ from pathlib import Path
 # Allow running from the repo root without `pip install -e .`
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from src.experiments.nocturnal.grand_summary import DATASETS  # noqa: E402
-from src.experiments.nocturnal.grand_summary_split import (  # noqa: E402
+from experiments.nocturnal.grand_summary import DATASETS  # noqa: E402
+from experiments.nocturnal.grand_summary_split import (  # noqa: E402
     build_best_split_breakdown,
 )
 

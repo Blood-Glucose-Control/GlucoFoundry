@@ -29,7 +29,8 @@ from pathlib import Path
 from typing import Any
 
 # Local imports
-from ..base.experiment import ExperimentSummarizer
+from src.experiments.base.experiment import ExperimentSummarizer
+
 from .grand_summary import (
     bucket_from_covariates,
     read_covariate_cols,

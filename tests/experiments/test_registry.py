@@ -23,8 +23,12 @@ from src.experiments.registry import (
 
 
 @pytest.fixture(autouse=True)
-def _clean_registry():
+def _clean_registry(tmp_path_factory):
     reset_registry()
+    # Isolate these unit tests from implicit auto-discovery of the real
+    # experiments/ recipes so assertions are deterministic. Tests that exercise
+    # discovery call discover_experiments(root=..., force=True) explicitly.
+    discover_experiments(root=tmp_path_factory.mktemp("empty_experiments"), force=True)
     yield
     reset_registry()
 

@@ -1,15 +1,11 @@
-"""Evaluation modules for the nocturnal project."""
+"""Evaluation modules (generic core).
+
+Experiment-specific evaluation (e.g. nocturnal) lives in its own recipe under
+``experiments/<name>/`` and is resolved via the experiment registry.
+"""
 
 from .episode_builders import build_midnight_episodes
-from .nocturnal import (
-    evaluate_nocturnal_forecasting,
-    plot_best_worst_episodes,
-    plot_stage_comparison_auto,
-)
 
 __all__ = [
     "build_midnight_episodes",
-    "evaluate_nocturnal_forecasting",
-    "plot_best_worst_episodes",
-    "plot_stage_comparison_auto",
 ]
