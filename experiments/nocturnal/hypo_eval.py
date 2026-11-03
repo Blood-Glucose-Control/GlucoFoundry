@@ -6,10 +6,9 @@ Evaluates models on the midnight-anchored nocturnal forecasting task — a clini
 meaningful evaluation where context ends at midnight and the model forecasts 6 hours
 of overnight blood glucose when hypoglycemia risk is highest.
 
-This is fundamentally different from sliding-window evaluation
-(`scripts/evaluation/sliding_window_eval.py`),
-which measures general forecast accuracy across all times of day. These two evaluation
-modes produce DIFFERENT RMSE numbers and must never be compared on the same leaderboard.
+This is fundamentally different from general sliding-window evaluation, which
+measures forecast accuracy across all times of day. These two evaluation modes
+produce DIFFERENT RMSE numbers and must never be compared on the same leaderboard.
 
 Usage:
     # Zero-shot:

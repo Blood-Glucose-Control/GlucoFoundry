@@ -145,9 +145,13 @@ experiment-specific logic currently in `src/evaluation/nocturnal.py`,
 - **Sweep configs:** keep the sweep *framework*; **move experiment-tuned search
   spaces** into the owning `experiments/<experiment>/configs/`.
 - **Top-level `experiments/`:** **repurpose** as the home for droppable
-  experiment recipes (not stripped). The current experiment-output dirs
-  (`nocturnal_forecasting*`, `standard_forecasting`, `gpu_optimization`) are
-  removed/replaced by the clean recipe structure.
+  experiment recipes (not stripped). The `nocturnal/` recipe lives here. Dead
+  experiments and committed result/output dirs have been pruned
+  (`standard_forecasting`, `gpu_optimization`, and the `nocturnal_forecasting*`
+  result trackers); `nocturnal_forecasting_ctx_ablation` was folded back into
+  nocturnal (it is a context-length ablation, not a separate experiment).
+  Relocating experiment result output out of `experiments/` into `results/` is a
+  tracked follow-up.
 - **`results/`, `trained_models/`:** ship as empty scaffolded directories.
 - **`workflows/` stays generic core:** experiments plug in their
   evaluation/anchoring via the registration interface; `workflows` never imports

@@ -12,7 +12,7 @@ Usage
 -----
 Run from the repository root::
 
-    python scripts/analysis/summarize_experiments.py --type standard_forecasting
+    python scripts/analysis/summarize_experiments.py --type nocturnal_forecasting
     python scripts/analysis/summarize_experiments.py --type nocturnal_forecasting
     python scripts/analysis/summarize_experiments.py --type all --metric mae
     python scripts/analysis/summarize_experiments.py --type all --root /abs/path/to/experiments
@@ -33,25 +33,9 @@ from experiments.nocturnal.summarize import NocturnalSummarizer
 
 # Local imports
 from src.experiments.base.experiment import VALID_METRICS
-from src.experiments.standard_forecasting.summarize import StandardForecastingSummarizer
-
-
-class _NocturnalCtxAblationSummarizer(NocturnalSummarizer):
-    """NocturnalSummarizer scoped to experiments/nocturnal_forecasting_ctx_ablation/."""
-
-    def __init__(self, experiments_root: str = "experiments") -> None:
-        # Bypass NocturnalSummarizer.__init__ to set a different experiment_type.
-        from src.experiments.base.experiment import ExperimentSummarizer
-
-        ExperimentSummarizer.__init__(
-            self, experiments_root, "nocturnal_forecasting_ctx_ablation"
-        )
-
 
 _SUMMARIZERS = {
-    "standard_forecasting": StandardForecastingSummarizer,
     "nocturnal_forecasting": NocturnalSummarizer,
-    "nocturnal_forecasting_ctx_ablation": _NocturnalCtxAblationSummarizer,
 }
 
 
@@ -115,7 +99,7 @@ def _run_summarizer(name: str, cls, root: str, metric: str) -> None:
     Parameters
     ----------
     name:
-        Experiment type name, e.g. ``"standard_forecasting"``.  Used as the
+        Experiment type name, e.g. ``"nocturnal_forecasting"``.  Used as the
         subdirectory name under *root* and in the printed header.
     cls:
         Concrete :class:`~src.experiments.base.experiment.ExperimentSummarizer`
