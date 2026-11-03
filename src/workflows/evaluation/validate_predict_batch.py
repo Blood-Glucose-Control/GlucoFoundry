@@ -69,7 +69,7 @@ import pandas as pd
 
 from ...data.utils import get_patient_column
 from ...data.versioning.dataset_registry import DatasetRegistry
-from ...evaluation.episode_builders import build_midnight_episodes
+from ...experiments.registry import get_episode_builder
 from ..forecasting.modeling import create_model_and_config, load_model_config_from_yaml
 
 logging.basicConfig(
@@ -121,7 +121,11 @@ def build_episode_panel(
                 logger.warning("Patient %s: no datetime column, skipping", patient_id)
                 continue
 
-        episodes, _ = build_midnight_episodes(
+        # Resolve the episode builder from the experiment registry by name (no
+        # import-time coupling to the nocturnal recipe). Parameterizing the
+        # experiment name by run config is tracked separately (#18).
+        build_episodes = get_episode_builder("nocturnal")
+        episodes, _ = build_episodes(
             patient_df,
             context_length=context_length,
             forecast_length=forecast_length,

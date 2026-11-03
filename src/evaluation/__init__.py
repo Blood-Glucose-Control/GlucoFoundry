@@ -4,8 +4,9 @@ Experiment-specific evaluation (e.g. nocturnal) lives in its own recipe under
 ``experiments/<name>/`` and is resolved via the experiment registry.
 """
 
-from .episode_builders import build_midnight_episodes
+from .episode_builders import get_holdout_patients, select_episodes_stratified
 
 __all__ = [
-    "build_midnight_episodes",
+    "get_holdout_patients",
+    "select_episodes_stratified",
 ]

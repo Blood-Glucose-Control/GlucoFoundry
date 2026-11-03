@@ -651,11 +651,9 @@ def main() -> None:
     # ------------------------------------------------------------------
     # Inference mode: --model
     # ------------------------------------------------------------------
+    from experiments.nocturnal.episodes import build_patient_episodes
     from src.data.versioning.dataset_registry import DatasetRegistry
-    from src.evaluation.episode_builders import (
-        build_patient_episodes,
-        get_holdout_patients,
-    )
+    from src.evaluation.episode_builders import get_holdout_patients
     from src.workflows.forecasting.modeling import create_model_and_config
 
     model_specs = [parse_model_spec(s) for s in args.models]

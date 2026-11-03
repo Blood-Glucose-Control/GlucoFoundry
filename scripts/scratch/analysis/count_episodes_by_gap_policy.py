@@ -25,8 +25,8 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
+from experiments.nocturnal.episodes import build_midnight_episodes  # noqa: E402
 from src.data.versioning.dataset_registry import DatasetRegistry  # noqa: E402
-from src.evaluation.episode_builders import build_midnight_episodes  # noqa: E402
 
 DATASETS = ["aleppo_2017", "brown_2019", "lynch_2022", "tamborlane_2008"]
 DEFAULT_CONFIG_DIR = "configs/data/holdout_10pct"

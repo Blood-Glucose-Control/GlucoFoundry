@@ -16,6 +16,7 @@ from src.experiments.registry import (
     ExperimentSpec,
     available_experiments,
     discover_experiments,
+    get_episode_builder,
     get_experiment,
     register_experiment,
     reset_registry,
@@ -61,6 +62,21 @@ def test_empty_name_rejected():
 def test_get_unknown_experiment_raises():
     with pytest.raises(KeyError, match="No experiment registered"):
         get_experiment("missing")
+
+
+def test_get_episode_builder_returns_callable():
+    def build(_data):
+        return ["episode"]
+
+    register_experiment(ExperimentSpec(name="demo", build_episodes=build))
+    builder = get_episode_builder("demo")
+    assert builder(None) == ["episode"]
+
+
+def test_get_episode_builder_raises_when_absent():
+    register_experiment(ExperimentSpec(name="demo"))  # no build_episodes
+    with pytest.raises(ValueError, match="no episode builder"):
+        get_episode_builder("demo")
 
 
 def test_hooks_are_resolvable_by_name():

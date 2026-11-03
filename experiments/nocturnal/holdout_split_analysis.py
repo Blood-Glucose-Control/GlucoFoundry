@@ -264,7 +264,7 @@ def _patient_episode_stats(
     matching the filter applied in :func:`evaluate_nocturnal_forecasting`.
     """
     # Local import: episode_builders pulls numba which is heavy.
-    from src.evaluation.episode_builders import build_midnight_episodes
+    from experiments.nocturnal.episodes import build_midnight_episodes
 
     pdf = patient_df.copy()
     if not isinstance(pdf.index, pd.DatetimeIndex):
