@@ -11,7 +11,7 @@
 # qualifying more episodes from shorter patient sequences.
 #
 # Results land in:
-#   experiments/nocturnal_forecasting_ctx_ablation/{ctx}ctx_96fh/chronos2/...
+#   experiments/nocturnal_forecasting/{ctx}ctx_96fh/chronos2/...
 # Done log:
 #   logs/chronos2_ctx_ablation_done.log
 #

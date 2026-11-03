@@ -95,9 +95,7 @@ DEFAULT_LONG_RUN_DIR = (
     / "512ctx_96fh"
     / "chronos2"
 )
-DEFAULT_CTX_ABLATION_DIR = (
-    PROJECT_ROOT / "experiments" / "nocturnal_forecasting_ctx_ablation"
-)
+DEFAULT_CTX_ABLATION_DIR = PROJECT_ROOT / "experiments" / "nocturnal_forecasting"
 
 
 def _extract_step(checkpoint: str | None, default_final: int = 100000) -> int:

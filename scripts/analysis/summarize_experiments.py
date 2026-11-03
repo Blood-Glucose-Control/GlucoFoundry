@@ -34,22 +34,8 @@ from experiments.nocturnal.summarize import NocturnalSummarizer
 # Local imports
 from src.experiments.base.experiment import VALID_METRICS
 
-
-class _NocturnalCtxAblationSummarizer(NocturnalSummarizer):
-    """NocturnalSummarizer scoped to experiments/nocturnal_forecasting_ctx_ablation/."""
-
-    def __init__(self, experiments_root: str = "experiments") -> None:
-        # Bypass NocturnalSummarizer.__init__ to set a different experiment_type.
-        from src.experiments.base.experiment import ExperimentSummarizer
-
-        ExperimentSummarizer.__init__(
-            self, experiments_root, "nocturnal_forecasting_ctx_ablation"
-        )
-
-
 _SUMMARIZERS = {
     "nocturnal_forecasting": NocturnalSummarizer,
-    "nocturnal_forecasting_ctx_ablation": _NocturnalCtxAblationSummarizer,
 }
 
 

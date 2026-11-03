@@ -41,10 +41,7 @@ from experiments.nocturnal.grand_summary import (  # noqa: E402
     build_grand_summary,
 )
 
-DEFAULT_SUMMARIES = (
-    "experiments/nocturnal_forecasting/summary.csv",
-    "experiments/nocturnal_forecasting_ctx_ablation/summary.csv",
-)
+DEFAULT_SUMMARIES = ("experiments/nocturnal_forecasting/summary.csv",)
 DEFAULT_OUTPUT_DIR = "results/grand_summary"
 
 

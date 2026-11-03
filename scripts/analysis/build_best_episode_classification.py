@@ -37,10 +37,7 @@ from experiments.nocturnal.episode_classification import (  # noqa: E402
 )
 from experiments.nocturnal.grand_summary import DATASETS  # noqa: E402
 
-DEFAULT_SUMMARIES = (
-    "experiments/nocturnal_forecasting/summary.csv",
-    "experiments/nocturnal_forecasting_ctx_ablation/summary.csv",
-)
+DEFAULT_SUMMARIES = ("experiments/nocturnal_forecasting/summary.csv",)
 DEFAULT_OUTPUT_DIR = "results/grand_summary"
 DEFAULT_CONFIG_DIR = "configs/data/holdout_10pct"
 
