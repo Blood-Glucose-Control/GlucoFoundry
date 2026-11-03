@@ -17,7 +17,7 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from src.experiments.nocturnal.summarize import NocturnalSummarizer
+from experiments.nocturnal.summarize import NocturnalSummarizer
 
 # ---------------------------------------------------------------------------
 # Helpers

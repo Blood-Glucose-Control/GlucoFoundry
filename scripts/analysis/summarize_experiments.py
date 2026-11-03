@@ -29,9 +29,10 @@ import argparse
 import logging
 from pathlib import Path
 
+from experiments.nocturnal.summarize import NocturnalSummarizer
+
 # Local imports
 from src.experiments.base.experiment import VALID_METRICS
-from src.experiments.nocturnal.summarize import NocturnalSummarizer
 from src.experiments.standard_forecasting.summarize import StandardForecastingSummarizer
 
 

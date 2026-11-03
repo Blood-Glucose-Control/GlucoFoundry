@@ -27,14 +27,14 @@ from __future__ import annotations
 
 import json
 import logging
-from functools import lru_cache
+from collections.abc import Iterable
+from functools import cache
 from pathlib import Path
-from typing import Iterable
 
 import numpy as np
 import pandas as pd
 
-from ...config.schemas.data_configs import load_holdout_runtime_config_from_yaml
+from src.config.schemas.data_configs import load_holdout_runtime_config_from_yaml
 
 log = logging.getLogger(__name__)
 
@@ -50,7 +50,7 @@ SPLIT_TEMPORAL: str = "temporal"
 # ---------------------------------------------------------------------------
 
 
-@lru_cache(maxsize=None)
+@cache
 def load_holdout_patient_set(config_dir: str | Path, dataset: str) -> frozenset[str]:
     """Return the set of patient IDs held out *entirely* for ``dataset``.
 
@@ -264,7 +264,7 @@ def _patient_episode_stats(
     matching the filter applied in :func:`evaluate_nocturnal_forecasting`.
     """
     # Local import: episode_builders pulls numba which is heavy.
-    from ...evaluation.episode_builders import build_midnight_episodes
+    from src.evaluation.episode_builders import build_midnight_episodes
 
     pdf = patient_df.copy()
     if not isinstance(pdf.index, pd.DatetimeIndex):
@@ -387,7 +387,7 @@ def build_three_way_cohort_stats(
       * holdout_data ∩ YAML.holdout_patients → ``patient_holdout``
       * holdout_data \\ YAML.holdout_patients → ``temporal_holdout``
     """
-    from ...data.versioning.dataset_registry import DatasetRegistry
+    from src.data.versioning.dataset_registry import DatasetRegistry
 
     registry = DatasetRegistry(holdout_config_dir=Path(config_dir))
     train_data, holdout_data = registry.load_dataset_with_split(
