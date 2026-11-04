@@ -14,7 +14,7 @@ import pandas as pd
 
 from ...config.schemas.workflow_configs import get_model_feature_override_columns
 from ...data.versioning.dataset_registry import DatasetRegistry
-from ...evaluation.episode_builders import build_midnight_episodes
+from ...experiments.registry import get_episode_builder
 
 logger = logging.getLogger(__name__)
 
@@ -123,7 +123,11 @@ def _generate_forecasts(
             patient_ts["datetime"] = pd.to_datetime(patient_ts["datetime"])
             patient_ts = patient_ts.set_index("datetime").sort_index()
 
-            episodes, ep_stats = build_midnight_episodes(
+            # Resolve the episode builder from the experiment registry by name
+            # (no import-time coupling to the nocturnal recipe). Parameterizing
+            # the experiment name by run config is tracked separately (#18).
+            build_episodes = get_episode_builder("nocturnal")
+            episodes, ep_stats = build_episodes(
                 patient_ts,
                 context_length=context_length,
                 forecast_length=forecast_length,

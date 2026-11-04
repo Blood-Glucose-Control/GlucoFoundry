@@ -15,9 +15,7 @@ from typing import Any, Dict, List, Optional
 import numpy as np
 import pandas as pd
 
-from ...evaluation.episode_builders import (
-    build_midnight_episodes as _build_midnight_episodes_shared,
-)
+from ...experiments.registry import get_episode_builder
 
 logger = logging.getLogger(__name__)
 
@@ -53,6 +51,9 @@ def build_midnight_episodes(
         logger.warning("No covariate data available (need one of %s)", covariate_cols)
         return []
 
+    # Resolve the nocturnal episode builder from the experiment registry by name
+    # (no import-time coupling to the nocturnal recipe from core model code).
+    _build_midnight_episodes_shared = get_episode_builder("nocturnal")
     episodes, _ = _build_midnight_episodes_shared(
         patient_df=df,
         context_length=context_len,

@@ -27,9 +27,9 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from experiments.nocturnal.episodes import build_midnight_episodes
 from src.data.utils import get_patient_column
 from src.data.versioning.dataset_registry import DatasetRegistry
-from src.evaluation.episode_builders import build_midnight_episodes
 from src.workflows.forecasting.modeling import create_model_and_config
 
 LOGGER = logging.getLogger(__name__)

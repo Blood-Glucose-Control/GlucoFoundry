@@ -99,6 +99,18 @@ def available_experiments() -> list[str]:
         return sorted(_REGISTRY)
 
 
+def get_episode_builder(name: str) -> Callable[..., Any]:
+    """Return the episode builder for experiment ``name``.
+
+    Raises if the experiment is unknown or declares no ``build_episodes`` hook,
+    so callers get a guaranteed non-optional callable.
+    """
+    spec = get_experiment(name)
+    if spec.build_episodes is None:
+        raise ValueError(f"Experiment {name!r} declares no episode builder")
+    return spec.build_episodes
+
+
 def experiments_root() -> Path:
     """Absolute path to the top-level ``experiments/`` recipes directory.
 
