@@ -62,7 +62,9 @@ src/data/diabetes_datasets/**/test.csv
 src/data/diabetes_datasets/**/sample_submission.csv
 src/data/diabetes_datasets/**/processed/*
 scripts/notebooks/**/*.csv
-trained_models/artifacts/*
+# trained_models/ ships empty (README only); runs populate it locally.
+trained_models/*
+!trained_models/README.md
 # Ignore sensative Groo files
 docs-internal/notebooks/0.04-cjr-gluroo_full_data_eda.ipynb
 
@@ -74,8 +76,9 @@ cache/data/gluroo/processed/parquet/*
 
 scripts/watgpu_slurm/data_processing_scripts/results/
 
-# Generated plot outputs (large, reproducible from scripts)
-results/
+# results/ ships empty (README only); experiment runs populate it locally.
+results/*
+!results/README.md
 
 # Local-only research notes
 notes/
