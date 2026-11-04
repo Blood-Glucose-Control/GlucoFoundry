@@ -35,7 +35,7 @@ Usage
 -----
     python scripts/visualization/plot_coverage_sharpness_scatter.py
     python scripts/visualization/plot_coverage_sharpness_scatter.py \\
-        --summary experiments/nocturnal_forecasting/summary.csv \\
+        --summary results/nocturnal_forecasting/summary.csv \\
         --out results/coverage_sharpness_scatter.png
     python scripts/visualization/plot_coverage_sharpness_scatter.py \\
         --filter-outliers          # trims extreme sharpness outliers (3×IQR)
@@ -89,8 +89,8 @@ _LEVELS = [
     {"level": 80, "cov_col": "coverage_80", "shp_col": "sharpness_80", "nominal": 0.80},
 ]
 
-DEFAULT_SUMMARY = "experiments/nocturnal_forecasting/summary.csv"
-DEFAULT_BEST_CSV = "experiments/nocturnal_forecasting/best_by_model_dataset.csv"
+DEFAULT_SUMMARY = "results/nocturnal_forecasting/summary.csv"
+DEFAULT_BEST_CSV = "results/nocturnal_forecasting/best_by_model_dataset.csv"
 DEFAULT_OUT = "results/coverage_sharpness_scatter.png"
 
 

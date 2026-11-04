@@ -66,7 +66,7 @@ from src.visualization.nocturnal import (
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-DEFAULT_RUN_MAP_CSV = "experiments/nocturnal_forecasting/run_map.csv"
+DEFAULT_RUN_MAP_CSV = "results/nocturnal_forecasting/run_map.csv"
 DEFAULT_OUTPUT = "results/figures/probabilistic_forecast_episode_grid.png"
 DEFAULT_EPISODE_PERCENTILES = (10, 25, 50, 75, 90)
 DEFAULT_OUTER_INTERVAL = DEFAULT_PROBABILISTIC_OUTER_INTERVAL

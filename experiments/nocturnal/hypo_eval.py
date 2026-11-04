@@ -83,7 +83,7 @@ def setup_output_directory(
         timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
         mode = "finetuned" if checkpoint else "zeroshot"
         output_dir = (
-            f"./experiments/nocturnal_forecasting/"
+            f"./results/nocturnal_forecasting/"
             f"{context_length}ctx_{forecast_length}fh/{model_name}/"
             f"{timestamp}_{dataset_name}_{mode}"
         )

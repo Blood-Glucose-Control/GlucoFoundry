@@ -1,7 +1,7 @@
 model_type: patchtst
 forecast_length: 96
 probabilistic: true
-output_dir_template: experiments/nocturnal_forecasting/{context_length}ctx_96fh/{model_type}/{timestamp}_{dataset}_{mode}
+output_dir_template: results/nocturnal_forecasting/{context_length}ctx_96fh/{model_type}/{timestamp}_{dataset}_{mode}
 jobs:
   - model_config: configs/models/patchtst/ctx_ablation/09_high_lr_256ctx.yaml
     context_length: 256

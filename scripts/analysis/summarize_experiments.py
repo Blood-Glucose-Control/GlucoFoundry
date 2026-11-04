@@ -15,7 +15,7 @@ Run from the repository root::
     python scripts/analysis/summarize_experiments.py --type nocturnal_forecasting
     python scripts/analysis/summarize_experiments.py --type nocturnal_forecasting
     python scripts/analysis/summarize_experiments.py --type all --metric mae
-    python scripts/analysis/summarize_experiments.py --type all --root /abs/path/to/experiments
+    python scripts/analysis/summarize_experiments.py --type all --root /abs/path/to/results
 
 Module: scripts.analysis.summarize_experiments
 Author: Blood-Glucose-Control
@@ -59,8 +59,8 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--root",
-        default="experiments",
-        help="Path to the top-level experiments/ directory.",
+        default="results",
+        help="Path to the top-level results/ directory holding experiment runs.",
     )
     parser.add_argument(
         "--verbose",

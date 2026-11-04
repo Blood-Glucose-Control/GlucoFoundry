@@ -19,7 +19,7 @@
 # OUTPUT
 # ---------------
 # Results land in:
-#   experiments/nocturnal_forecasting_long_run_step_sweep/512ctx_96fh/chronos2/
+#   results/nocturnal_forecasting_long_run_step_sweep/512ctx_96fh/chronos2/
 #     cfg16_step_10000_aleppo_2017/
 #       results_summary.json ...
 #     cfg16_step_10000_brown_2019/
@@ -51,7 +51,7 @@ EVAL_SCRIPT="scripts/scratch/experiments/nocturnal_hypo_eval_ctx_ablation.py"
 CONFIG_DIR="configs/data/holdout_10pct"
 DATASETS=(aleppo_2017 brown_2019 lynch_2022)
 
-OUTPUT_BASE="experiments/nocturnal_forecasting_long_run_step_sweep/512ctx_96fh/chronos2"
+OUTPUT_BASE="results/nocturnal_forecasting_long_run_step_sweep/512ctx_96fh/chronos2"
 LOG_DIR="logs"
 DONE_FILE="${LOG_DIR}/chronos2_long_run_step_sweep_done.log"
 

@@ -223,7 +223,7 @@ def build() -> pd.DataFrame:
     )
     man["output_dir"] = man.apply(
         lambda r: (
-            f"experiments/nocturnal_forecasting/{CTX}ctx_{FH}fh/"
+            f"results/nocturnal_forecasting/{CTX}ctx_{FH}fh/"
             f"{r.model}/rebuttal_{r.dataset}_{r['mode']}"
         ),
         axis=1,

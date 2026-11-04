@@ -32,7 +32,7 @@ Usage
 -----
     python scripts/visualization/plot_pit_histograms.py
     python scripts/visualization/plot_pit_histograms.py \\
-        --best-csv experiments/nocturnal_forecasting/best_by_model_dataset.csv \\
+        --best-csv results/nocturnal_forecasting/best_by_model_dataset.csv \\
         --outdir   results/pit_histograms
 """
 
@@ -90,7 +90,7 @@ MODEL_LABELS: Dict[str, str] = {
 N_BINS = 10
 UNIFORM_DENSITY = 1.0  # PIT ~ U[0,1] → density = 1 everywhere
 
-DEFAULT_BEST_CSV = "experiments/nocturnal_forecasting/best_by_model_dataset.csv"
+DEFAULT_BEST_CSV = "results/nocturnal_forecasting/best_by_model_dataset.csv"
 DEFAULT_OUTDIR = "results/pit_histograms"
 
 

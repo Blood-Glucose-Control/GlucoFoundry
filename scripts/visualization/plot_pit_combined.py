@@ -99,7 +99,7 @@ TOTAL_STEPS: int = 96
 N_BINS: int = 10  # PIT-value buckets (Y-axis of heatmap, X-axis of histogram)
 UNIFORM_DENSITY: float = 1.0
 
-DEFAULT_BEST_CSV = "experiments/nocturnal_forecasting/best_by_model_dataset.csv"
+DEFAULT_BEST_CSV = "results/nocturnal_forecasting/best_by_model_dataset.csv"
 DEFAULT_OUTDIR = "results/pit_combined"
 
 

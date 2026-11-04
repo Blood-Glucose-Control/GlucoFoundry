@@ -26,7 +26,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 DEFAULT_CHECKPOINT_BASE = (
-    "experiments/nocturnal_forecasting/512ctx_96fh/chronos2/250k_checkpoints"
+    "results/nocturnal_forecasting/512ctx_96fh/chronos2/250k_checkpoints"
 )
 DEFAULT_RESULTS_FILE = "nocturnal_results.json"
 DEFAULT_OUTPUT_PATH = "results/checkpoint_wql_vs_steps_all_datasets.png"
