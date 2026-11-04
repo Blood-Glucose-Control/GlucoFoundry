@@ -74,6 +74,4 @@ Model-specific launchers remain available for specialized workflows:
 - `chronos2_finetune.sh`
 - `chronos2_forecasting_workflow.sh`
 - `chronos2_time_covariate.sh`
-- `per_patient_finetune.sh`
-- `per_patient_finetune_all.sh`
 - `toto_eval.sh`
