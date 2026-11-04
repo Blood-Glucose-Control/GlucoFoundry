@@ -359,6 +359,7 @@ def step4_zero_shot_evaluation(
     output_dir: str,
     batch_size: int = 2048,
     model_config_overrides: Optional[Dict[str, Any]] = None,
+    experiment: str = "nocturnal",
 ) -> Any:
     """Step 4: Zero-shot evaluation using pretrained model (no fine-tuning).
 
@@ -435,6 +436,7 @@ def step4_zero_shot_evaluation(
         output_dir=output_dir,
         phase_name="0_zero_shot",
         model_config_overrides=model_config_overrides,
+        experiment=experiment,
     )
 
     logger.info("✓ Zero-shot evaluation completed")
@@ -452,6 +454,7 @@ def step5_train_model(
     num_epochs: Optional[int] = None,
     batch_size: Optional[int] = None,
     model_config_overrides: Optional[Dict[str, Any]] = None,
+    experiment: str = "nocturnal",
 ) -> Tuple[Any, GenericModelConfig, Dict, Path]:
     """Step 5: Fine-tune model on combined dataset.
 
@@ -555,6 +558,7 @@ def step5_train_model(
             output_dir=output_dir,
             phase_name="1_after_training",
             model_config_overrides=model_config_overrides,
+            experiment=experiment,
         )
 
         return model, config, results, model_path
@@ -574,6 +578,7 @@ def step6_load_checkpoint(
     config_dir: str,
     output_dir: str,
     model_config_overrides: Optional[Dict[str, Any]] = None,
+    experiment: str = "nocturnal",
 ) -> Optional[Any]:
     """Step 6: Load model from checkpoint and verify it works.
 
@@ -625,6 +630,7 @@ def step6_load_checkpoint(
             output_dir=output_dir,
             phase_name="2_after_loading",
             model_config_overrides=model_config_overrides,
+            experiment=experiment,
         )
 
         return model
@@ -644,6 +650,7 @@ def step7_resume_training(
     output_dir: str,
     num_epochs: Optional[int] = None,
     model_config_overrides: Optional[Dict[str, Any]] = None,
+    experiment: str = "nocturnal",
 ) -> Tuple[Any, Dict, Path]:
     """Step 7: Resume training on loaded model for additional epochs.
 
@@ -735,6 +742,7 @@ def step7_resume_training(
             output_dir=output_dir,
             phase_name="3_after_resumed_training",
             model_config_overrides=model_config_overrides,
+            experiment=experiment,
         )
 
         return model, results, model_path
@@ -763,6 +771,7 @@ class ForecastingWorkflowRequest:
     epochs: Optional[int] = None
     batch_size: Optional[int] = None
     model_config: Optional[str] = None
+    experiment: str = "nocturnal"
 
 
 def _infer_run_id(output_dir: Path) -> str:
@@ -944,6 +953,15 @@ stored in separate subdirectories for comparison.
         default=None,
         help="Path to YAML model configuration file (e.g., configs/models/ttm/fine_tune.yaml)",
     )
+    parser.add_argument(
+        "--experiment",
+        type=str,
+        default="nocturnal",
+        help=(
+            "Experiment whose episode builder drives evaluation, resolved from "
+            "the experiment registry by name (default: nocturnal)."
+        ),
+    )
 
     return parser
 
@@ -970,6 +988,7 @@ def run_with_args(args: argparse.Namespace) -> int:
             "epochs": args.epochs,
             "batch_size": args.batch_size,
             "model_config_path": args.model_config,
+            "experiment": getattr(args, "experiment", "nocturnal"),
         }
     )
     args.model_type = validated_request.model_type
@@ -981,6 +1000,7 @@ def run_with_args(args: argparse.Namespace) -> int:
     args.epochs = validated_request.epochs
     args.batch_size = validated_request.batch_size
     args.model_config = validated_request.model_config_path
+    args.experiment = validated_request.experiment
 
     # Load model config from YAML if provided
     model_config_overrides = None
@@ -1098,6 +1118,7 @@ def run_with_args(args: argparse.Namespace) -> int:
                 output_dir=args.output_dir,
                 batch_size=effective_batch_size,
                 model_config_overrides=model_config_overrides,
+                experiment=args.experiment,
             )
         else:
             zero_shot_model = None
@@ -1131,6 +1152,7 @@ def run_with_args(args: argparse.Namespace) -> int:
                 num_epochs=args.epochs,
                 batch_size=args.batch_size,
                 model_config_overrides=model_config_overrides,
+                experiment=args.experiment,
             )
         else:
             logger.info("Skipping step 5 (training)")
@@ -1162,6 +1184,7 @@ def run_with_args(args: argparse.Namespace) -> int:
                     config_dir=args.config_dir,
                     output_dir=args.output_dir,
                     model_config_overrides=model_config_overrides,
+                    experiment=args.experiment,
                 )
                 if model is None:
                     logger.error("Failed to load model from checkpoint")
@@ -1190,6 +1213,7 @@ def run_with_args(args: argparse.Namespace) -> int:
                     output_dir=args.output_dir,
                     num_epochs=args.epochs,
                     model_config_overrides=model_config_overrides,
+                    experiment=args.experiment,
                 )
         else:
             logger.info("Skipping step 7 (resume training)")
@@ -1294,6 +1318,7 @@ def run_workflow(request: ForecastingWorkflowRequest) -> int:
         epochs=request.epochs,
         batch_size=request.batch_size,
         model_config=request.model_config,
+        experiment=request.experiment,
     )
     return run_with_args(args)
 
