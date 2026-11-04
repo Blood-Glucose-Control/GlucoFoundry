@@ -72,6 +72,7 @@ def _generate_forecasts(
     output_dir: str,
     phase_name: str,
     model_config_overrides: Optional[Dict[str, Any]] = None,
+    experiment: str = "nocturnal",
 ) -> Dict[str, Dict[str, Any]]:
     """Generate per-dataset forecasting outputs for a workflow phase."""
     logger.info(f"  Generating forecasts for phase: {phase_name}")
@@ -124,9 +125,9 @@ def _generate_forecasts(
             patient_ts = patient_ts.set_index("datetime").sort_index()
 
             # Resolve the episode builder from the experiment registry by name
-            # (no import-time coupling to the nocturnal recipe). Parameterizing
-            # the experiment name by run config is tracked separately (#18).
-            build_episodes = get_episode_builder("nocturnal")
+            # (no import-time coupling to any experiment recipe). The experiment
+            # is supplied by the run config (defaults to "nocturnal").
+            build_episodes = get_episode_builder(experiment)
             episodes, ep_stats = build_episodes(
                 patient_ts,
                 context_length=context_length,
@@ -420,6 +421,7 @@ def evaluate_and_plot(
     output_dir: str,
     phase_name: str,
     model_config_overrides: Optional[Dict[str, Any]] = None,
+    experiment: str = "nocturnal",
 ) -> Dict[str, Dict[str, Any]]:
     """Generate forecasts and plots for a workflow phase."""
     logger.info("-" * 40)
@@ -433,6 +435,7 @@ def evaluate_and_plot(
         output_dir=output_dir,
         phase_name=phase_name,
         model_config_overrides=model_config_overrides,
+        experiment=experiment,
     )
     if not forecast_results:
         raise ForecastValidationError(

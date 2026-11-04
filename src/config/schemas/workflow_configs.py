@@ -23,6 +23,7 @@ class ForecastingWorkflowRequestSchema(BaseConfigSchema):
     epochs: Optional[int] = Field(default=None, gt=0)
     batch_size: Optional[int] = Field(default=None, gt=0)
     model_config_path: Optional[str] = Field(default=None)
+    experiment: str = Field(default="nocturnal", min_length=1)
 
     @field_validator("skip_steps")
     @classmethod

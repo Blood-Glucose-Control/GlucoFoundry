@@ -36,6 +36,27 @@ def test_forecasting_workflow_request_schema_valid_payload() -> None:
     assert validated.model_config_path == "configs/models/tsmixer/00_iob_cob_smoke.yaml"
 
 
+def test_forecasting_workflow_request_experiment_defaults_to_nocturnal() -> None:
+    validated = validate_forecasting_workflow_request(
+        {
+            "model_type": "tsmixer",
+            "datasets": ["aleppo_2017"],
+        }
+    )
+    assert validated.experiment == "nocturnal"
+
+
+def test_forecasting_workflow_request_accepts_custom_experiment() -> None:
+    validated = validate_forecasting_workflow_request(
+        {
+            "model_type": "tsmixer",
+            "datasets": ["aleppo_2017"],
+            "experiment": "metabonet",
+        }
+    )
+    assert validated.experiment == "metabonet"
+
+
 def test_forecasting_workflow_request_schema_rejects_invalid_skip_step() -> None:
     with pytest.raises(ValueError) as exc_info:
         validate_forecasting_workflow_request(
