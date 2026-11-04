@@ -1,39 +1,67 @@
-![Nocturnal Forecasting Logo](images/Wat.AI_Card_-_Nocturnal_Forecasting.png)
+# GlucoFoundry
 
-# Probabilistic Forecasting of Nocturnal Hypoglycemia
+**Glucose Time-Series Foundation Models — a task-general, reusable research toolkit.**
 
-Find our documentation here: [Documentation](https://probabilistic-forecasting-of-nocturnal-hypoglycemia.readthedocs.io/en/latest/)
-Find a working summmary of our results here: [https://blood-glucose-control.github.io/nocturnal-hypo-gly-prob-forecast/](https://blood-glucose-control.github.io/nocturnal-hypo-gly-prob-forecast/)
+GlucoFoundry is the canonical upstream for a family of glucose time-series
+research projects. It provides the reusable machinery — data loaders and schemas,
+a model-adapter layer over many time-series foundation models, an Optuna/MLflow
+sweep framework, evaluation metrics, and workflow orchestration — while each
+experiment lives as a self-contained, **droppable recipe**.
 
+Fork GlucoFoundry to start a new experiment; contribute genuinely reusable
+improvements back upstream. The toolkit ships **code**, not experiment artifacts.
 
-## About the Project
-Fear of nocturnal hypoglycemic events continues to be one of the most significant contributors to diabetes distress.
-Developing improved nocturnal hypoglycemic forecasting techniques would likely improve diabetes distress [(D. Ehrmann et al., 2024)](https://doi.org/10.1177/19322968241267886), but even short 2-hour blood glucose level (BGL) forecasting remains challenging [(H. Nemat et al., 2024)](https://www.nature.com/articles/s41598-024-70277-x).
-Forecasting BGL over an 8-hour time window does not seem feasible with SOTA techniques, likely due to the limited scale of most BGL time series datasets.
-The most popular open-source T1D dataset, OhioT1DM, only contains 12 patients over eight weeks [(C. Marling,2020)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7881904/).
-Our student volunteer-based WAT.ai Blood Glucose Control Design Team, in partnership with Gluroo, aims to reframe the forecasting problem into a big data *probabilistic* forecasting problem.
+## How it works
 
-Probabilistic forecasting is about producing low and high scenarios, quantifying their uncertainty, and delivering expected ranges of variation [(T. Gneiting et al., 2014](https://www.annualreviews.org/content/journals/10.1146/annurev-statistics-062713-085831), [F. Kiraly et al., 2022)](https://www.sktime.net/en/stable/examples/01b_forecasting_proba.html).
-Our view is that this framing is more technically feasible yet will be just as valuable in alleviating diabetes distress related to fears of nocturnal hypoglycemic events.
+```
+src/            core (experiment-agnostic): data, models, workflows, evaluation
+experiments/    droppable experiment recipes (e.g. experiments/nocturnal/)
+results/        run output — gitignored (populated locally)
+trained_models/ model weights — gitignored (populated locally)
+```
 
-## Methods
-Our research will consider months of data from thousands of *de-identified* Gluroo patients. With skTime [(F. Kiraly, 2024)](https://zenodo.org/records/14337818) we will evaluate various interval, quantile, variational, and distributional forecasting techniques to maximize the sharpness of our predictive distributions [(T. Gneiting et al., 2014,](https://www.annualreviews.org/content/journals/10.1146/annurev-statistics-062713-085831), [F. Kiraly et al., 2022)](https://www.sktime.net/en/stable/examples/01b_forecasting_proba.html).
-We will contrast our forecasts over various categories, including age groups, gender, years with diabetes, and weekend vs. weekday forecasting.
+- The **core never imports experiments**. Experiments self-register via
+  auto-discovery (`experiments/<name>/register.py`) and are resolved by name, so
+  cloning the toolkit and deleting an experiment directory removes it cleanly.
+- Each experiment recipe bundles its evaluation, visualization, summarization,
+  and run entry point, importing only the pure `src/` core.
 
-## Project Setup
+See the design reference in
+[`docs/design/toolkit-charter.md`](docs/design/toolkit-charter.md).
 
-For instructions on getting started with our project and the commmit/PR procedure please see our wiki article: [Getting Started Developing with this Repo](https://github.com/Blood-Glucose-Control/nocturnal-hypo-gly-prob-forecast/wiki/Get-Started-Developing-with-this-Repo)
+## Experiment projects
+
+GlucoFoundry is forked to run specific experiments, for example:
+
+- **Nocturnal hypoglycemia** — overnight (midnight-anchored) hypoglycemia
+  forecasting (`experiments/nocturnal/`).
+- **Metabonet** — general 2-hour-ahead forecasting across all time windows.
+
+## Getting started
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
+pytest --ignore=tests/models
+```
+
+Model-family tests use dedicated environments — see the `Makefile`
+(`make test-<family>`) and `CONTRIBUTING.md`.
 
 ## License
 
-This project is licensed under a custom research license based on CC BY-NC 4.0. The software is freely available for academic institutions and non-profit research organizations, but commercial use requires a separate commercial license.
+This project is currently licensed under a custom research license based on
+CC BY-NC 4.0. The software is freely available for academic institutions and
+non-profit research organizations; commercial use requires a separate commercial
+license.
 
 See [LICENSE](LICENSE) for full details.
 
 **For commercial licensing inquiries, please contact:** christopher@gluroo.com
 
 ### License Summary
-- ✅ **Free for research** - Academic institutions and non-profit research organizations
-- ✅ **Attribution required** - Please cite Blood-Glucose-Control in your work
-- ❌ **Commercial use restricted** - Requires separate commercial license
-- 📧 **Commercial licensing** - Contact us for business use
+- Free for research — Academic institutions and non-profit research organizations
+- Attribution required — Please cite Blood-Glucose-Control in your work
+- Commercial use restricted — Requires separate commercial license
+- Commercial licensing — Contact us for business use

@@ -3,9 +3,9 @@ requires = ["setuptools>=64", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "nocturnal-forecast"
+name = "glucofoundry"
 version = "0.1.0"
-description = "Nocturnal hypoglycemia and glycemic forecasting"
+description = "GlucoFoundry — a task-general toolkit for glucose time-series foundation-model research"
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
