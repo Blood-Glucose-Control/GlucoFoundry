@@ -6,7 +6,7 @@
 # across the three IOB datasets: lynch_2022, aleppo_2017, brown_2019.
 #
 # Zero-shot (step 0) results already exist in
-#   experiments/nocturnal_forecasting/
+#   results/nocturnal_forecasting/
 # and are re-used by the plotting script — no re-evaluation needed.
 #
 # All runs use --episode-context-length 512 (fair fixed-episode set, same as
@@ -14,7 +14,7 @@
 # the four context-length configs.
 #
 # Results land in:
-#   experiments/nocturnal_forecasting_step_sweep/{ctx}ctx_96fh/chronos2/...
+#   results/nocturnal_forecasting_step_sweep/{ctx}ctx_96fh/chronos2/...
 # Done log:
 #   logs/chronos2_step_sweep_done.log
 #
@@ -176,7 +176,7 @@ run_gpu_worker() {
 
         local timestamp
         timestamp="$(date +%Y-%m-%d_%H%M%S)"
-        local out_dir="${PROJECT_ROOT}/experiments/nocturnal_forecasting_step_sweep/${ctx_len}ctx_96fh/chronos2/${timestamp}_${dataset}_step${step}"
+        local out_dir="${PROJECT_ROOT}/results/nocturnal_forecasting_step_sweep/${ctx_len}ctx_96fh/chronos2/${timestamp}_${dataset}_step${step}"
 
         CMD=(
             "$PYTHON" "$EVAL_SCRIPT"

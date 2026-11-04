@@ -20,7 +20,7 @@ forecasts.npz for any dataset are skipped automatically.
 Usage:
     python scripts/visualization/plot_rmse_vs_horizon_grid.py
     python scripts/visualization/plot_rmse_vs_horizon_grid.py \
-        --csv experiments/nocturnal_forecasting/best_by_model_dataset.csv \
+        --csv results/nocturnal_forecasting/best_by_model_dataset.csv \
         --output results/figures/rmse_vs_horizon_grid.svg
 """
 
@@ -54,11 +54,11 @@ DATASET_LABELS = {
 # and predate the NPZ storage format.)
 FALLBACK_PATHS: dict[tuple[str, str], str] = {
     ("ttm", "aleppo_2017"): (
-        "experiments/nocturnal_forecasting/512ctx_96fh/ttm"
+        "results/nocturnal_forecasting/512ctx_96fh/ttm"
         "/2026-04-16_0922_aleppo_2017_finetuned"
     ),
     ("ttm", "brown_2019"): (
-        "experiments/nocturnal_forecasting/512ctx_96fh/ttm"
+        "results/nocturnal_forecasting/512ctx_96fh/ttm"
         "/2026-04-16_0925_brown_2019_finetuned"
     ),
 }
@@ -230,7 +230,7 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--csv",
-        default="experiments/nocturnal_forecasting/best_by_model_dataset.csv",
+        default="results/nocturnal_forecasting/best_by_model_dataset.csv",
         help="Path to best_by_model_dataset.csv",
     )
     parser.add_argument(

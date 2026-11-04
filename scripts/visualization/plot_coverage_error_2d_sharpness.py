@@ -41,7 +41,7 @@ Usage
 -----
     python scripts/visualization/plot_coverage_error_2d_sharpness.py
     python scripts/visualization/plot_coverage_error_2d_sharpness.py \\
-        --summary experiments/nocturnal_forecasting/summary.csv \\
+        --summary results/nocturnal_forecasting/summary.csv \\
         --out results/coverage_error_2d_sharpness.png \\
         --filter-outliers
 """
@@ -92,7 +92,7 @@ DATASET_LABELS: dict[str, str] = {
     "tamborlane_2008": "Tamborlane 2008",
 }
 
-DEFAULT_SUMMARY = "experiments/nocturnal_forecasting/summary.csv"
+DEFAULT_SUMMARY = "results/nocturnal_forecasting/summary.csv"
 DEFAULT_OUT = "results/coverage_error_2d_sharpness.png"
 
 # Marker size range for Panel A (min/max pixels²)

@@ -47,7 +47,7 @@ Usage
 
     # Custom CSV / output directory
     python scripts/visualization/plot_pit_horizon_heatmap.py \\
-        --best-csv experiments/nocturnal_forecasting/best_by_model_dataset.csv \\
+        --best-csv results/nocturnal_forecasting/best_by_model_dataset.csv \\
         --outdir   results/pit_horizon_heatmaps
 
     # Smooth noise by grouping into 24 time-step bins (20-min resolution)
@@ -55,7 +55,7 @@ Usage
 
     # Test against a single run directory
     python scripts/visualization/plot_pit_horizon_heatmap.py \\
-        --eval-dirs experiments/nocturnal_forecasting/512ctx_96fh/toto/<run>/ \\
+        --eval-dirs results/nocturnal_forecasting/512ctx_96fh/toto/<run>/ \\
         --labels    toto \\
         --outdir    /tmp/heatmap_test/
 """
@@ -123,7 +123,7 @@ DATASET_LABELS: Dict[str, str] = {
 MINUTES_PER_STEP: int = 5
 TOTAL_STEPS: int = 96
 
-DEFAULT_BEST_CSV = "experiments/nocturnal_forecasting/best_by_model_dataset.csv"
+DEFAULT_BEST_CSV = "results/nocturnal_forecasting/best_by_model_dataset.csv"
 DEFAULT_OUTDIR = "results/pit_horizon_heatmaps"
 
 

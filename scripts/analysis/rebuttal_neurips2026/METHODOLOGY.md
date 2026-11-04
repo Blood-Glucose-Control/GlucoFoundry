@@ -48,7 +48,7 @@ python -m scripts.analysis.rebuttal_neurips2026.a9_cross_metric --n-boot 10000 -
 ### 1.1 On-disk inputs
 Each completed run lives at:
 ```
-experiments/nocturnal_forecasting/512ctx_96fh/<model>/<run>/
+results/nocturnal_forecasting/512ctx_96fh/<model>/<run>/
     episodes.parquet          # 1 row per midnight-anchored episode + per-episode metrics
     forecasts.npz             # raw arrays, row-aligned to episodes.parquet
     experiment_config.json    # cli_args: dataset, covariate_cols, ...

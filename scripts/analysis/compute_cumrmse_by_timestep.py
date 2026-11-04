@@ -123,7 +123,7 @@ def _cov_bucket(run_dir: Path) -> str:
 
 def find_best_run(model: str, dataset: str) -> Path | None:
     """
-    Scan experiments/nocturnal_forecasting/512ctx_96fh/<model>/ for runs
+    Scan results/nocturnal_forecasting/512ctx_96fh/<model>/ for runs
     that (a) match *dataset*, (b) have a forecasts.npz, and optionally
     (c) pass the TiDE known-covariate exclusion filter.
 
