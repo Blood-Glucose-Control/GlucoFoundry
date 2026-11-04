@@ -7,7 +7,7 @@ name = "glucofoundry"
 version = "0.1.0"
 description = "GlucoFoundry — a task-general toolkit for glucose time-series foundation-model research"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.12"
 dependencies = [
     # Development tools
     "accelerate>=0.26.0",
@@ -26,15 +26,15 @@ dependencies = [
     "loguru",
     "notebook",
     "numba",
-    "numpy",
+    "numpy>=2.0,<3",
     "orjson",
-    "pandas",
+    "pandas>=2.3,<4",
     "pyarrow>=14.0.0",
     "pydantic",
     "pyreadstat",
     "python-dotenv",
     "PyWavelets",
-    "scikit-learn",
+    "scikit-learn>=1.4",
     "skchange",
     "sktime",
     "tabulate",
@@ -43,7 +43,7 @@ dependencies = [
     "tqdm",
 
     # Visualization
-    "matplotlib",
+    "matplotlib>=3.8",
     "seaborn",
 
     # Documentation

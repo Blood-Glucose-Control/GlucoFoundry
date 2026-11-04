@@ -51,6 +51,28 @@ source scripts/setup_model_env.sh <new-model>
 | TTM model training/inference | `source scripts/setup_model_env.sh ttm` |
 | Other model training | `source scripts/setup_model_env.sh <model>` |
 
+## Dependency policy
+
+GlucoFoundry is a fork-first research toolkit, so dependencies favour
+**compatibility over hard pins**:
+
+- **Abstract dependencies** in `pyproject.toml` use **compatible ranges** — a
+  floor for features we rely on, and a **ceiling just below the next untested
+  major** for the core scientific stack (for example `numpy>=2.0,<3`,
+  `pandas>=2.3,<4`). The ceilings exist specifically to keep a surprise major
+  release from silently breaking CI; raise them deliberately once the new major
+  is validated.
+- **Python**: 3.12 is the canonical/CI version (`requires-python = ">=3.12"`).
+- **Model-family environments are isolated** (`.venvs/<model>/`) because
+  foundation models require mutually conflicting dependency sets; they are not
+  expected to share a single resolved environment with the core.
+- **Exact, hash-locked reproduction** (a lockfile) is intentionally **not** in
+  place yet: a single lockfile cannot represent the multiple isolated model-family
+  venvs or the CPU/GPU `torch` split, so it is tracked as dedicated future work.
+
+When bumping a core dependency across a major version, validate
+`pytest --ignore=tests/models` on the target version before raising the ceiling.
+
 ## What Can You Contribute?
 
 ### 🤖 **Model Development**
