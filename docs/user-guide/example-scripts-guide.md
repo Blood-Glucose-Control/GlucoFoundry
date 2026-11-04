@@ -16,11 +16,9 @@ This guide lists the maintained scripts in `scripts/examples/`,
 
 ## Model-specific experiment scripts
 
-Model-specific one-off experiment scripts are archived under
-`scripts/scratch/experiments/` (not maintained canonical surfaces):
-
-- `chronos2_finetune.py` (Chronos-2 fine-tuning workflow)
-- `ttm_forecasting_workflow.py` (TTM-specific forecasting workflow variant)
+Model-specific one-off experiment scripts were retired from the maintained
+toolkit surface. Reproduce model-specific workflows via the canonical entrypoints
+(the forecasting pipeline and the Python-first sweep framework) described below.
 
 ## Python-first sweep orchestration
 
@@ -118,22 +116,16 @@ Canonical chain/orchestration scripts now live under:
 - `scripts/orchestration/sweeps/run_ctx_ablation_sweeps.sh`
 - `scripts/orchestration/sweeps/run_overnight_deep_sweeps.sh`
 
-Context-ablation model scripts are now canonicalized as a `nocturnal_forecast`
+Context-ablation model scripts are canonicalized as a `nocturnal_forecast`
 sub-experiment under:
 
 - `scripts/training/sweeps/nocturnal_forecast/context_ablation/`
 - `scripts/evaluation/sweeps/nocturnal_forecast/context_ablation/`
 
-Chronos-2 one-off step/context-ablation evaluators remain specialized intentionally
-for now (they embed custom experiment semantics and are not yet generalized):
-
-- `scripts/evaluation/sweeps/nocturnal_forecast/context_ablation/chronos2_ctx_ablation_eval.sh`
-- `scripts/evaluation/sweeps/models/chronos2_step_sweep_eval.sh`
-- `scripts/evaluation/sweeps/models/chronos2_long_run_step_sweep_eval.sh`
-
-Legacy compatibility wrappers in `scripts/experiments/` were retired from the
-maintained surface and moved under `scripts/scratch/experiments/`; use the
-canonical paths above.
+Context-ablation evaluation is available directly on the nocturnal evaluation
+entry point via `--episode-context-length` (episodes are selected at that length
+while the model sees `--context-length` steps, enabling apples-to-apples context
+comparisons).
 
 ## Canonical workflow example
 

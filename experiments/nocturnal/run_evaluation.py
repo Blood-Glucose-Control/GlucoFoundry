@@ -214,6 +214,18 @@ def parse_arguments() -> argparse.Namespace:
         help="Context window length in steps (default: 512)",
     )
     parser.add_argument(
+        "--episode-context-length",
+        type=int,
+        default=None,
+        help=(
+            "Minimum history (steps) required for an episode to be included. "
+            "When larger than --context-length, episodes are selected at this "
+            "length (a fixed anchor set) while the model only sees "
+            "--context-length steps — enabling apples-to-apples context-ablation "
+            "comparisons. Defaults to --context-length."
+        ),
+    )
+    parser.add_argument(
         "--forecast-length",
         type=int,
         default=72,
@@ -464,6 +476,7 @@ def main() -> int:
             covariate_cols=covariate_cols,
             probabilistic=args.probabilistic,
             compute_dilate=not args.no_dilate,
+            episode_context_length=args.episode_context_length,
         )
 
         # Log overall results
