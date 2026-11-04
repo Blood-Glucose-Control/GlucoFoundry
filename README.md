@@ -26,8 +26,8 @@ trained_models/ model weights — gitignored (populated locally)
 - Each experiment recipe bundles its evaluation, visualization, summarization,
   and run entry point, importing only the pure `src/` core.
 
-See the design reference in
-[`docs/design/toolkit-charter.md`](docs/design/toolkit-charter.md).
+See the architecture reference in
+[`docs/architecture/toolkit-architecture.md`](docs/architecture/toolkit-architecture.md).
 
 ## Experiment projects
 

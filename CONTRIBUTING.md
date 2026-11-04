@@ -1,36 +1,42 @@
-# Contributing to Nocturnal Hypo-Gly Prob Forecast
+# Contributing to GlucoFoundry
 
-Thank you for your interest in contributing to the Nocturnal Hypo-Gly Prob Forecast project! 🩸📈
+Thank you for your interest in contributing to **GlucoFoundry** — a task-general,
+reusable toolkit for glucose time-series foundation-model research.
 
-This project focuses on blood glucose control and forecasting research using foundation models like Time Series Transformers (TTM).
+GlucoFoundry is **fork-first**: it provides the reusable core (data, models,
+sweeps, evaluation, workflows), and each experiment lives as a self-contained,
+droppable recipe under `experiments/<name>/`. Contributions that make the core
+more reusable are especially welcome.
 
 ## Quick Start
 
 1. **Fork and clone** the repository
-2. **Set up environment**: `python -m venv .noctprob-venv && source .noctprob-venv/bin/activate`
+2. **Set up environment**: `python -m venv .venv && source .venv/bin/activate`
 3. **Install dependencies**: `pip install -e .`
-4. **Run tests**: `pytest tests/`
-5. **Create feature branch**: `git checkout -b feature/your-feature`
-6. **Make changes** and commit with conventional commit format
-7. **Submit pull request**
+4. **Run tests**: `pytest --ignore=tests/models`
+5. **Create a feature branch**: `git checkout -b feat/your-feature`
+6. **Make changes** and commit with conventional-commit messages
+7. **Submit a pull request**
 
 ## Environment Setup
 
-This project uses **two types of virtual environments**:
+GlucoFoundry uses **two types of virtual environments**:
 
-### General Development (`.noctprob-venv`)
-For notebooks, data exploration, and non-model work:
+### Core development (`.venv`)
+For the core toolkit, experiments, tests, and data work:
 ```bash
-python -m venv .noctprob-venv
-source .noctprob-venv/bin/activate
+python -m venv .venv
+source .venv/bin/activate
 pip install -e .
 ```
 
-### Model-Specific Environments (`.venvs/<model>/`)
-Different foundation models require different package versions (e.g., `transformers`). Use model-specific environments for training and inference:
+### Model-specific environments (`.venvs/<model>/`)
+Different foundation models require mutually conflicting package versions
+(e.g., `transformers`), so each model family has an isolated environment used for
+training and inference:
 
 ```bash
-# Set up and activate a model environment (creates venv on first run)
+# Set up and activate a model environment (creates the venv on first run)
 source scripts/setup_model_env.sh ttm
 source scripts/setup_model_env.sh sundial
 
@@ -38,18 +44,17 @@ source scripts/setup_model_env.sh sundial
 deactivate
 ```
 
-Available models are defined in `pyproject.toml` under `[project.optional-dependencies]`. To add a new model, add an entry there and run:
-```bash
-source scripts/setup_model_env.sh <new-model>
-```
+Model families are defined in `pyproject.toml` under
+`[project.optional-dependencies]`. To add one, add an entry there and run
+`source scripts/setup_model_env.sh <model>`. Model-family tests run via the
+`Makefile` (`make test-<family>`).
 
 **When to use which:**
 | Task | Environment |
 |------|-------------|
-| Data exploration, notebooks | `.noctprob-venv` |
-| Running tests | `.noctprob-venv` |
-| TTM model training/inference | `source scripts/setup_model_env.sh ttm` |
-| Other model training | `source scripts/setup_model_env.sh <model>` |
+| Core toolkit / experiment development | `.venv` |
+| Running the non-model test suite | `.venv` |
+| Model training/inference (e.g. TTM) | `source scripts/setup_model_env.sh <model>` |
 
 ## Dependency policy
 
@@ -73,66 +78,63 @@ GlucoFoundry is a fork-first research toolkit, so dependencies favour
 When bumping a core dependency across a major version, validate
 `pytest --ignore=tests/models` on the target version before raising the ceiling.
 
-## What Can You Contribute?
+## What can you contribute?
 
-### 🤖 **Model Development**
-- Implement new foundation model architectures
-- Improve TTM training pipelines
-- Add new evaluation metrics
-- Optimize model performance
+### Core toolkit
+- New foundation-model adapters (via the `ModelAdapter` protocol)
+- Evaluation metrics and probabilistic/shape scoring
+- Sweep-framework and workflow improvements
+- Data loaders and schema adapters for new datasets
 
-### 📊 **Data Science**
-- Add support for new diabetes datasets
-- Improve data preprocessing
-- Enhance feature engineering
-- Add data validation
+### Experiments (recipes)
+- New experiment recipes under `experiments/<name>/` (see the architecture guide)
+- Reproducibility improvements to existing recipes
 
-### 🔧 **Infrastructure**
-- Improve CI/CD pipelines
-- Enhance caching systems
-- Add monitoring and logging
-- Development workflow improvements
+### Infrastructure & docs
+- CI/CD, caching, logging, and developer-workflow improvements
+- Tutorials, guides, and architecture documentation
 
-### 📚 **Documentation & Research**
-- Write tutorials and guides
-- Conduct hyperparameter studies
-- Add benchmarking datasets
-- Improve evaluation methodologies
+## Adding a new experiment
 
-## Development Guidelines
+Experiments are **droppable recipes** that import the pure `src/` core and
+self-register, so the core never imports them. See
+[docs/architecture/toolkit-architecture.md](docs/architecture/toolkit-architecture.md)
+for the full design. In short, a recipe lives at `experiments/<name>/` and
+provides a `register.py` that registers an `ExperimentSpec` (its episode builder,
+summarizer, and evaluation entry point). Deleting the directory removes the
+experiment cleanly.
 
-- **Follow the [Foundation Model Template](docs/foundation_model_template.md)** for new architectures
-- **Use conventional commits**: `feat:`, `fix:`, `docs:`, etc.
-- **Add tests** for new functionality
-- **Update documentation** as needed
-- **Run code formatting**: `ruff format .` and `ruff check .`
-- **Configure VS Code properly**: Use `pyrightconfig.json` for Pylance settings, not VS Code `diagnosticSeverityOverrides`
+## Development guidelines
 
-## Code Quality Standards
+- **Use conventional commits**: `feat:`, `fix:`, `docs:`, `chore:`, etc.
+- **Add tests** for new functionality.
+- **Keep the core experiment-agnostic**: `src/` must never import from
+  `experiments/`.
+- **Run formatting/linting**: `ruff format .` and `ruff check .` (repo selection
+  is `E4,E7,E9,F,I`). Run `pre-commit run --all-files` before pushing — CI lints
+  the whole repo.
+- **Configure Pylance via `pyrightconfig.json`**, not VS Code
+  `diagnosticSeverityOverrides`.
 
-- ✅ All tests pass (`pytest`)
-- ✅ Code follows style guidelines (`ruff check`)
-- ✅ Type hints for function signatures
+## Code quality standards
+
+- ✅ Tests pass (`pytest --ignore=tests/models`; model families via `make test-<family>`)
+- ✅ Lint clean (`ruff check`, `ruff format`)
+- ✅ Type hints on public function signatures
 - ✅ Docstrings for public functions
-- ✅ No merge conflicts with main branch
+- ✅ No merge conflicts with `main`
 
-## Issue Reporting
+## Issue reporting
 
-- **Bugs**: Use the bug report template
-- **Features**: Use the feature request template
-- **Questions**: Use GitHub Discussions
+- **Bugs**: open an issue describing the problem and how to reproduce it
+- **Features**: open an issue describing the proposed capability
+- **Questions**: use GitHub Discussions
 
-## Recognition
+## License
 
-Contributors are recognized in:
-- Project README
-- Release notes
-- Research publications (for significant contributions)
+By contributing, you agree that your contributions are licensed under the
+project's [Apache License 2.0](LICENSE).
 
 ---
 
-📖 **Full Contributing Guide**: See [docs/contributing.md](docs/contributing.md) for detailed guidelines.
-
-🚀 **Getting Started**: Check out the [TTM Reorganization Plan](docs/ttm_reorganization_plan.md) to understand the current architecture improvements.
-
-For questions, open an issue or reach out to the maintainers. Thank you for helping advance diabetes research! 🙏
+For a deeper developer guide, see [docs/contributing.md](docs/contributing.md).

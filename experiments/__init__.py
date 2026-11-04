@@ -5,7 +5,7 @@
 
 Each subdirectory is a self-contained, droppable experiment recipe that imports
 the pure ``src/`` core and self-registers via its ``register.py`` module (see
-``docs/design/toolkit-charter.md``). This directory is importable in-repo
+``docs/architecture/toolkit-architecture.md``). This directory is importable in-repo
 (``pythonpath = ["."]``) but excluded from the installed wheel
 (``packages.find = ["src*"]``).
 """

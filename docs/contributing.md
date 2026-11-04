@@ -1,6 +1,6 @@
-# Contributing to Nocturnal Hypo-Gly Prob Forecast
+# Contributing to GlucoFoundry
 
-We welcome contributions to the Nocturnal Hypo-Gly Prob Forecast project! This document provides guidelines for contributing to this blood glucose control and forecasting research project.
+We welcome contributions to **GlucoFoundry**, a task-general toolkit for glucose time-series foundation-model research. This document provides detailed guidelines for contributing.
 
 ## Table of Contents
 
@@ -894,6 +894,6 @@ All contributors will be:
 
 ---
 
-Thank you for contributing to the Nocturnal Hypo-Gly Prob Forecast project! Your contributions help advance blood glucose control research and improve outcomes for diabetes patients.
+Thank you for contributing to GlucoFoundry! Your contributions help advance reproducible glucose time-series research.
 
 For questions about contributing, please open an issue or reach out to the maintainers.
