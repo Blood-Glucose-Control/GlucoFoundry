@@ -1,5 +1,5 @@
 # Copyright (c) 2025 Blood-Glucose-Control
-# Licensed under Custom Research License (see LICENSE file)
+# SPDX-License-Identifier: Apache-2.0
 """A6 -- Episode risk-aggregation ablation (max vs mean vs noisy-or).
 
 R2 Q2 asks whether taking the MAX risk across the 8 h horizon makes episode-level

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) 2025 Blood-Glucose-Control
-# Licensed under Custom Research License (see LICENSE file)
+# SPDX-License-Identifier: Apache-2.0
 
 """
 Model-agnostic percentile grid for probabilistic forecast runs.

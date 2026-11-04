@@ -1,5 +1,5 @@
 # Copyright (c) 2025 Blood-Glucose-Control
-# Licensed under Custom Research License (see LICENSE file)
+# SPDX-License-Identifier: Apache-2.0
 
 """Generate a MetaboNet challenge submission from a trained Chronos-2 model.
 

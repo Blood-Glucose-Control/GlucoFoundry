@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) 2025 Blood-Glucose-Control
-# Licensed under Custom Research License (see LICENSE file)
+# SPDX-License-Identifier: Apache-2.0
 """Hour-of-day bolus event rate per dataset.
 
 For each of the 3 datasets with logged bolus events (Replace-BG, DCLP3, IOBP2),

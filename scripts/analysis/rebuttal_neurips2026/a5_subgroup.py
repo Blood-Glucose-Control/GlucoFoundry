@@ -1,5 +1,5 @@
 # Copyright (c) 2025 Blood-Glucose-Control
-# Licensed under Custom Research License (see LICENSE file)
+# SPDX-License-Identifier: Apache-2.0
 """A5 -- Subgroup / fairness analysis (R3 Q4, W5).
 
 Stratifies episode-level performance by patient SEX and by AGE (median split on

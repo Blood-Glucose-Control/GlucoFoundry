@@ -1,5 +1,5 @@
 # Copyright (c) 2025 Blood-Glucose-Control
-# Licensed under Custom Research License (see LICENSE file)
+# SPDX-License-Identifier: Apache-2.0
 
 """TimesFM 3.0 (LoRA fine-tune) x Optuna sweep on MetaboNet.
 

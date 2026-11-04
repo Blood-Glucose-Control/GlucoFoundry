@@ -1,5 +1,5 @@
 # Copyright (c) 2025 Blood-Glucose-Control
-# Licensed under Custom Research License (see LICENSE file)
+# SPDX-License-Identifier: Apache-2.0
 """Build the Workstream-2 GPU rerun MANIFEST (does NOT launch anything).
 
 Fills the two per-episode-array gaps needed for CIs on conditions whose raw runs

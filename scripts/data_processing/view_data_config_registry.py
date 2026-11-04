@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) 2025 Blood-Glucose-Control
-# Licensed under Custom Research License (see LICENSE file)
-# For commercial licensing, contact: christopher/cjrisi AT gluroo/uwaterloo DOT com/ca
+# SPDX-License-Identifier: Apache-2.0
 
 """
 Utility script to view and manage data config registry.

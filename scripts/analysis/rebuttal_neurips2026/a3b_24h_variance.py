@@ -1,5 +1,5 @@
 # Copyright (c) 2025 Blood-Glucose-Control
-# Licensed under Custom Research License (see LICENSE file)
+# SPDX-License-Identifier: Apache-2.0
 """A3b: 24-Hour BG Variance Analysis (NeurIPS 2026 E&D Rebuttal, submission #3091).
 
 Computes blood glucose coefficient of variation across all 24 hours (1-hour windows)

@@ -1,5 +1,5 @@
 # Copyright (c) 2025 Blood-Glucose-Control
-# Licensed under Custom Research License (see LICENSE file)
+# SPDX-License-Identifier: Apache-2.0
 """Shared utilities for the NeurIPS 2026 E&D rebuttal analyses (submission #3091).
 
 All rebuttal analyses (A1-A6) are pure post-hoc processing of the per-episode

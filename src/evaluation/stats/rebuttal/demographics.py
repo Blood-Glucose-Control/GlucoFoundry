@@ -1,5 +1,5 @@
 # Copyright (c) 2025 Blood-Glucose-Control
-# Licensed under Custom Research License (see LICENSE file)
+# SPDX-License-Identifier: Apache-2.0
 """Per-patient demographics loader for the subgroup analysis (A5).
 
 IMPORTANT (reviewer-flagged): use the patient's ACTUAL age at enrollment /

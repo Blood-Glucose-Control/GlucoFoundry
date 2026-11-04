@@ -1,5 +1,5 @@
 # Copyright (c) 2025 Blood-Glucose-Control
-# Licensed under Custom Research License (see LICENSE file)
+# SPDX-License-Identifier: Apache-2.0
 """A4 -- BG-only controlled leaderboard + covariate contribution (R3 W3/Q3, AC Q1/Q3).
 
 Two questions the reviewers raise about the covariate ablations:
