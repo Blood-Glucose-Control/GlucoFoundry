@@ -1,6 +1,5 @@
 # Copyright (c) 2025 Blood-Glucose-Control
-# Licensed under Custom Research License (see LICENSE file)
-# For commercial licensing, contact: cjrisi/christopher AT uwaterloo/gluroo DOT ca/com
+# SPDX-License-Identifier: Apache-2.0
 
 """
 Data loading module for accessing and processing various diabetes datasets.

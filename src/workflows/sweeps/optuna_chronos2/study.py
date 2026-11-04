@@ -1,5 +1,5 @@
 # Copyright (c) 2025 Blood-Glucose-Control
-# Licensed under Custom Research License (see LICENSE file)
+# SPDX-License-Identifier: Apache-2.0
 
 """Shared-study Optuna worker entrypoint for the Chronos-2 MetaboNet PoC.
 

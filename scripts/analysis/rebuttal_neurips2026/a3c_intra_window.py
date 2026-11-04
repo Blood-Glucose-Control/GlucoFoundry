@@ -1,5 +1,5 @@
 # Copyright (c) 2025 Blood-Glucose-Control
-# Licensed under Custom Research License (see LICENSE file)
+# SPDX-License-Identifier: Apache-2.0
 """A3c -- Intra-window model ranking stability analysis.
 
 Compute model performance (AUROC, RMSE) separately for four 2-hour sub-windows

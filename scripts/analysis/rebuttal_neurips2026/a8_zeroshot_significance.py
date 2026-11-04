@@ -1,5 +1,5 @@
 # Copyright (c) 2025 Blood-Glucose-Control
-# Licensed under Custom Research License (see LICENSE file)
+# SPDX-License-Identifier: Apache-2.0
 """A8 -- Zero-shot vs fine-tuned significance (uses the rerun ZS runs).
 
 For each foundation model that has both a zero-shot run and a fine-tuned run, we

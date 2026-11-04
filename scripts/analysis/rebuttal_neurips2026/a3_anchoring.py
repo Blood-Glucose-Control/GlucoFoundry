@@ -1,5 +1,5 @@
 # Copyright (c) 2025 Blood-Glucose-Control
-# Licensed under Custom Research License (see LICENSE file)
+# SPDX-License-Identifier: Apache-2.0
 """A3 / A3b -- Midnight-anchoring sensitivity + overnight intervention timing.
 
 R3's #1 concern (W1/Q1): midnight-anchored nights may include periods where the

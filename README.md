@@ -51,17 +51,14 @@ Model-family tests use dedicated environments — see the `Makefile`
 
 ## License
 
-This project is currently licensed under a custom research license based on
-CC BY-NC 4.0. The software is freely available for academic institutions and
-non-profit research organizations; commercial use requires a separate commercial
-license.
+GlucoFoundry is licensed under the **Apache License 2.0**. You may use, modify,
+and distribute it — including for commercial purposes — provided you retain the
+copyright notice and license, state significant changes, and comply with the
+license terms.
 
-See [LICENSE](LICENSE) for full details.
+See [LICENSE](LICENSE) and [NOTICE](NOTICE) for full details.
 
-**For commercial licensing inquiries, please contact:** christopher@gluroo.com
-
-### License Summary
-- Free for research — Academic institutions and non-profit research organizations
-- Attribution required — Please cite Blood-Glucose-Control in your work
-- Commercial use restricted — Requires separate commercial license
-- Commercial licensing — Contact us for business use
+- Free to use, modify, and distribute (including commercially)
+- Attribution required — retain the copyright/`NOTICE` and license text
+- Includes an explicit patent grant
+- Provided "as is", without warranty

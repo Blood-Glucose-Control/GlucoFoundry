@@ -1,5 +1,5 @@
 # Copyright (c) 2025 Blood-Glucose-Control
-# Licensed under Custom Research License (see LICENSE file)
+# SPDX-License-Identifier: Apache-2.0
 """A7-CD -- Critical Difference diagrams (Demsar 2006) from the A7 outputs.
 
 Reads a7_friedman.csv (average ranks + Nemenyi CD per dataset, computed over

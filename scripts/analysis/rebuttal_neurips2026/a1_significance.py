@@ -1,5 +1,5 @@
 # Copyright (c) 2025 Blood-Glucose-Control
-# Licensed under Custom Research License (see LICENSE file)
+# SPDX-License-Identifier: Apache-2.0
 """A1 -- Bootstrap confidence intervals + paired significance tests.
 
 Answers reviewer requests for uncertainty quantification on the benchmark's

@@ -1,6 +1,5 @@
 # Copyright (c) 2025 Blood-Glucose-Control
-# Licensed under Custom Research License (see LICENSE file)
-# For commercial licensing, contact: christopher/cjrisi AT gluroo/uwaterloo DOT com/ca
+# SPDX-License-Identifier: Apache-2.0
 
 """
 Holdout manager for applying data splits according to holdout configurations.

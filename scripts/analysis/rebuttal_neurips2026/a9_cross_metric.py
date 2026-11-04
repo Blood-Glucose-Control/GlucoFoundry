@@ -1,5 +1,5 @@
 # Copyright (c) 2025 Blood-Glucose-Control
-# Licensed under Custom Research License (see LICENSE file)
+# SPDX-License-Identifier: Apache-2.0
 """A9 -- Cross-METRIC dominance (the real "no single architecture dominates").
 
 The paper's claim is that no model wins across the FIVE evaluation axes:
