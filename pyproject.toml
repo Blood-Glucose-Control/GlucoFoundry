@@ -19,6 +19,10 @@ dependencies = [
 
     # Data Science & ML
     "datasets>=5.0.0",
+    "ipython",
+    "ipywidgets",
+    "jupyterlab",
+    "notebook",
     "numba",
     "numpy>=2.0,<3",
     "openpyxl",
@@ -97,14 +101,6 @@ toto = [
 ]
 dev = [
     "babelbetes>=0.2.3",
-]
-# Jupyter stack for future notebook-based demos and documentation projects.
-# Not required by the core runtime; install with `pip install glucofoundry[notebooks]`.
-notebooks = [
-    "ipython",
-    "ipywidgets",
-    "jupyterlab",
-    "notebook",
 ]
 
 [tool.setuptools.packages.find]
