@@ -200,7 +200,8 @@ Reference: [Repository Design Handbook](architecture/repository-design-handbook.
 - [ ] Multi-step runtime pipeline logic lives in `src/workflows/` (or planned
       migration target), not in shell scripts.
 - [ ] Orchestration logic is Python-first; shell scripts are thin wrappers for
-      environment activation and launcher execution (local/tmux/SLURM).
+      environment activation and launcher execution (local, tmux, or a cluster
+      scheduler).
 - [ ] `scripts/examples/` contains teaching-oriented examples, not hidden
       production business logic.
 - [ ] Model factory/registry logic remains in `src/models/` modules.
@@ -798,9 +799,7 @@ See [Data Documentation](https://probabilistic-forecasting-of-nocturnal-hypoglyc
        def preprocess(self, data): ...
        def validate(self, data): ...
    ```
-3. **Add WATGPU sbatch script.**
-   ```scripts/watgpu_slurm/data_processing_scripts/{dataset}_data_processing.sh```
-4. **Update documentation**: Add dataset description and usage
+3. **Update documentation**: Add dataset description and usage
 
 ---
 

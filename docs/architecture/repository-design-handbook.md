@@ -52,7 +52,7 @@ composed approach from reputable sources:
 ### 3.3 Sweep orchestration
 
 - Sweep launchers can remain in `scripts/` as thin orchestration entrypoints.
-- Their role is job orchestration (local shell/tmux/SLURM), not business logic.
+- Their role is job orchestration (local shell, tmux, or a cluster scheduler), not business logic.
 - Reusable scheduling/manifest logic should be centralized in `src/` modules
   and called by thin wrappers.
 
@@ -96,7 +96,7 @@ Avoid in `src/`:
 Use `scripts/` for:
 
 - user-facing examples/tutorial scripts
-- launchers (local, tmux, SLURM)
+- launchers (local, tmux, or a cluster scheduler)
 - thin wrappers over `src` modules
 - canonical multi-run chains under `scripts/orchestration/`
 
@@ -193,7 +193,8 @@ Minimum bar for script and workflow changes:
 1. Create `src/workflows/` as a top-level package for multi-step runtime
    pipelines.
 2. Use **Python-first orchestration** for experiment/sweep control flow, with
-   optional thin shell wrappers for environment activation and SLURM submission.
+   optional thin shell wrappers for environment activation and cluster-scheduler
+   submission.
 3. Adopt a lightweight **pre-MLflow canonical run manifest** now, then map it
    1:1 into MLflow tags/params/metrics/artifacts later.
 

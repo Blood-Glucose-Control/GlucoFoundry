@@ -73,8 +73,6 @@ scripts/notebooks/AutogluonModels*
 cache/data/gluroo/processed/parquet/*
 
 
-scripts/watgpu_slurm/data_processing_scripts/results/
-
 # results/ ships empty (README only); experiment runs populate it locally.
 results/*
 !results/README.md

@@ -102,12 +102,6 @@ python scripts/orchestration/sweeps/sweep_train.py \
   --dry-run
 ```
 
-SLURM usage pattern (launch wrapper inside one allocation):
-
-```bash
-sbatch --gres=gpu:2 --wrap 'cd /path/to/repo && TASK_FAMILY=forecasting EXPERIMENT_TYPE=nocturnal_forecast MODEL_TYPE=chronos2 SWEEP_SPEC=configs/experiments/nocturnal_forecast/chronos2_forecasting_train_sweep.yaml GPUS="0 1" JOBS_PER_GPU=2 bash scripts/training/sweeps/run_sweep_train.sh'
-```
-
 ## Multi-stage orchestration chains
 
 Canonical chain/orchestration scripts now live under:
@@ -200,29 +194,6 @@ This includes the ratified v1 fields from the design handbook:
 - inputs (data/model config paths + resolved runtime config)
 - outputs (artifact root + checkpoint/prediction/plot paths)
 - result summary (`key_metrics`, `status`, `failure_message`)
-
-## SLURM launcher entrypoints (cluster runs)
-
-For cluster execution, use the rewired launchers in `scripts/training/slurm/`
-that now route to the same maintained workflow path:
-
-- `single_gpu.sh`
-- `multi_gpu.sh`
-- `adaptive_resources.sh`
-
-Example:
-
-```bash
-sbatch scripts/training/slurm/single_gpu.sh
-```
-
-The main override surface is the same as local wrapper runs (`MODEL_TYPE`,
-`MODEL_CONFIG`, `DATASETS`, `CONFIG_DIR`, `SKIP_TRAINING`, `SKIP_STEPS`).
-
-For a step-by-step private-cluster validation workflow, see:
-
-- `docs/user-guide/slurm-cluster-smoke-test-runbook.md`
-- `docs/user-guide/slurm-cluster-smoke-test-checklist.md`
 
 ## Notes on legacy examples
 

@@ -26,7 +26,6 @@ nav:
         - Visualization Guide: user-guide/modeling/visualization-guide.md
       - Benchmarking:
         - Model Benchmarking: user-guide/benchmarking/model-benchmarking.md
-        - WATGPU Benchmarking: user-guide/benchmarking/watgpu-benchmark.md
   - API Reference:
       - API Reference: api-reference/api-reference.md
       - Data:
