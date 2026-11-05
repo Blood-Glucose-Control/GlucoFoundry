@@ -19,7 +19,6 @@ repos:
     rev: v0.16.4
     hooks:
       # PR-R3 temporary policy: keep Ruff scoped to Python sources, excluding notebooks.
-      # Revisit via project_tracking task `notebook-ruff-policy-restore` (P4).
       # `private/` is gitignored scratch/competition tooling; when it is force-added
       # for backup it must not be held to repo lint standards (it never ships).
       - id: ruff

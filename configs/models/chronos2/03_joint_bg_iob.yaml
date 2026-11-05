@@ -9,8 +9,8 @@
 # measure the effect of joint training vs past-only covariate context.
 #
 # Usage:
-#   sbatch scripts/training/slurm/chronos2_finetune.sh \
-#     MODEL_CONFIG=configs/models/chronos2/03_joint_bg_iob.yaml
+#   MODEL_CONFIG=configs/models/chronos2/03_joint_bg_iob.yaml \
+#     bash scripts/training/sweeps/run_sweep_train.sh
 # =============================================================================
 
 model_path: "autogluon/chronos-2"

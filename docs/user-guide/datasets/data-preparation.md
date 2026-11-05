@@ -176,49 +176,20 @@ Implement a data cleaner that performs the following steps in order:
          ```python
          data_transforms.create_iob_and_ins_availability_cols(df)
          ```
-#### 2.3 Batch Processing Script
-Write a shell script for WATGPU:
-```
-```bash
-scripts/watgpu_slurm/data_processing_scripts/{datasets}_data_processing.sh
-```
-```
-Make sure the partition you're asking for isn't going to request too many resources.
-Check [SLURM documentation ](https://slurm.schedmd.com/pdfs/summary.pdf) for more details.
-e.g., `sinfo`, `squeue`, `scontrol show node watgpu608` etc.
+#### 2.3 Running the loader
 
-Script template:
-```
-#!/bin/bash
+Invoke the loader to process and cache a dataset (run on whatever compute you
+have — local or a cluster; GlucoFoundry does not prescribe a scheduler):
 
-#SBATCH --job-name="{dataset}_data_processing"
-#SBATCH --time=10:00:00
-#SBATCH --cpus-per-task=30
-#SBATCH --mem-per-cpu=1GB
-#SBATCH --partition=HI
-#SBATCH -o results/runs/{dataset}_data_processing/slurm-%j.out
-#SBATCH -e results/runs/{dataset}_data_processing/slurm-%j.err
-#SBATCH --mail-user={your_email@domain.com}
-#SBATCH --mail-type=ALL
-
-# Activate the virtual environment
-source $HOME/nocturnal/.noctprob-venv/bin/activate
-
-
-# Inline Python code to process the aleppo data (not the best practice but the task is simple enough)
-echo "Starting {dataset} data processing"
-python -c "
+```python
 from src.data.diabetes_datasets.data_loader import get_loader
+
 loader = get_loader(
-    data_source_name='{dataset}',
+    data_source_name="{dataset}",
     use_cached=False,
     parallel=True,
     max_workers=30,
 )
-"
-echo "{dataset} data processing completed"
-
-## Run sbatch {dataset}_data_processing.sh
 ```
 
 ### 3. Documentation

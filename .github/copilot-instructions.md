@@ -70,8 +70,7 @@ When touching model-family code, schema adapters, or workflow model wiring, foll
   references to internal planning artifacts.
 - Keep policy text location-specific:
   - stable usage/contract guidance -> `docs/`
-  - execution sequencing/status/temporary rollout notes -> `agent_notes/` and
-    `project_tracking.csv`
+  - execution sequencing/status/temporary rollout notes -> `agent_notes/`
 - When touching `docs/contributing.md`, also fix any adjacent obvious
   inaccuracies discovered in the same section (for example version minimums or
   commands that no longer match CI).
