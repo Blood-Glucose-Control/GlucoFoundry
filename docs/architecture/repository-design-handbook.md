@@ -65,8 +65,9 @@ composed approach from reputable sources:
 
 - Experiments combine data snapshot(s), model configuration(s), and evaluation
   definition(s) to answer a specific research question.
-- MLflow is the target experiment-tracking model; manual workflows should match
-  the same run/metadata shape where practical.
+- The canonical run manifest (see §12) is the experiment-tracking contract;
+  workflows should emit the same run/metadata shape. An external tracking
+  backend can be layered on later without changing that contract.
 
 ### 3.6 Visualization
 
@@ -195,8 +196,9 @@ Minimum bar for script and workflow changes:
 2. Use **Python-first orchestration** for experiment/sweep control flow, with
    optional thin shell wrappers for environment activation and cluster-scheduler
    submission.
-3. Adopt a lightweight **pre-MLflow canonical run manifest** now, then map it
-   1:1 into MLflow tags/params/metrics/artifacts later.
+3. Adopt a lightweight **canonical run manifest** (tool-agnostic JSON) as the
+   tracking contract; it can be mapped into an external experiment-tracking
+   backend later if one is adopted.
 
 ### 11.2 Remaining open items
 
@@ -206,7 +208,7 @@ Minimum bar for script and workflow changes:
 2. Continue extending the initial `src/workflows/forecasting/` placement pattern
    to additional shared pipeline components during transition.
 
-## 12) Canonical experiment metadata schema (pre-MLflow decision)
+## 12) Canonical experiment metadata schema
 
 Every experiment run should persist a machine-readable run manifest (JSON)
 containing:
