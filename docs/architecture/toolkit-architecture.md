@@ -29,7 +29,7 @@ The hard rule that makes the toolkit modular:
 > **No module under `src/` imports from `experiments/`.** The dependency
 > direction is one-way: experiment → core.
 
-The core (data loaders/schemas, the model-adapter layer, the Optuna/MLflow sweep
+The core (data loaders/schemas, the model-adapter layer, the Optuna sweep
 framework, evaluation metrics, and the forecasting/runtime workflows) knows
 nothing about any specific experiment. It resolves experiment-specific behavior
 **by name** through the experiment registry.

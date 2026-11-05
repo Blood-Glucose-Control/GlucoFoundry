@@ -83,19 +83,11 @@ This project is committed to providing a welcoming and inclusive environment for
    ```bash
    # Add any necessary environment variables
    TTM_DEBUG=false
-   MLFLOW_TRACKING_URI=./mlflow_experiments
    ```
 
 2. **Set up Pre-commit Hooks**
    ```bash
    pre-commit install
-   ```
-
-3. **Configure MLflow** (for experiment tracking)
-   ```bash
-   # Start MLflow server locally
-   cd mlflow_experiments
-   mlflow server --host 127.0.0.1 --port 8080
    ```
 
 ### IDE Configuration
