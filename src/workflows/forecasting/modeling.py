@@ -16,7 +16,6 @@ from ...config.schemas import (
 
 logger = logging.getLogger(__name__)
 
-SUPPORTED_MODELS: dict[str, Any] = {}
 ZERO_SHOT_INFERENCE_MODEL_TYPES = {
     "sundial",
     "ttm",
@@ -27,16 +26,6 @@ ZERO_SHOT_INFERENCE_MODEL_TYPES = {
     "toto",
     "moirai",
 }
-
-
-def register_model(model_type: str):
-    """Decorator to register a model type in the factory registry."""
-
-    def decorator(cls):
-        SUPPORTED_MODELS[model_type] = cls
-        return cls
-
-    return decorator
 
 
 @dataclass
