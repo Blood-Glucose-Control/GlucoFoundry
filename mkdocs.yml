@@ -1,4 +1,4 @@
-site_name: Probabilistic Forecasting of Nocturnal Hypoglycemia
+site_name: GlucoFoundry
 theme:
   name: material
   features:
@@ -9,6 +9,7 @@ theme:
 nav:
   - Home: index.md
   - Architecture:
+      - Toolkit Architecture: architecture/toolkit-architecture.md
       - Repository Design Handbook: architecture/repository-design-handbook.md
       - Workflow Config Schemas: architecture/workflow-configs-schema-guide.md
       - Config Schema Artifacts: architecture/config-schema-artifacts.md

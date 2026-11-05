@@ -9,7 +9,7 @@ calls :func:`register_experiment` with an :class:`ExperimentSpec`.
 
 The core never imports experiment modules directly; it resolves them by name
 through this registry. An experiment can therefore be dropped simply by deleting
-its directory, with no edits to core code (see ``docs/design/toolkit-charter.md``
+its directory, with no edits to core code (see ``docs/architecture/toolkit-architecture.md``
 §3.2–3.3).
 
 This module is additive scaffolding: it introduces the registry and discovery

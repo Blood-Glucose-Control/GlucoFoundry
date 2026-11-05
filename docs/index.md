@@ -1,73 +1,51 @@
-# Welcome to Probabilistic Forecasting of Hypoglycemia Project
+# GlucoFoundry
 
-This project focuses on predicting the probability of nocturnal hypoglycemia events in individuals with diabetes. Using machine learning approaches, we aim to provide early warnings for these potentially dangerous low blood glucose events that occur during sleep.
+**Glucose Time-Series Foundation Models — a task-general, reusable research toolkit.**
 
-Documentation is currently under construction.
+GlucoFoundry is the canonical upstream for a family of glucose time-series
+research projects. It provides the reusable machinery — data loaders and schemas,
+a model-adapter layer over many time-series foundation models, an Optuna/MLflow
+sweep framework, evaluation metrics, and workflow orchestration — while each
+experiment lives as a self-contained, **droppable recipe**.
 
-## Project layout
+Fork GlucoFoundry to start a new experiment; contribute genuinely reusable
+improvements back upstream. The toolkit ships **code**, not experiment artifacts.
 
-    mkdocs.yml                  # The configuration file for this documentation.
-    docs/                       # All subdirectories and files for the documentation site content.
-        index.md                    # Makes this page
-        requirements.txt            # mkdocs requirements file, not PFNH requirements.
-        ...
-    demo/                       # Directory containing for producing the github pages report of our work.
-    images/                     # Images are used in READMEs, HowTos, Documentation, etc.
-    models/                     # Storage for trained models.
-        {datetime_model-desc}/      # Format for a trained model dir.
-            configs/                # Config file to reproduce the trained model
-            model/                  # Model serialization file storage. Loadable.
-    results/
-        figures/
+## Layout
 
-    scripts/                    # Experiment orchestration, analysis, and visualization utilities.
-        experiments/                # Primary experiment runners.
-        analysis/                   # Result aggregation/report scripts.
-        visualization/              # Plotting and figure generation scripts.
-        training/                   # Cluster/local launcher wrappers.
-    src/
-        data/                       # Data processing, downloading, and loading code
-            carb_model/
-            gluroo/
-            insulin_model/
-            kaggle_brisT1D/
-            simglucose/
-        eval/                       # Evaluation metrics and reporting
-        tuning/                     # Hyperparameter tuning utilities
-            configs/
-        utils/                      # Utility functions and helper code
-    tests/                      # Tests for functionality of .py files found in src/
-    .gitignore                  # Files that we do not want tracked on github.
-    .pre-commit-config.yaml     # Pre-commit should be run and pass all checks before commiting.
-    .readthedocs.yaml           # Configuration file for this documentation.
-    README.md                   # README.md for a repo's landing page.
-    requirements.txt            # Requirements file to run all code on this repo.
-    setup.py                    # For installing this repository locally.
+```
+src/            core (experiment-agnostic): data, models, workflows, evaluation
+experiments/    droppable experiment recipes (e.g. experiments/nocturnal/)
+configs/        config templates (data, models, evaluation)
+scripts/        canonical CLI/sweep entry points
+tests/          core + recipe tests
+results/        run output — gitignored (populated locally)
+trained_models/ model weights — gitignored (populated locally)
+```
 
-## Installation
+## Getting started
 
-[Go to Installation Guide](user-guide/installation.md)
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
+pytest --ignore=tests/models
+```
 
-## Usage
-
-[See Usage Instructions](user-guide/usage.md#basic-usage)
+Model-family tests use dedicated environments — see the
+[Contributing guide](https://github.com/Blood-Glucose-Control/GlucoFoundry/blob/main/CONTRIBUTING.md)
+and the `Makefile` (`make test-<family>`).
 
 ## Architecture
 
-[Repository Design Handbook](architecture/repository-design-handbook.md)
+- [Toolkit Architecture](architecture/toolkit-architecture.md) — core, droppable
+  recipes, and the experiment registry
+- [Repository Design Handbook](architecture/repository-design-handbook.md)
+- [Workflow Config Schemas](architecture/workflow-configs-schema-guide.md)
+- [Config Schema Artifacts](architecture/config-schema-artifacts.md)
+- [Model Implementation Quality Checklist](architecture/model-implementation-quality-checklist.md)
 
-[Workflow Config Schemas](architecture/workflow-configs-schema-guide.md)
+## Documentation
 
-[Config Schema Artifacts](architecture/config-schema-artifacts.md)
-
-[Model Implementation Quality Checklist](architecture/model-implementation-quality-checklist.md)
-
-## MkDocs
-This documentation is made with [mkdocs.org](https://www.mkdocs.org).
-
-### Commands
-
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+This site is built with [mkdocs.org](https://www.mkdocs.org) using the Material
+theme (`mkdocs serve` to preview locally, `mkdocs build` to build).
