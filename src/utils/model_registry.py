@@ -338,31 +338,6 @@ class ModelRegistry:
         return df
 
 
-def create_registry_entry_from_run_info(run_info_file):
-    """Helper function to create registry entry from run_info.txt file"""
-    registry = ModelRegistry()
-
-    # Parse run_info.txt file
-    # run_info = {}
-    slurm_info = {}
-    hardware_info = {}
-
-    # with open(run_info_file, "r") as f:
-    # content = f.read()
-
-    # Extract information using regex or simple parsing
-    # This would need to be implemented based on the actual format of run_info.txt
-
-    # Register the run
-    run_id = registry.register_run_start(
-        run_dir=Path(run_info_file).parent,
-        slurm_info=slurm_info,
-        hardware_info=hardware_info,
-    )
-
-    return run_id
-
-
 if __name__ == "__main__":
     # Example usage
     registry = ModelRegistry()
