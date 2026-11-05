@@ -178,7 +178,7 @@ Visualization script purposes, duplication assessment, and curated example
 outputs are documented in
 [`docs/user-guide/modeling/visualization-guide.md`](/data/home/cjrisi/nocturnal-hypo-gly-prob-forecast/docs/user-guide/modeling/visualization-guide.md).
 
-## Canonical run manifest (pre-MLflow v1)
+## Canonical run manifest (v1)
 
 The maintained forecasting training workflow and nocturnal evaluation workflow now
 emit a canonical run manifest at:

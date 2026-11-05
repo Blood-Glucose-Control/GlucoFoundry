@@ -19,24 +19,20 @@ dependencies = [
 
     # Data Science & ML
     "datasets>=5.0.0",
-    "ipynb",
     "ipython",
     "ipywidgets",
     "jupyterlab",
-    "kaggle",
-    "loguru",
     "notebook",
     "numba",
     "numpy>=2.0,<3",
-    "orjson",
+    "openpyxl",
+    "optuna",
     "pandas>=2.3,<4",
     "pyarrow>=14.0.0",
     "pydantic",
-    "pyreadstat",
-    "python-dotenv",
     "PyWavelets",
+    "pyyaml",
     "scikit-learn>=1.4",
-    "skchange",
     "sqlalchemy",
     "sktime",
     "tabulate",
@@ -51,9 +47,6 @@ dependencies = [
     # Documentation
     "mkdocs",
     "mkdocs-material",
-
-    # Utilities
-    "typer",
 ]
 
 [project.optional-dependencies]
