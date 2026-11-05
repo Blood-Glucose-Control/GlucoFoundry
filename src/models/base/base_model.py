@@ -728,18 +728,12 @@ class BaseTimeSeriesFoundationModel(ABC):
             "config": self.config.to_dict(),
         }
 
-        # Add git information if available
-        try:
-            import git
+        # Add git provenance if available (subprocess-based, no extra deps).
+        from ...utils import get_git_branch, get_git_commit_hash, is_git_dirty
 
-            repo = git.Repo(search_parent_directories=True)
-            metadata["git_commit"] = repo.head.commit.hexsha
-            metadata["git_branch"] = repo.active_branch.name
-            metadata["git_dirty"] = repo.is_dirty()
-        except (ImportError, Exception):
-            # Git info not critical - continue without it
-            # This catches ImportError (GitPython not installed) and any git-related errors
-            pass
+        metadata["git_commit"] = get_git_commit_hash()
+        metadata["git_branch"] = get_git_branch()
+        metadata["git_dirty"] = is_git_dirty()
 
         paths = _shared_save_checkpoint_bundle(
             output_dir,

@@ -19,6 +19,14 @@ These instructions apply to Copilot work in this repository.
   - what changed,
   - validation commands and results,
   - any intentionally deferred follow-ups.
+- Creating the PR: the VS Code `create_pull_request` tool binds to the active
+  workspace repository, so it can fail in resumed sessions or when the target
+  clone is not the active workspace (symptom: GraphQL `Head sha can't be blank`
+  / `No commits between ...` even though the branch is pushed). Fallback: create
+  the PR via the GitHub REST API using the already-stored git credential —
+  `POST https://api.github.com/repos/<owner>/<repo>/pulls` with header
+  `Authorization: token <t>`, where `<t>` is read from `git credential fill`
+  (host `github.com`). Never print, log, or commit the token.
 
 ## Python environment policy
 
