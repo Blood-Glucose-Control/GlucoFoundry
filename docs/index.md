@@ -4,7 +4,7 @@
 
 GlucoFoundry is the canonical upstream for a family of glucose time-series
 research projects. It provides the reusable machinery — data loaders and schemas,
-a model-adapter layer over many time-series foundation models, an Optuna/MLflow
+a model-adapter layer over many time-series foundation models, an Optuna
 sweep framework, evaluation metrics, and workflow orchestration — while each
 experiment lives as a self-contained, **droppable recipe**.
 
