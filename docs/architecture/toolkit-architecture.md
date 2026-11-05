@@ -55,6 +55,7 @@ experiments/<name>/
     summarize.py  # experiment result summarizer
     run_evaluation.py  # CLI entry point
     episodes.py   # experiment-specific episode construction (if any)
+    docs/         # experiment-specific reproducible documentation (optional)
     README.md     # how to reproduce this experiment
 ```
 
@@ -62,6 +63,19 @@ The shipped example is `experiments/nocturnal/` — overnight (midnight-anchored
 hypoglycemia forecasting. These recipes are **example pipelines**: they are not
 run inside the toolkit; a user runs them to generate their own artifacts in
 `results/`.
+
+### Recipe documentation vs. experiment artifacts
+
+Experiment-specific **documentation** lives inside the recipe
+(`experiments/<name>/docs/` or `README.md`): clean, reproducible how-to guides
+and explanatory notebooks **without embedded run outputs**. This ships with the
+toolkit fork.
+
+Experiment **artifacts** — notebooks with embedded result outputs, EDA dumps,
+figures from specific runs — are run output, not recipe code. They are **not
+committed** to the toolkit; they belong in the experiment fork's record /
+`results/`. (The toolkit does not ship a top-level `docs-internal/`; per-experiment
+docs live in the recipe instead.)
 
 ## The experiment registry
 
