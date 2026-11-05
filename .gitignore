@@ -66,7 +66,6 @@ scripts/notebooks/**/*.csv
 trained_models/*
 !trained_models/README.md
 # Ignore sensative Groo files
-docs-internal/notebooks/0.04-cjr-gluroo_full_data_eda.ipynb
 
 
 models/*
