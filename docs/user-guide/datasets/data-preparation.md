@@ -34,11 +34,8 @@ Our benchmark pipeline was originally built on the Kaggle Bristol Type 1 Diabete
       - Contains additional features like protein content and glucose trends
       - Includes meal announcements and intervention data
 
-3. simglucose (Coming Soon)
-      - Planned integration from benchmark repo as a package
-      - Will provide simulated data for testing and validation
-4. Lynch 2022 Dataset
-5. Aleppo Dataset
+3. Lynch 2022 Dataset
+4. Aleppo Dataset
 
 ## Data Format Standardization
 

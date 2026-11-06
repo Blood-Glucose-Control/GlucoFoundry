@@ -23,17 +23,6 @@ GLUROO_CONFIG: DatasetConfig = DatasetConfig(
     url="https://gluroo.com",  # Placeholder URL for local dataset
 )
 
-# Configuration for the SimGlucose dataset
-# TODO: To complete
-SIMGLUCOSE_CONFIG: DatasetConfig = DatasetConfig(
-    source=DatasetSourceType.LOCAL,
-    description="SimGlucose synthetic diabetes dataset",
-    citation="SimGlucose Dataset",
-    cache_path="simglucose",
-    required_files=[],
-    url="https://github.com/jxx123/simglucose",
-)
-
 
 # Aleppo dataset
 ALEPPO_2017_CONFIG: DatasetConfig = DatasetConfig(
@@ -89,7 +78,6 @@ METABONET_CONFIG: DatasetConfig = DatasetConfig(
 # Mapping of dataset names to their configurations
 DATASET_CONFIGS = {
     DatasetSourceType.GLUROO.value: GLUROO_CONFIG,
-    DatasetSourceType.SIMGLUCOSE.value: SIMGLUCOSE_CONFIG,
     DatasetSourceType.ALEPPO_2017.value: ALEPPO_2017_CONFIG,
     DatasetSourceType.LYNCH_2022.value: LYNCH_2022_CONFIG,
     DatasetSourceType.TAMBORLANE_2008.value: TAMBORLANE_2008_CONFIG,

@@ -13,7 +13,6 @@ class DatasetSourceType(str, Enum):
     ALEPPO_2017 = "aleppo_2017"
     LYNCH_2022 = "lynch_2022"
     BROWN_2019 = "brown_2019"
-    SIMGLUCOSE = "simglucose"
     TAMBORLANE_2008 = "tamborlane_2008"
     METABONET = "metabonet"
 
