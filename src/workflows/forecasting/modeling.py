@@ -292,7 +292,7 @@ class ModelFactory:
             except ImportError as e:
                 raise ImportError(
                     "Chronos-2 model not available. Install with: "
-                    f"pip install 'nocturnal-hypo-gly-prob-forecast[chronos2]': {e}"
+                    f"pip install 'glucofoundry[chronos2]': {e}"
                 ) from e
             extra = dict(config.extra_config) if config.extra_config else {}
             runtime_config = build_model_runtime_config(
@@ -430,7 +430,7 @@ class ModelFactory:
             except ImportError as e:
                 raise ImportError(
                     "TiDE model not available. Install with: "
-                    f"pip install 'nocturnal-hypo-gly-prob-forecast[tide]': {e}"
+                    f"pip install 'glucofoundry[tide]': {e}"
                 ) from e
             extra = dict(config.extra_config) if config.extra_config else {}
             has_training_mode_override = "training_mode" in extra
@@ -485,7 +485,7 @@ class ModelFactory:
             except ImportError as e:
                 raise ImportError(
                     "Moirai model not available. Install with: "
-                    f"pip install 'nocturnal-hypo-gly-prob-forecast[moirai]'\n{e}"
+                    f"pip install 'glucofoundry[moirai]'\n{e}"
                 ) from e
             moirai_kwargs = dict(config.extra_config) if config.extra_config else {}
             if "lr" in moirai_kwargs and "learning_rate" not in moirai_kwargs:

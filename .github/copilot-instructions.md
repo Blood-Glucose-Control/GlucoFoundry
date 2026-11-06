@@ -1,4 +1,4 @@
-# Copilot instructions for nocturnal-hypo-gly-prob-forecast
+# Copilot instructions for GlucoFoundry
 
 These instructions apply to Copilot work in this repository.
 
