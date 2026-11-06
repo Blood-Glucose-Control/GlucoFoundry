@@ -1,8 +1,8 @@
 # GlucoFoundry Four-Repo Roadmap
 
-**Date:** 2026-10-21
-**Status:** Initial plan (ratified direction; execution not yet started)
-**Supersedes scope framing of:** `00_P0-P3_MASTER_REORG_PLAN.md` (that plan targeted
+**Date:** 2026-10-21 (last updated 2026-11-05)
+**Status:** In execution — Phase A complete; Phase B largely complete (see **Progress** below); Phases C/D not started.
+**Supersedes scope framing of:** `archive_nocturnal-reorg/00_P0-P3_MASTER_REORG_PLAN.md` (that plan targeted
 cleaning a single repo; this roadmap reframes the cleanup as *toolkit extraction*).
 
 ---
@@ -71,13 +71,13 @@ that need a land-or-exclude decision before the merge.
 - `b4-repro-recipes` - Reproduction recipes for experiments #1 and #2 (point at record forks for artifacts).
 - `b5-toolkit-validate` - Fresh clone -> install -> run one smoke experiment end-to-end.
 
-### Phase B2 - Carve experiment forks
+### Phase C - Carve experiment forks
 
 - `c1-nocturnal-as-fork` - Re-express nocturnal as GlucoFoundry core + nocturnal experiment layer.
 - `c2-metabonet-carveout` - Carve Metabonet into its own GlucoFoundry fork.
 - `c3-governance-contract` - Encode core->toolkit / artifacts->fork contract in contributor docs + lightweight CI check.
 
-### Phase C - New Meal-Image project (#3)
+### Phase D - New Meal-Image project (#3)
 
 - `d1-fork-meal-image` - Fork GlucoFoundry into the meal-image forecast repo.
 - `d2-meal-image-domain-gap` - Domain-gap analysis: vision encoder + fusion, image+nutrition+timestamp schema, ~3h postprandial horizon, new metrics; separate reused-harness vs net-new.
@@ -88,8 +88,8 @@ that need a land-or-exclude decision before the merge.
 
 ## Critical path and open decisions
 
-- Critical path: **A -> B -> (B2 parallel with C)**. The only immediately ready
-  task is `a1-land-feature-commits`, which gates the whole merge.
+- Critical path: **A -> B -> (C parallel with D)**. Phases A and B are
+  essentially done; the next ready work is Phase C (`c1-nocturnal-as-fork`).
 - Open decisions to confirm during execution:
   1. Land vs exclude the 4 `feat/moirai2-moe-lora-sweep` commits.
   2. (DECIDED) Private -> public merge uses a history-preserving merge commit,
@@ -98,8 +98,29 @@ that need a land-or-exclude decision before the merge.
 
 ---
 
+## Progress (as of 2026-11-05)
+
+- **Phase A — complete.** Private -> public nocturnal merge landed (stranded
+  commits via private PR; curated path-scoped promotion to public). GlucoFoundry
+  repo created carrying full history.
+- **Phase B — largely complete.** Charter (#1/#2), core decouple + auto-discovery
+  (#3), `episode_builders` split (#4), droppable top-level recipes (#13), scaffold
+  artifact dirs (#5), public toolkit docs (#7), Apache-2.0 relicense (#9), repo
+  identity (#10), dependency policy (#11). Additional cleanup beyond the original
+  scope: stripped MLflow/demo/images/docs-internal/SLURM/legacy cruft (#38/#41/#42),
+  dependency + doc **vaporware audit** (#40), **dead-code cleanup** (#44/#49),
+  `.venv` + skill rebrand (#31).
+  - Remaining in B: `b4-repro-recipes` (partial — the nocturnal recipe exists;
+    moving experiment-tuned sweep configs tracked in #6/#36) and
+    `b5-toolkit-validate` fresh-clone validation (#8). Open follow-ups: experiment
+    tracking (#45), moirai2 registration (#46), repo-path rebrand (#48),
+    lockfile (#30).
+- **Phase C — not started** (fork carve-out, #32).
+- **Phase D — not started** (meal-image project, #33).
+
 ## Tracking
 
-- Task rows mirrored in `project_tracking.csv` (ids `glucofoundry-roadmap`,
-  `name-lock-glucofoundry`, `a1..a4`, `b1..b5`, `c1..c3`, `d1..d4`).
-- Live structured status is also seeded in the session task DB during planning.
+- Phase labels and task-id prefixes are aligned: **A->a, B->b, C->c, D->d**.
+- `project_tracking.csv` was **removed** from GlucoFoundry (#42) as old-project
+  cruft — it is no longer the tracking source. Live tracking now lives in the
+  GitHub issues (umbrella **#12** for Phase B) plus the ephemeral session task DB.
