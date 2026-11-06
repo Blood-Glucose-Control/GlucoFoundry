@@ -75,6 +75,17 @@ METABONET_CONFIG: DatasetConfig = DatasetConfig(
     cache_path="metabonet",
 )
 
+# Configuration for the CGMacros dataset
+# nocturnal-hypo-gly-prob-forecast/cache/data/cgmacros/raw/CGMacros
+CGMACROS_CONFIG: DatasetConfig = DatasetConfig(
+    source=DatasetSourceType.CGMACROS,
+    description="CGMacros: CGM + Fitbit + macronutrient-annotated meals, 45 adults (normal/prediabetes/T2D)",
+    citation="CGMacros v1.0.0 (PhysioNet), doi:10.13026/3z8q-x658",
+    required_files=["CGMacros"],
+    url="https://physionet.org/content/cgmacros/1.0.0/",
+    cache_path="cgmacros",
+)
+
 # Mapping of dataset names to their configurations
 DATASET_CONFIGS = {
     DatasetSourceType.GLUROO.value: GLUROO_CONFIG,
@@ -83,6 +94,7 @@ DATASET_CONFIGS = {
     DatasetSourceType.TAMBORLANE_2008.value: TAMBORLANE_2008_CONFIG,
     DatasetSourceType.BROWN_2019.value: BROWN_2019_CONFIG,
     DatasetSourceType.METABONET.value: METABONET_CONFIG,
+    DatasetSourceType.CGMACROS.value: CGMACROS_CONFIG,
 }
 
 

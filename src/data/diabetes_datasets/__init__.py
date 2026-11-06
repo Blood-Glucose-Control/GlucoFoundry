@@ -5,6 +5,7 @@
 
 from .aleppo_2017.aleppo_2017 import Aleppo2017DataLoader
 from .brown_2019.brown_2019 import Brown2019DataLoader
+from .cgmacros.cgmacros import CGMacrosDataLoader
 from .gluroo.gluroo import GlurooDataLoader
 from .lynch_2022.lynch_2022 import (
     Lynch2022DataLoader,
@@ -22,4 +23,5 @@ __all__ = [
     "GlurooDataLoader",
     "Tamborlane2008DataLoader",
     "MetabonetDataLoader",
+    "CGMacrosDataLoader",
 ]

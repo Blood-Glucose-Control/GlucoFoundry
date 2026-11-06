@@ -34,6 +34,7 @@ from typing import Literal, Union, overload
 from . import (
     Aleppo2017DataLoader,
     Brown2019DataLoader,
+    CGMacrosDataLoader,
     GlurooDataLoader,
     Lynch2022DataLoader,
     MetabonetDataLoader,
@@ -103,6 +104,16 @@ def get_loader(
 ) -> MetabonetDataLoader: ...
 
 
+@overload
+def get_loader(
+    data_source_name: Literal["cgmacros"],
+    keep_columns: list[str] | None = None,
+    use_cached: bool = False,
+    parallel: bool = True,
+    max_workers: int = 14,
+) -> CGMacrosDataLoader: ...
+
+
 def get_loader(
     data_source_name: str = "aleppo_2017",
     keep_columns: list[str] | None = None,
@@ -117,6 +128,7 @@ def get_loader(
     Brown2019DataLoader,
     Tamborlane2008DataLoader,
     MetabonetDataLoader,
+    CGMacrosDataLoader,
 ]:
     """
     Factory function to create and return the appropriate data loader instance.
@@ -127,7 +139,7 @@ def get_loader(
 
     Parameters:
         data_source_name (str): The name of the data source to load.
-                               Currently supports 'aleppo_2017', 'lynch_2022', 'brown_2019', 'tamborlane_2008', 'metabonet', and 'gluroo'.
+                               Currently supports 'aleppo_2017', 'lynch_2022', 'brown_2019', 'tamborlane_2008', 'metabonet', 'cgmacros', and 'gluroo'.
                                Default: 'aleppo_2017'
         keep_columns (list[str] | None): Specific columns to retain in the dataset.
                                        If None, all columns are loaded. Default: None
@@ -183,6 +195,13 @@ def get_loader(
             parallel=parallel,
             max_workers=max_workers,
             load_all=load_all,
+        )
+    elif data_source_name == "cgmacros":
+        return CGMacrosDataLoader(
+            keep_columns=keep_columns,
+            use_cached=use_cached,
+            parallel=parallel,
+            max_workers=max_workers,
         )
     else:
         raise ValueError(f"Invalid dataset_name: {data_source_name}.")

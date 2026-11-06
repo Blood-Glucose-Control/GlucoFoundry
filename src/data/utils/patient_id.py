@@ -21,6 +21,7 @@ DATASET_PREFIXES: dict[str, str] = {
     "brown_2019": "bro",
     "tamborlane_2008": "tam",
     "lynch_2022": "lyn",
+    "cgmacros": "cgm",
     "gluroo": "glu",  # Reserved for future use
 }
 
