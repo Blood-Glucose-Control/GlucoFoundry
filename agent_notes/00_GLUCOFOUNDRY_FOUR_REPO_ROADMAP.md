@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-21 (last updated 2026-11-05)
 **Status:** In execution — Phase A complete; Phase B largely complete (see **Progress** below); Phases C/D not started.
-**Supersedes scope framing of:** `00_P0-P3_MASTER_REORG_PLAN.md` (that plan targeted
+**Supersedes scope framing of:** `archive_nocturnal-reorg/00_P0-P3_MASTER_REORG_PLAN.md` (that plan targeted
 cleaning a single repo; this roadmap reframes the cleanup as *toolkit extraction*).
 
 ---
