@@ -382,7 +382,6 @@ class TestDatasetConfigs:
         """Test listing available datasets."""
         datasets = list_available_datasets()
         assert DatasetSourceType.GLUROO.value in datasets
-        assert DatasetSourceType.SIMGLUCOSE.value in datasets
         assert DatasetSourceType.ALEPPO_2017.value in datasets
         assert DatasetSourceType.LYNCH_2022.value in datasets
         assert DatasetSourceType.TAMBORLANE_2008.value in datasets

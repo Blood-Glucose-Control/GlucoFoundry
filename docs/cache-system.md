@@ -31,15 +31,11 @@ cache/
     │           │   └── row_002.csv
     │           └── patient_002/
     │               └── row_003.csv
-    ├── gluroo/
-    │   ├── raw/
-    │   │   └── TBD
-    │   └── processed/
-    │       └── TBD
-    │
-    └── simglucose/
+    └── gluroo/
         ├── raw/
+        │   └── TBD
         └── processed/
+            └── TBD
 ```
 
 ## Usage
