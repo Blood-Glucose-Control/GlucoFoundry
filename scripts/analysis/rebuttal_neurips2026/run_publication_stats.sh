@@ -3,7 +3,7 @@
 # Launch in tmux: tmux new-session -d -s pubstats 'bash .../run_publication_stats.sh'
 set -uo pipefail
 cd "$(git rev-parse --show-toplevel 2>/dev/null || echo /data/home/cjrisi/nocturnal)"
-source .noctprob-venv/bin/activate 2>/dev/null
+source .venv/bin/activate 2>/dev/null
 LOG=scripts/analysis/rebuttal_neurips2026/outputs/pubstats
 mkdir -p "$LOG"
 NB=10000

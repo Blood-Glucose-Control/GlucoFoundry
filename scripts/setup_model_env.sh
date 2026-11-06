@@ -58,8 +58,8 @@ esac
 # Find the required Python version
 if command -v "python${PYTHON_VERSION}" &>/dev/null; then
     PYTHON_CMD="python${PYTHON_VERSION}"
-elif [ "${PYTHON_VERSION}" = "3.12" ] && [ -x "${REPO_ROOT}/.noctprob-venv/bin/python" ]; then
-    PYTHON_CMD="${REPO_ROOT}/.noctprob-venv/bin/python"
+elif [ "${PYTHON_VERSION}" = "3.12" ] && [ -x "${REPO_ROOT}/.venv/bin/python" ]; then
+    PYTHON_CMD="${REPO_ROOT}/.venv/bin/python"
 else
     echo "Error: Python ${PYTHON_VERSION} not found (required for ${MODEL} / ${DEP_GROUP})."
     echo "Install python${PYTHON_VERSION} or use: brew install python@${PYTHON_VERSION}"

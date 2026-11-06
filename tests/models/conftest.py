@@ -3,7 +3,7 @@
 Tests under tests/models/ require model-specific virtual environments because
 different models depend on the same packages with conflicting version requirements.
 
-If you run pytest from the main venv (.noctprob-venv) these tests will be
+If you run pytest from the main venv (.venv) these tests will be
 collected but skipped with a clear message pointing to the correct venv.
 
 To run model tests use the Makefile targets:

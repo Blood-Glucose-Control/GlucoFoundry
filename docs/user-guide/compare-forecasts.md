@@ -51,8 +51,8 @@ python scripts/visualization/plot_forecast_comparison.py \
 ### Stage 2 — Plot
 
 ```bash
-# Any env (e.g. the base .noctprob-venv)
-source .noctprob-venv/bin/activate
+# Any env (e.g. the base .venv)
+source .venv/bin/activate
 python scripts/visualization/plot_forecast_comparison.py \
     --from-results \
         results/forecast_comparisons/12496a49.json \

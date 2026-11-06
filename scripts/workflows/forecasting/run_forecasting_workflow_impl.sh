@@ -109,11 +109,11 @@ echo "Activating environment..."
 if [ -f ".venvs/${VENV_NAME}/bin/activate" ]; then
     source ".venvs/${VENV_NAME}/bin/activate"
     echo "✓ Activated model-specific environment: .venvs/${VENV_NAME}"
-elif [ -f ".noctprob-venv/bin/activate" ]; then
+elif [ -f ".venv/bin/activate" ]; then
     echo "⚠️  Model-specific env .venvs/${VENV_NAME} not found, using general dev environment"
     echo "   Consider running: source scripts/setup_model_env.sh ${MODEL_TYPE}"
-    source .noctprob-venv/bin/activate
-    echo "✓ Activated .noctprob-venv"
+    source .venv/bin/activate
+    echo "✓ Activated .venv"
 elif [ -f "venv/bin/activate" ]; then
     source venv/bin/activate
     echo "✓ Activated venv"

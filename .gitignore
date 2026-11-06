@@ -173,7 +173,6 @@ celerybeat.pid
 .env
 .venv
 .venvs/
-.noctprob-venv/
 env/
 venv/
 ENV/

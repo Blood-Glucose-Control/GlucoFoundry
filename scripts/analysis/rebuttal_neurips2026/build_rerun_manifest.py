@@ -139,7 +139,7 @@ def _venv(model: str) -> str:
     if model in VENV_OVERRIDE:
         return f".venvs/{VENV_OVERRIDE[model]}"
     p = REPO / ".venvs" / model
-    return f".venvs/{model}" if p.exists() else ".noctprob-venv"
+    return f".venvs/{model}" if p.exists() else ".venv"
 
 
 def _present(

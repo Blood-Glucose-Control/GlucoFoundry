@@ -2,7 +2,7 @@
 
 These tests require the ``timesfm3`` + ``peft`` runtime and a downloadable
 pretrained checkpoint, so they are skipped (via ``importorskip``) in the shared
-``.noctprob-venv``. Run them in ``.venvs/timesfm3`` (see ``make test-timesfm3``).
+``.venv``. Run them in ``.venvs/timesfm3`` (see ``make test-timesfm3``).
 
 The covariate path dispatches through a Triton ``bmm`` override; set
 ``TORCH_DISABLE_NATIVE_JIT=1`` before importing torch on hosts without CUDA/Python

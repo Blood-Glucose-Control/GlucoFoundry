@@ -37,7 +37,7 @@ test-models: test-ttm test-sundial test-timesfm test-autogluon
 # ─────────────────────────────────────────────────────────────────────────────
 
 test:
-	.noctprob-venv/bin/python -m pytest tests/ -v --ignore=tests/models
+	.venv/bin/python -m pytest tests/ -v --ignore=tests/models
 
 ## Run everything: common tests + all model tests
 test-all: test test-models
@@ -47,7 +47,7 @@ test-all: test test-models
 # ─────────────────────────────────────────────────────────────────────────────
 
 lint:
-	.noctprob-venv/bin/python -m ruff check src/ tests/
+	.venv/bin/python -m ruff check src/ tests/
 
 ## Run Aleppo one-epoch regression smoke suite across maintained models.
 ## Optional env:
@@ -59,7 +59,7 @@ smoke-suite-aleppo:
 	@FAIL_FAST_ARG=""; DRY_RUN_ARG=""; \
 	if [ "$${FAIL_FAST:-}" = "true" ]; then FAIL_FAST_ARG="--fail-fast"; fi; \
 	if [ "$${DRY_RUN:-}" = "true" ]; then DRY_RUN_ARG="--dry-run"; fi; \
-	.noctprob-venv/bin/python scripts/workflows/forecasting/run_aleppo_model_regression_smoke_suite.py \
+	.venv/bin/python scripts/workflows/forecasting/run_aleppo_model_regression_smoke_suite.py \
 		--suite-label "$${SUITE_LABEL:-manual_$$(date +%Y%m%d_%H%M%S)}" \
 		$${MODELS:+--models "$$MODELS"} \
 		$$FAIL_FAST_ARG \
@@ -74,7 +74,7 @@ smoke-suite-aleppo:
 ##   ABS_TOL=1e-6
 ##   REPORT_PATH=<path>/comparison_report.json
 smoke-suite-compare:
-	.noctprob-venv/bin/python scripts/workflows/forecasting/compare_regression_smoke_suites.py \
+	.venv/bin/python scripts/workflows/forecasting/compare_regression_smoke_suites.py \
 		--baseline "$$BASELINE" \
 		--candidate "$$CANDIDATE" \
 		$${REL_TOL:+--rel-tol "$$REL_TOL"} \
