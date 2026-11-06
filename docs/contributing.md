@@ -789,7 +789,7 @@ When contributing new models, follow the [Foundation Model Template](./foundatio
 
 ### Adding New Datasets
 
-See [Data Documentation](https://probabilistic-forecasting-of-nocturnal-hypoglycemia.readthedocs.io/en/latest/user-guide/datasets/data-preparation/)
+See [Data Documentation](user-guide/datasets/data-preparation.md)
 
 1. **Add new directory structure. (See here)**
 2. **Create data loader**:
