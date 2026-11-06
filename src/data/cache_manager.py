@@ -119,6 +119,7 @@ class CacheManager:
             DatasetSourceType.LYNCH_2022,
             DatasetSourceType.BROWN_2019,
             DatasetSourceType.METABONET,
+            DatasetSourceType.CGMACROS,
         ):
             self._fetch_manual_download_data(dataset_name, raw_path, dataset_config)
         elif source == DatasetSourceType.LOCAL:
