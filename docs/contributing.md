@@ -53,9 +53,9 @@ This project is committed to providing a welcoming and inclusive environment for
 2. **Set up Environment**
    ```bash
    # Create and activate virtual environment (recommended)
-   python -m venv .noctprob-venv
-   source .noctprob-venv/bin/activate  # Linux/Mac
-   # .noctprob-venv\Scripts\activate  # Windows
+   python -m venv .venv
+   source .venv/bin/activate  # Linux/Mac
+   # .venv\Scripts\activate  # Windows
 
    # Alternative: Using conda (if you prefer)
    conda create -n nocturnal python=3.12
@@ -95,7 +95,7 @@ This project is committed to providing a welcoming and inclusive environment for
 **VS Code (Recommended)**
 - Install Python extension (includes Pylance language server)
 - Install Ruff extension for linting/formatting
-- Configure Python interpreter to your environment (`.noctprob-venv/bin/python`)
+- Configure Python interpreter to your environment (`.venv/bin/python`)
 - Use provided workspace settings (`.vscode/settings.json`)
 - Pylance configuration is provided in `pyrightconfig.json`
 
@@ -108,7 +108,7 @@ single Python environment may not satisfy all model imports at once.
 
 Recommended practice:
 
-1. Use `.noctprob-venv` as your default environment for shared/core work.
+1. Use `.venv` as your default environment for shared/core work.
 2. Switch VS Code's Python interpreter when working in a model family that uses
    its own environment.
 3. Treat pre-commit/CI as the source of truth for cross-family checks.
@@ -125,7 +125,7 @@ Model-family → interpreter mapping template:
 
 ```text
 # Keep this in your local notes (not committed), update paths for your machine.
-default/shared -> /data/home/<you>/nocturnal-hypo-gly-prob-forecast/.noctprob-venv/bin/python
+default/shared -> /data/home/<you>/nocturnal-hypo-gly-prob-forecast/.venv/bin/python
 moirai         -> /data/home/<you>/nocturnal-hypo-gly-prob-forecast/.venvs/moirai/bin/python
 moment         -> /data/home/<you>/nocturnal-hypo-gly-prob-forecast/.venvs/moment/bin/python
 timesfm        -> /data/home/<you>/nocturnal-hypo-gly-prob-forecast/.venvs/timesfm/bin/python
@@ -818,7 +818,7 @@ See [Data Documentation](https://probabilistic-forecasting-of-nocturnal-hypoglyc
 
 **Solution**:
 1. Ensure your Python interpreter is set to the environment for the code you
-   are editing (shared `.noctprob-venv` for core paths, model-specific env for
+   are editing (shared `.venv` for core paths, model-specific env for
    model-specific imports).
 2. Check that `pyrightconfig.json` includes your `src` directory
 3. Restart Python language server: `Ctrl+Shift+P` → "Python: Restart Language Server"
@@ -828,8 +828,8 @@ See [Data Documentation](https://probabilistic-forecasting-of-nocturnal-hypoglyc
 **Problem**: VS Code not finding your virtual environment
 
 **Solution**:
-1. Create the environment: `python -m venv .noctprob-venv`
-2. Activate it: `source .noctprob-venv/bin/activate`
+1. Create the environment: `python -m venv .venv`
+2. Activate it: `source .venv/bin/activate`
 3. Install dependencies: `pip install -r requirements.txt`
 4. Set interpreter in VS Code: `Ctrl+Shift+P` → "Python: Select Interpreter"
 

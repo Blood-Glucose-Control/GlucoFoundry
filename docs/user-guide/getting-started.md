@@ -31,14 +31,14 @@ This ensures that everyone is working with the same tools and that the code you 
 
 3. Create a virtual environment with python 3.11 in your terminal in the projects root directory
 
-    `python3.11 -m venv .noctprob-venv`
+    `python3.12 -m venv .venv`
 
     - **NOTE:** If you're using a different .venv name, please ensure it's added to the .gitignore file and not pushed to our repo.
 4. Activate the venv:
-    **Ubuntu:** `source .noctprob-venv/bin/activate`
-    **Windows:** `.noctprob-venv\Scripts\Activate.ps1`
+    **Ubuntu:** `source .venv/bin/activate`
+    **Windows:** `.venv\Scripts\Activate.ps1`
   - Your terminal should now show the venv being active:
-    - `(.noctprob-venv) cjrisi@scslt520:~/Projects/diabetes/nocturnal-hypo-gly-prob-forecast$ `
+    - `(.venv) cjrisi@scslt520:~/Projects/diabetes/nocturnal-hypo-gly-prob-forecast$ `
 5. Now update your venv with the required packages for our project:
 
     `pip install -r requirements.txt`

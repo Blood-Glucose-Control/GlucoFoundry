@@ -11,8 +11,6 @@
     "**/.*",
     "**/__pycache__",
     "**/.venv",
-    "**/.noctprob-venv",
-    "**/.noctprob-venv.backup-*",
     "**/node_modules",
     "**/.git",
     "**/cache",

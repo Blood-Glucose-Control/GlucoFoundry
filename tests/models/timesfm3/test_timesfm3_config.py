@@ -1,7 +1,7 @@
 """Config construction and default-parity tests for TimesFM 3.0.
 
 These tests only touch the pure-Python config surface and therefore run in the
-shared ``.noctprob-venv`` without the heavy ``timesfm3`` / ``peft`` runtime deps.
+shared ``.venv`` without the heavy ``timesfm3`` / ``peft`` runtime deps.
 """
 
 from src.models.base import TrainingBackend

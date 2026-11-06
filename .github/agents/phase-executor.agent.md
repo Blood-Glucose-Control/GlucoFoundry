@@ -22,7 +22,7 @@ Take a clearly scoped phase/task and carry it from implementation through verifi
 
 ### 2) Environment selection
 
-- Default/shared work: use `.noctprob-venv`.
+- Default/shared work: use `.venv`.
 - Model-family work: use the matching `.venvs/<family>` interpreter when required by that model's dependencies.
 - If a command fails due to dependency isolation, switch to the family-specific environment rather than broadening scope.
 

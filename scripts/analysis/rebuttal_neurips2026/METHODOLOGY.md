@@ -18,7 +18,7 @@ never read for selection).
 
 ```bash
 # from repo root
-source .noctprob-venv/bin/activate            # pandas/numpy/scipy/sklearn/matplotlib/pyarrow/yaml
+source .venv/bin/activate            # pandas/numpy/scipy/sklearn/matplotlib/pyarrow/yaml
 
 # each analysis is a module (note: run as -m so package imports resolve)
 python -m scripts.analysis.rebuttal_neurips2026.a1_significance --n-boot 10000

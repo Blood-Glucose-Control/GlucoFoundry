@@ -31,7 +31,7 @@ These instructions apply to Copilot work in this repository.
 ## Python environment policy
 
 - Use Python 3.12 for shared checks and CI-aligned validation.
-- Default/shared work should use `.noctprob-venv`.
+- Default/shared work should use `.venv`.
 - Model-family work may require `.venvs/<family>` due to dependency conflicts.
 - If imports fail in one environment, switch to the appropriate model-family interpreter before concluding code is broken.
 
@@ -58,7 +58,7 @@ For model integration coverage, use the model-specific make targets in `Makefile
 
 When touching model-family code, schema adapters, or workflow model wiring, follow:
 
-- `.github/skills/noctprob-python-quality-gates/SKILL.md`
+- `.github/skills/glucofoundry-python-quality-gates/SKILL.md`
 - `docs/architecture/model-implementation-quality-checklist.md`
 
 ## Documentation placement
