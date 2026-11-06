@@ -98,7 +98,7 @@ config classes from `src/models/*/config.py`.
 ## JSON schema artifact tie-in
 
 The schema classes documented here are also exported as JSON schema artifacts in
-[`docs/architecture/generated-config-schemas/`](/data/home/cjrisi/nocturnal-hypo-gly-prob-forecast/docs/architecture/generated-config-schemas)
+[`docs/architecture/generated-config-schemas/`](/docs/architecture/generated-config-schemas)
 via:
 
 ```bash
