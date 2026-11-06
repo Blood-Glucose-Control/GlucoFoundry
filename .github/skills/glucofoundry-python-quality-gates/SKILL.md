@@ -52,7 +52,7 @@ Use this order for changed Python files:
 
 - Before running/reading Pylance diagnostics, ensure workspace roots use the
   canonical repo path:
-  `/data/home/<you>/nocturnal-hypo-gly-prob-forecast`
+  `/data/home/<you>/GlucoFoundry`
 - Do not rely on symlink-root sessions (for example `/data/home/<you>/nocturnal`)
   for final diagnostic sign-off, because path/remount drift has previously caused
   misleading results.

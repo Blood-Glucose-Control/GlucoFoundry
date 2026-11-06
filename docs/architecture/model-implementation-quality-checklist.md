@@ -3,7 +3,7 @@
 Status: active contributor standard for all model-family migrations and refactors.
 
 This checklist defines the minimum quality bar for model modules under
-[`src/models/`](/data/home/cjrisi/nocturnal-hypo-gly-prob-forecast/src/models)
+[`src/models/`](/src/models)
 and related workflow integration points.
 
 ## Purpose
@@ -21,9 +21,9 @@ Apply this checklist whenever a PR changes:
 
 - model classes/configs in `src/models/*`,
 - model factory/adapter wiring in
-  [`modeling.py`](/data/home/cjrisi/nocturnal-hypo-gly-prob-forecast/src/workflows/forecasting/modeling.py),
+  [`modeling.py`](/src/workflows/forecasting/modeling.py),
 - model config schemas in
-  [`model_configs.py`](/data/home/cjrisi/nocturnal-hypo-gly-prob-forecast/src/config/schemas/model_configs.py).
+  [`model_configs.py`](/src/config/schemas/model_configs.py).
 
 ## 1) Interface consistency contract
 

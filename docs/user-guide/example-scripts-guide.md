@@ -172,11 +172,11 @@ flowchart LR
 ```
 
 Shared visualization helpers for retained nocturnal plotting scripts now live in
-[`src/visualization/nocturnal.py`](/data/home/cjrisi/nocturnal-hypo-gly-prob-forecast/src/visualization/nocturnal.py).
+[`src/visualization/nocturnal.py`](/src/visualization/nocturnal.py).
 
 Visualization script purposes, duplication assessment, and curated example
 outputs are documented in
-[`docs/user-guide/modeling/visualization-guide.md`](/data/home/cjrisi/nocturnal-hypo-gly-prob-forecast/docs/user-guide/modeling/visualization-guide.md).
+[`docs/user-guide/modeling/visualization-guide.md`](/docs/user-guide/modeling/visualization-guide.md).
 
 ## Canonical run manifest (v1)
 
@@ -207,13 +207,13 @@ the maintained scripts listed above.
 Wave 4 removes model-specific visualization entrypoints in favor of generic
 plotting contracts:
 
-- [`plot_probabilistic_forecast_grid.py`](/data/home/cjrisi/nocturnal-hypo-gly-prob-forecast/scripts/visualization/plot_probabilistic_forecast_grid.py)
-- [`plot_forecast_episode_overlays.py`](/data/home/cjrisi/nocturnal-hypo-gly-prob-forecast/scripts/visualization/plot_forecast_episode_overlays.py)
+- [`plot_probabilistic_forecast_grid.py`](/scripts/visualization/plot_probabilistic_forecast_grid.py)
+- [`plot_forecast_episode_overlays.py`](/scripts/visualization/plot_forecast_episode_overlays.py)
 
 Each script documents its required input data format at the top of the file.
 
 Retained step-sweep visualization scripts are also now model-agnostic via CLI
 series mapping instead of hardcoded model/config labels:
 
-- [`plot_step_sweep.py`](/data/home/cjrisi/nocturnal-hypo-gly-prob-forecast/scripts/visualization/plot_step_sweep.py)
-- [`plot_step_sweep_long_run.py`](/data/home/cjrisi/nocturnal-hypo-gly-prob-forecast/scripts/visualization/plot_step_sweep_long_run.py)
+- [`plot_step_sweep.py`](/scripts/visualization/plot_step_sweep.py)
+- [`plot_step_sweep_long_run.py`](/scripts/visualization/plot_step_sweep_long_run.py)

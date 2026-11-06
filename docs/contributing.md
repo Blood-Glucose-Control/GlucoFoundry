@@ -46,8 +46,8 @@ This project is committed to providing a welcoming and inclusive environment for
 
 1. **Fork and Clone**
    ```bash
-   git clone https://github.com/YOUR-USERNAME/nocturnal-hypo-gly-prob-forecast.git
-   cd nocturnal-hypo-gly-prob-forecast
+   git clone https://github.com/YOUR-USERNAME/GlucoFoundry.git
+   cd GlucoFoundry
    ```
 
 2. **Set up Environment**
@@ -125,12 +125,12 @@ Model-family → interpreter mapping template:
 
 ```text
 # Keep this in your local notes (not committed), update paths for your machine.
-default/shared -> /data/home/<you>/nocturnal-hypo-gly-prob-forecast/.venv/bin/python
-moirai         -> /data/home/<you>/nocturnal-hypo-gly-prob-forecast/.venvs/moirai/bin/python
-moment         -> /data/home/<you>/nocturnal-hypo-gly-prob-forecast/.venvs/moment/bin/python
-timesfm        -> /data/home/<you>/nocturnal-hypo-gly-prob-forecast/.venvs/timesfm/bin/python
-ttm            -> /data/home/<you>/nocturnal-hypo-gly-prob-forecast/.venvs/ttm/bin/python
-sundial        -> /data/home/<you>/nocturnal-hypo-gly-prob-forecast/.venvs/sundial/bin/python
+default/shared -> /data/home/<you>/GlucoFoundry/.venv/bin/python
+moirai         -> /data/home/<you>/GlucoFoundry/.venvs/moirai/bin/python
+moment         -> /data/home/<you>/GlucoFoundry/.venvs/moment/bin/python
+timesfm        -> /data/home/<you>/GlucoFoundry/.venvs/timesfm/bin/python
+ttm            -> /data/home/<you>/GlucoFoundry/.venvs/ttm/bin/python
+sundial        -> /data/home/<you>/GlucoFoundry/.venvs/sundial/bin/python
 ```
 
 #### Schema evolution workflow (required for config/model changes)
@@ -150,7 +150,7 @@ workflow:
    a PR.
 5. Final gate: run Pylance diagnostics on all touched Python files in the
    canonical workspace root path
-   (`/data/home/<you>/nocturnal-hypo-gly-prob-forecast`, not symlink aliases),
+   (`/data/home/<you>/GlucoFoundry`, not symlink aliases),
    then rerun diagnostics if formatting/hooks changed code.
 
 **PyCharm**
@@ -164,7 +164,7 @@ workflow:
 ## Project Structure
 
 ```
-nocturnal-hypo-gly-prob-forecast/
+GlucoFoundry/
 ├── src/                          # Source code
 │   ├── data/                     # Data loading and processing
 │   ├── models/                   # Model implementations/factory adapters
@@ -789,7 +789,7 @@ When contributing new models, follow the [Foundation Model Template](./foundatio
 
 ### Adding New Datasets
 
-See [Data Documentation](https://probabilistic-forecasting-of-nocturnal-hypoglycemia.readthedocs.io/en/latest/user-guide/datasets/data-preparation/)
+See [Data Documentation](user-guide/datasets/data-preparation.md)
 
 1. **Add new directory structure. (See here)**
 2. **Create data loader**:
