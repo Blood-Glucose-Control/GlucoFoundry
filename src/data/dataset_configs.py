@@ -35,7 +35,7 @@ ALEPPO_2017_CONFIG: DatasetConfig = DatasetConfig(
 )
 
 # Configuration for the Brown 2019 DCLP3 dataset
-# nocturnal-hypo-gly-prob-forecast/cache/data/brown_2019/raw/DCLP3 Public Dataset - Release 3 - 2022-08-04
+# GlucoFoundry/cache/data/brown_2019/raw/DCLP3 Public Dataset - Release 3 - 2022-08-04
 BROWN_2019_CONFIG: DatasetConfig = DatasetConfig(
     source=DatasetSourceType.BROWN_2019,
     description="Brown 2019 DCLP3 - Closed-Loop Control vs Sensor-Augmented Pump therapy",

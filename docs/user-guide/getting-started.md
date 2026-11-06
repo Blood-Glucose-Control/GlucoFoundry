@@ -24,7 +24,7 @@ The secondary objectives:
 ### Local repo
 This is just creates a local version of this repository so you can start making your own changes
 1. In your local terminal, navigate to your desired project directory.
-2. Run the following command: `git clone https://github.com/Blood-Glucose-Control/nocturnal-hypo-gly-prob-forecast.git`
+2. Run the following command: `git clone https://github.com/Blood-Glucose-Control/GlucoFoundry.git`
 
 ### Local environment
 This ensures that everyone is working with the same tools and that the code you write will run on everyone else's machine, including our model training servers.
@@ -38,7 +38,7 @@ This ensures that everyone is working with the same tools and that the code you 
     **Ubuntu:** `source .venv/bin/activate`
     **Windows:** `.venv\Scripts\Activate.ps1`
   - Your terminal should now show the venv being active:
-    - `(.venv) cjrisi@scslt520:~/Projects/diabetes/nocturnal-hypo-gly-prob-forecast$ `
+    - `(.venv) cjrisi@scslt520:~/Projects/diabetes/GlucoFoundry$ `
 5. Now update your venv with the required packages for our project:
 
     `pip install -r requirements.txt`
