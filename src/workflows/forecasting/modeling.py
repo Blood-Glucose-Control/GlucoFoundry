@@ -231,6 +231,7 @@ class ModelFactory:
             "tide": "",
             "toto": "Datadog/Toto-Open-Base-1.0",
             "moirai": "Salesforce/moirai-1.0-R-small",
+            "moirai2": "Salesforce/moirai-2.0-R-small",
             "naive_baseline": "",
             "statistical": "",
             "deepar": "",
@@ -508,6 +509,35 @@ class ModelFactory:
                 },
             )
             return MoiraiForecaster(MoiraiConfig(**runtime_config))
+        if model_type == "moirai2":
+            try:
+                from ...models.moirai2 import Moirai2Config, Moirai2LoraForecaster
+            except ImportError as e:
+                raise ImportError(
+                    "Moirai2 model not available. Install with: "
+                    f"pip install 'glucofoundry[moirai]'\n{e}"
+                ) from e
+            moirai2_kwargs = dict(config.extra_config) if config.extra_config else {}
+            if "lr" in moirai2_kwargs and "learning_rate" not in moirai2_kwargs:
+                moirai2_kwargs["learning_rate"] = moirai2_kwargs.pop("lr")
+            runtime_config = build_model_runtime_config(
+                model_type=model_type,
+                config_data={
+                    "model_type": "moirai2",
+                    "model_path": config.model_path,
+                    "context_length": config.context_length,
+                    "forecast_length": config.forecast_length,
+                    "batch_size": config.batch_size,
+                    "num_epochs": config.num_epochs,
+                    "training_mode": config.training_mode,
+                    "freeze_backbone": config.freeze_backbone,
+                    "use_cpu": config.use_cpu,
+                    "fp16": config.fp16,
+                    "learning_rate": config.learning_rate,
+                    **moirai2_kwargs,
+                },
+            )
+            return Moirai2LoraForecaster(Moirai2Config(**runtime_config))
         if model_type == "naive_baseline":
             from ...models.naive_baseline import (
                 NaiveBaselineConfig,
@@ -636,7 +666,7 @@ class ModelFactory:
             return TSMixerForecaster(TSMixerConfig(**runtime_config))
         raise ValueError(
             f"Unsupported model type: {model_type}. "
-            "Supported types: sundial, ttm, chronos2, moment, timesfm, timesfm3, timegrad, tide, toto, moirai, "
+            "Supported types: sundial, ttm, chronos2, moment, timesfm, timesfm3, timegrad, tide, toto, moirai, moirai2, "
             "naive_baseline, statistical, deepar, patchtst, tft, tsmixer"
         )
 
@@ -936,7 +966,13 @@ class ModelFactory:
 
             return TotoForecaster.load(model_path)
         if model_type_lower == "moirai":
-            from ...models.moirai import MoiraiConfig, MoiraiForecaster
+            try:
+                from ...models.moirai import MoiraiConfig, MoiraiForecaster
+            except ImportError as e:
+                raise ImportError(
+                    "Moirai model not available. Install with: "
+                    f"pip install 'glucofoundry[moirai]'\n{e}"
+                ) from e
 
             moirai_kwargs = dict(config.extra_config) if config.extra_config else {}
             if "lr" in moirai_kwargs and "learning_rate" not in moirai_kwargs:
@@ -961,6 +997,39 @@ class ModelFactory:
             return MoiraiForecaster.load(
                 model_path,
                 MoiraiConfig(**runtime_config),
+            )
+        if model_type_lower == "moirai2":
+            try:
+                from ...models.moirai2 import Moirai2Config, Moirai2LoraForecaster
+            except ImportError as e:
+                raise ImportError(
+                    "Moirai2 model not available. Install with: "
+                    f"pip install 'glucofoundry[moirai]'\n{e}"
+                ) from e
+
+            moirai2_kwargs = dict(config.extra_config) if config.extra_config else {}
+            if "lr" in moirai2_kwargs and "learning_rate" not in moirai2_kwargs:
+                moirai2_kwargs["learning_rate"] = moirai2_kwargs.pop("lr")
+            runtime_config = build_model_runtime_config(
+                model_type=model_type_lower,
+                config_data={
+                    "model_type": "moirai2",
+                    "model_path": config.model_path,
+                    "context_length": config.context_length,
+                    "forecast_length": config.forecast_length,
+                    "batch_size": config.batch_size,
+                    "num_epochs": config.num_epochs,
+                    "training_mode": config.training_mode,
+                    "freeze_backbone": config.freeze_backbone,
+                    "use_cpu": config.use_cpu,
+                    "fp16": config.fp16,
+                    "learning_rate": config.learning_rate,
+                    **moirai2_kwargs,
+                },
+            )
+            return Moirai2LoraForecaster.load(
+                model_path,
+                Moirai2Config(**runtime_config),
             )
         if model_type_lower == "naive_baseline":
             from ...models.naive_baseline import NaiveBaselineForecaster
@@ -992,6 +1061,6 @@ class ModelFactory:
             return TSMixerForecaster.load(model_path)
         raise ValueError(
             f"Unsupported model type for loading: {model_type}. "
-            "Supported types: sundial, ttm, chronos2, moment, timesfm, timesfm3, timegrad, tide, toto, moirai, "
+            "Supported types: sundial, ttm, chronos2, moment, timesfm, timesfm3, timegrad, tide, toto, moirai, moirai2, "
             "naive_baseline, statistical, deepar, patchtst, tft, gbm, tsmixer"
         )

@@ -1,0 +1,216 @@
+{
+  "additionalProperties": false,
+  "description": "Schema contract for Moirai-2 / Moirai-MoE LoRA fine-tune YAML configs.\n\nInherits the Moirai fields and adds the LoRA / variant knobs consumed by\n``Moirai2Config`` / ``Moirai2LoraForecaster``.",
+  "properties": {
+    "batch_size": {
+      "default": 64,
+      "exclusiveMinimum": 0,
+      "title": "Batch Size",
+      "type": "integer"
+    },
+    "beta1": {
+      "default": 0.9,
+      "exclusiveMaximum": 1.0,
+      "exclusiveMinimum": 0.0,
+      "title": "Beta1",
+      "type": "number"
+    },
+    "beta2": {
+      "default": 0.98,
+      "exclusiveMaximum": 1.0,
+      "exclusiveMinimum": 0.0,
+      "title": "Beta2",
+      "type": "number"
+    },
+    "checkpoint_path": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Checkpoint Path"
+    },
+    "context_length": {
+      "default": 512,
+      "exclusiveMinimum": 0,
+      "title": "Context Length",
+      "type": "integer"
+    },
+    "covariate_cols": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Covariate Cols",
+      "type": "array"
+    },
+    "finetune_pattern": {
+      "default": "full",
+      "enum": [
+        "full",
+        "freeze_ffn",
+        "head_only"
+      ],
+      "title": "Finetune Pattern",
+      "type": "string"
+    },
+    "forecast_length": {
+      "default": 96,
+      "exclusiveMinimum": 0,
+      "title": "Forecast Length",
+      "type": "integer"
+    },
+    "fp16": {
+      "default": true,
+      "title": "Fp16",
+      "type": "boolean"
+    },
+    "freeze_backbone": {
+      "default": false,
+      "title": "Freeze Backbone",
+      "type": "boolean"
+    },
+    "interval_mins": {
+      "default": 5,
+      "exclusiveMinimum": 0,
+      "title": "Interval Mins",
+      "type": "integer"
+    },
+    "known_covariate_cols": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Known Covariate Cols",
+      "type": "array"
+    },
+    "known_covariate_dim": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Known Covariate Dim",
+      "type": "integer"
+    },
+    "learning_rate": {
+      "default": 0.0001,
+      "exclusiveMinimum": 0.0,
+      "title": "Learning Rate",
+      "type": "number"
+    },
+    "lora_alpha": {
+      "default": 32,
+      "exclusiveMinimum": 0,
+      "title": "Lora Alpha",
+      "type": "integer"
+    },
+    "lora_dropout": {
+      "default": 0.05,
+      "exclusiveMaximum": 1.0,
+      "minimum": 0.0,
+      "title": "Lora Dropout",
+      "type": "number"
+    },
+    "lora_r": {
+      "default": 16,
+      "exclusiveMinimum": 0,
+      "title": "Lora R",
+      "type": "integer"
+    },
+    "lora_target_modules": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Lora Target Modules",
+      "type": "array"
+    },
+    "max_mask_ratio": {
+      "default": 0.5,
+      "exclusiveMinimum": 0.0,
+      "maximum": 1.0,
+      "title": "Max Mask Ratio",
+      "type": "number"
+    },
+    "min_mask_ratio": {
+      "default": 0.15,
+      "exclusiveMaximum": 1.0,
+      "minimum": 0.0,
+      "title": "Min Mask Ratio",
+      "type": "number"
+    },
+    "model_path": {
+      "default": "Salesforce/moirai-2.0-R-small",
+      "minLength": 1,
+      "title": "Model Path",
+      "type": "string"
+    },
+    "model_type": {
+      "const": "moirai2",
+      "default": "moirai2",
+      "title": "Model Type",
+      "type": "string"
+    },
+    "num_epochs": {
+      "default": 10,
+      "minimum": 0,
+      "title": "Num Epochs",
+      "type": "integer"
+    },
+    "num_samples": {
+      "default": 100,
+      "exclusiveMinimum": 0,
+      "title": "Num Samples",
+      "type": "integer"
+    },
+    "past_covariate_dim": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Past Covariate Dim",
+      "type": "integer"
+    },
+    "patch_size": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "const": "auto",
+          "type": "string"
+        }
+      ],
+      "default": "auto",
+      "title": "Patch Size"
+    },
+    "target_col": {
+      "default": "bg_mM",
+      "minLength": 1,
+      "title": "Target Col",
+      "type": "string"
+    },
+    "training_mode": {
+      "default": "fine_tune",
+      "enum": [
+        "zero_shot",
+        "fine_tune"
+      ],
+      "title": "Training Mode",
+      "type": "string"
+    },
+    "use_cpu": {
+      "default": false,
+      "title": "Use Cpu",
+      "type": "boolean"
+    },
+    "variant": {
+      "default": "moirai2",
+      "enum": [
+        "moirai2",
+        "moirai_moe"
+      ],
+      "title": "Variant",
+      "type": "string"
+    }
+  },
+  "title": "Moirai2ModelConfigSchema",
+  "type": "object"
+}
