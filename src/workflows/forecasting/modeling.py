@@ -966,7 +966,13 @@ class ModelFactory:
 
             return TotoForecaster.load(model_path)
         if model_type_lower == "moirai":
-            from ...models.moirai import MoiraiConfig, MoiraiForecaster
+            try:
+                from ...models.moirai import MoiraiConfig, MoiraiForecaster
+            except ImportError as e:
+                raise ImportError(
+                    "Moirai model not available. Install with: "
+                    f"pip install 'glucofoundry[moirai]'\n{e}"
+                ) from e
 
             moirai_kwargs = dict(config.extra_config) if config.extra_config else {}
             if "lr" in moirai_kwargs and "learning_rate" not in moirai_kwargs:
