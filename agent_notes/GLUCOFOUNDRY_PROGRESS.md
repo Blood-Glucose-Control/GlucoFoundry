@@ -11,7 +11,7 @@
 > Note: `project_tracking.csv` was removed from GlucoFoundry (#42) as old-project
 > cruft and is **not** used here; GitHub issues (umbrella #12) are the canonical tracker.
 
-**Last updated:** 2026-11-05 · **Totals:** 30 done · 2 in progress · 13 pending
+**Last updated:** 2026-11-08 · **Totals:** 34 done · 4 in progress · 13 pending
 
 Status key: ✅ done · 🔄 in progress · ⬜ pending
 
@@ -63,15 +63,36 @@ Status key: ✅ done · 🔄 in progress · ⬜ pending
 ### Remaining in B
 | Task | Status | Ref |
 |------|--------|-----|
-| Repo-path rebrand (old repo name) | 🔄 | PR #50 (partial); rest in #48 |
+| Repo-path rebrand (old repo name) | ✅ | PR #50 + #52 |
+| Register moirai2 in standard wiring | ✅ | PR #62 (closed #46) |
+| CGMacros dataset loader | ✅ | PR #58 + #61 |
+| Retire old docs hosting (RTD + demo Pages) | ✅ | PR #57 |
+| Docs audit | 🔄 | Phase 1 done (PR #60); #56 |
 | Experiment-tracking design/impl | 🔄 | #45 (design filed) |
-| Reorganize `scripts/` core-vs-experiment | ⬜ | #36 |
-| Audit remaining `scripts/` | ⬜ | #37 |
-| Strip experiment-tuned sweep configs into recipes | ⬜ | #6 |
-| Reproduction recipes (#1/#2) | ⬜ | b4-repro-recipes |
 | Fresh-clone reproducibility validation | ⬜ | #8 |
 | Hash-locked lockfile | ⬜ | #30 |
-| Register moirai2 in standard wiring | ⬜ | #46 |
+| Reproduction recipes (#1/#2) | ⬜ | b4-repro-recipes |
+
+> `scripts/` reorg (#36) and strip-tuned-sweep-configs (#6) are now **sub-tasks**
+> of the Experiment-centric restructure below (umbrella #64).
+
+## Experiment-centric restructure (RFC-001) — 🔄 accepted, building
+
+Make each experiment a fully self-contained directory (code + configs + results
++ trained_models + scripts + docs) with a `glucofoundry new-experiment`
+scaffolding CLI. See [`RFC-001`](./RFC-001_experiment-centric-structure.md) and
+umbrella **#64** (artifacts live inside `experiments/<name>/`; 5 decisions resolved).
+
+| Task | Status | Ref |
+|------|--------|-----|
+| RFC-001 ratified (5 decisions resolved) | ✅ | PR #63 |
+| Phase 2: `ExperimentPaths` resolver + workflow path resolution | ⬜ | #64 |
+| Phase 3: migrate nocturnal self-contained (absorbs #36, part of #6) | ⬜ | #64 |
+| Phase 4: `glucofoundry new-experiment` CLI + `templates/experiment/` | ⬜ | #64 |
+| Phase 5: docs/governance update | ⬜ | #64 |
+
+### Small follow-ups (open)
+`#53` gluroo DB COPY paths · `#54` skill workspace path · `#55` config-schema index + mkdocs links · `#37` audit scripts.
 
 ## Phase C — Carve experiment forks — ⬜ not started
 | Task | Status | Ref |
