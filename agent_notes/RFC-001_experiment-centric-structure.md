@@ -4,7 +4,7 @@
 **Date:** 2026-11-08
 **Tracking:** umbrella issue (reframes #36, #6)
 **Decisions locked by maintainer:** lean into experiment-centric organization;
-run artifacts live **inside** each experiment (`experiments/<name>/results|trained_models/`).
+run artifacts live **inside** each experiment (`experiments/<name>/results/` and `experiments/<name>/trained_models/`).
 
 ---
 
