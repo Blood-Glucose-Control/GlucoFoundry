@@ -146,6 +146,8 @@ class TestExperimentPaths:
         assert paths.name == "nocturnal"
         assert paths.root == root
         assert paths.configs == root / "configs"
+        assert paths.scripts == root / "scripts"
+        assert paths.docs == root / "docs"
         assert paths.results == root / "results"
         assert paths.trained_models == root / "trained_models"
 

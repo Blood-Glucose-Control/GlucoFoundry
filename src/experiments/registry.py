@@ -139,6 +139,8 @@ class ExperimentPaths:
         name: Experiment identifier (e.g. ``"nocturnal"``).
         root: ``experiments/<name>/``.
         configs: ``experiments/<name>/configs/`` (always repo-local).
+        scripts: ``experiments/<name>/scripts/`` (always repo-local).
+        docs: ``experiments/<name>/docs/`` (always repo-local).
         results: Run outputs (under ``root`` or the artifacts override).
         trained_models: Saved checkpoints (under ``root`` or the override).
     """
@@ -146,6 +148,8 @@ class ExperimentPaths:
     name: str
     root: Path
     configs: Path
+    scripts: Path
+    docs: Path
     results: Path
     trained_models: Path
 
@@ -186,6 +190,8 @@ def get_experiment_paths(
         name=name,
         root=root,
         configs=root / "configs",
+        scripts=root / "scripts",
+        docs=root / "docs",
         results=artifacts_base / "results",
         trained_models=artifacts_base / "trained_models",
     )
