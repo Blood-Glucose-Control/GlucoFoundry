@@ -76,7 +76,7 @@ METABONET_CONFIG: DatasetConfig = DatasetConfig(
 )
 
 # Configuration for the CGMacros dataset
-# nocturnal-hypo-gly-prob-forecast/cache/data/cgmacros/raw/CGMacros
+# GlucoFoundry/cache/data/cgmacros/raw/CGMacros
 CGMACROS_CONFIG: DatasetConfig = DatasetConfig(
     source=DatasetSourceType.CGMACROS,
     description="CGMacros: CGM + Fitbit + macronutrient-annotated meals, 45 adults (normal/prediabetes/T2D)",
