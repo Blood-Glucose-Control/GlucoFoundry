@@ -1037,7 +1037,12 @@ def run_with_args(args: argparse.Namespace) -> int:
     _pid = os.getpid()
     _run_subdir = f"{_ts_short}_RID{_ts_long}_{_pid}_forecasting_workflow"
     if args.output_dir is None:
-        args.output_dir = f"./trained_models/artifacts/_tsfm_testing/{_run_subdir}"
+        # RFC-001: default run artifacts into the experiment's own results/.
+        from ...experiments.registry import get_experiment_paths
+
+        args.output_dir = str(
+            get_experiment_paths(args.experiment).results / _run_subdir
+        )
     else:
         requested_output_dir = Path(args.output_dir)
         if _is_existing_run_directory(requested_output_dir):

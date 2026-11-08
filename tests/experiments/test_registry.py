@@ -13,11 +13,15 @@ import textwrap
 import pytest
 
 from src.experiments.registry import (
+    ARTIFACTS_ROOT_ENV,
+    ExperimentPaths,
     ExperimentSpec,
     available_experiments,
     discover_experiments,
+    experiments_root,
     get_episode_builder,
     get_experiment,
+    get_experiment_paths,
     register_experiment,
     reset_registry,
 )
@@ -130,3 +134,49 @@ def test_broken_recipe_does_not_break_discovery(tmp_path):
     # The good recipe still registers despite the broken one.
     assert "good" in available_experiments()
     assert "broken" not in available_experiments()
+
+
+class TestExperimentPaths:
+    """Canonical experiment-owned path resolution (RFC-001)."""
+
+    def test_default_paths_are_repo_local(self):
+        paths = get_experiment_paths("nocturnal")
+        root = experiments_root() / "nocturnal"
+        assert isinstance(paths, ExperimentPaths)
+        assert paths.name == "nocturnal"
+        assert paths.root == root
+        assert paths.configs == root / "configs"
+        assert paths.results == root / "results"
+        assert paths.trained_models == root / "trained_models"
+
+    def test_artifacts_root_override_param(self, tmp_path):
+        paths = get_experiment_paths("demo", artifacts_root=tmp_path)
+        # Large artifacts redirect under <override>/<name>/ ...
+        assert paths.results == tmp_path / "demo" / "results"
+        assert paths.trained_models == tmp_path / "demo" / "trained_models"
+        # ... but versioned configs stay repo-local.
+        assert paths.configs == experiments_root() / "demo" / "configs"
+
+    def test_artifacts_root_override_env(self, tmp_path, monkeypatch):
+        monkeypatch.setenv(ARTIFACTS_ROOT_ENV, str(tmp_path))
+        paths = get_experiment_paths("demo")
+        assert paths.results == tmp_path / "demo" / "results"
+        assert paths.configs == experiments_root() / "demo" / "configs"
+
+    def test_param_override_beats_env(self, tmp_path, monkeypatch):
+        monkeypatch.setenv(ARTIFACTS_ROOT_ENV, str(tmp_path / "env"))
+        paths = get_experiment_paths("demo", artifacts_root=tmp_path / "param")
+        assert paths.results == tmp_path / "param" / "demo" / "results"
+
+    @pytest.mark.parametrize("bad", ["", "   ", None])
+    def test_invalid_name_raises(self, bad):
+        with pytest.raises(ValueError):
+            get_experiment_paths(bad)  # type: ignore[arg-type]
+
+    def test_ensure_creates_artifact_dirs(self, tmp_path):
+        paths = get_experiment_paths("demo", artifacts_root=tmp_path)
+        assert not paths.results.exists()
+        returned = paths.ensure()
+        assert returned is paths
+        assert paths.results.is_dir()
+        assert paths.trained_models.is_dir()
