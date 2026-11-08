@@ -898,6 +898,7 @@ stored in separate subdirectories for comparison.
             "tide",
             "toto",
             "moirai",
+            "moirai2",
             "naive_baseline",
             "statistical",
             "deepar",

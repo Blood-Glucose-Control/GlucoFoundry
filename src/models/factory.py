@@ -22,4 +22,5 @@ SUPPORTED_MODEL_TYPES = (
     "patchtst",
     "tft",
     "tsmixer",
+    "moirai2",
 )

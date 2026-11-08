@@ -141,6 +141,26 @@ class MoiraiModelConfigSchema(BaseConfigSchema):
         return self
 
 
+class Moirai2ModelConfigSchema(MoiraiModelConfigSchema):
+    """Schema contract for Moirai-2 / Moirai-MoE LoRA fine-tune YAML configs.
+
+    Inherits the Moirai fields and adds the LoRA / variant knobs consumed by
+    ``Moirai2Config`` / ``Moirai2LoraForecaster``.
+    """
+
+    model_type: Literal["moirai2"] = Field(  # pyright: ignore[reportIncompatibleVariableOverride]
+        default="moirai2"
+    )
+    model_path: str = Field(default="Salesforce/moirai-2.0-R-small", min_length=1)
+    variant: Literal["moirai2", "moirai_moe"] = Field(default="moirai2")
+    lora_r: int = Field(default=16, gt=0)
+    lora_alpha: int = Field(default=32, gt=0)
+    lora_dropout: float = Field(default=0.05, ge=0.0, lt=1.0)
+    lora_target_modules: list[str] = Field(
+        default_factory=lambda: ["q_proj", "k_proj", "v_proj", "out_proj"]
+    )
+
+
 class TimeGradModelConfigSchema(BaseConfigSchema):
     """Schema contract for TimeGrad model YAML configs."""
 
@@ -886,6 +906,11 @@ def build_moirai_runtime_config(config_data: dict[str, Any]) -> dict[str, Any]:
     return _build_runtime_config("moirai", MoiraiModelConfigSchema, config_data)
 
 
+def build_moirai2_runtime_config(config_data: dict[str, Any]) -> dict[str, Any]:
+    """Validate and normalize Moirai-2 / Moirai-MoE runtime config values."""
+    return _build_runtime_config("moirai2", Moirai2ModelConfigSchema, config_data)
+
+
 def build_timegrad_runtime_config(config_data: dict[str, Any]) -> dict[str, Any]:
     """Validate and normalize TimeGrad runtime config values."""
     return _build_runtime_config("timegrad", TimeGradModelConfigSchema, config_data)
@@ -991,6 +1016,10 @@ MODEL_CONFIG_ROUTES: dict[str, ModelConfigRoute] = {
     "moirai": ModelConfigRoute(
         schema_type=MoiraiModelConfigSchema,
         runtime_adapter=build_moirai_runtime_config,
+    ),
+    "moirai2": ModelConfigRoute(
+        schema_type=Moirai2ModelConfigSchema,
+        runtime_adapter=build_moirai2_runtime_config,
     ),
     "moment": ModelConfigRoute(
         schema_type=MomentModelConfigSchema,

@@ -671,6 +671,7 @@ def test_model_config_registry_exposes_tsmixer_schema_and_adapter() -> None:
         "deepar",
         "moment",
         "moirai",
+        "moirai2",
         "naive_baseline",
         "patchtst",
         "statistical",

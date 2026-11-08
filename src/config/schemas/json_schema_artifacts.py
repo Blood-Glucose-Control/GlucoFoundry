@@ -12,6 +12,7 @@ from .model_configs import (
     Chronos2ModelConfigSchema,
     DeepARModelConfigSchema,
     GBMModelConfigSchema,
+    Moirai2ModelConfigSchema,
     MoiraiModelConfigSchema,
     MomentModelConfigSchema,
     NaiveBaselineModelConfigSchema,
@@ -61,6 +62,11 @@ SCHEMA_ARTIFACT_SPECS: tuple[SchemaArtifactSpec, ...] = (
         filename="model_configs.moirai.schema.json",
         schema_type=MoiraiModelConfigSchema,
         source_symbol="src.config.schemas.model_configs.MoiraiModelConfigSchema",
+    ),
+    SchemaArtifactSpec(
+        filename="model_configs.moirai2.schema.json",
+        schema_type=Moirai2ModelConfigSchema,
+        source_symbol="src.config.schemas.model_configs.Moirai2ModelConfigSchema",
     ),
     SchemaArtifactSpec(
         filename="model_configs.moment.schema.json",

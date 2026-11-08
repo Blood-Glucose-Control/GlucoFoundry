@@ -17,6 +17,10 @@
       "source_symbol": "src.config.schemas.model_configs.MoiraiModelConfigSchema"
     },
     {
+      "file": "model_configs.moirai2.schema.json",
+      "source_symbol": "src.config.schemas.model_configs.Moirai2ModelConfigSchema"
+    },
+    {
       "file": "model_configs.moment.schema.json",
       "source_symbol": "src.config.schemas.model_configs.MomentModelConfigSchema"
     },
