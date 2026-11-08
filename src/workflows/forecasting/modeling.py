@@ -993,7 +993,13 @@ class ModelFactory:
                 MoiraiConfig(**runtime_config),
             )
         if model_type_lower == "moirai2":
-            from ...models.moirai2 import Moirai2Config, Moirai2LoraForecaster
+            try:
+                from ...models.moirai2 import Moirai2Config, Moirai2LoraForecaster
+            except ImportError as e:
+                raise ImportError(
+                    "Moirai2 model not available. Install with: "
+                    f"pip install 'glucofoundry[moirai]'\n{e}"
+                ) from e
 
             moirai2_kwargs = dict(config.extra_config) if config.extra_config else {}
             if "lr" in moirai2_kwargs and "learning_rate" not in moirai2_kwargs:
