@@ -387,6 +387,7 @@ class TestDatasetConfigs:
         assert DatasetSourceType.TAMBORLANE_2008.value in datasets
         assert DatasetSourceType.BROWN_2019.value in datasets
         assert DatasetSourceType.METABONET.value in datasets
+        assert DatasetSourceType.CGMACROS.value in datasets
 
     def test_get_dataset_info(self):
         """Test getting dataset information."""
