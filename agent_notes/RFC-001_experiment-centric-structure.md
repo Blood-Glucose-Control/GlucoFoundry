@@ -1,6 +1,6 @@
 # RFC-001 — Experiment-centric repository structure + scaffolding CLI
 
-**Status:** Proposed
+**Status:** Accepted — §7 decisions resolved 2026-11-08
 **Date:** 2026-11-08
 **Tracking:** umbrella issue (reframes #36, #6)
 **Decisions locked by maintainer:** lean into experiment-centric organization;
@@ -109,18 +109,31 @@ builder + metrics + datasets + models from the answers).
 Housekeeping found alongside this: delete the stale `nocturnal_forecast.egg-info/`
 (leftover from the old package name).
 
-## 7. Open decisions to confirm
+## 7. Resolved decisions
 
-- **Baseline model configs:** ship as `templates/experiment/configs/models/` only,
-  or also keep a browsable `configs/models/` gallery in the toolkit?
-- **Root `results/`/`trained_models/`:** remove entirely, or keep a thin default
-  for quick ad-hoc runs outside any experiment?
-- **Shared data holdout configs:** per-experiment copies, or a small shared
-  `configs/data/` of reusable split templates referenced by experiments?
-- **CLI name/UX:** `glucofoundry new-experiment` vs `gf new` vs a `make` target;
-  interactive prompts vs a flags/`--from-file` non-interactive mode for CI.
-- **Workflow path contract:** exact resolution rule for an experiment root and
-  how existing `--experiment` plumbing maps to it.
+1. **Baseline model configs — templates only.** Ship **one clean baseline per
+   model family** under `templates/experiment/configs/models/` (the template is
+   the browsable reference). The current ~20 tuned variants per family in
+   `configs/models/<family>/` are nocturnal artifacts and move to
+   `experiments/nocturnal/configs/models/`. No separate root gallery.
+2. **Root `results/` / `trained_models/` — removed.** All run artifacts live under
+   `experiments/<name>/results/` and `experiments/<name>/trained_models/`. Scratch
+   work uses a scratch experiment rather than a shared root default.
+3. **Data holdout configs — per-experiment, seeded from templates.** Reusable
+   holdout *strategy* templates live in `templates/experiment/configs/data/`; the
+   concrete per-experiment split (datasets + seed) lives in
+   `experiments/<name>/configs/data/`.
+4. **Scaffolding CLI — `glucofoundry new-experiment`.** A console entry point
+   (not a `make` target), **interactive by default** with a non-interactive
+   **`--from-file spec.yaml`** mode (the spec becomes a committed, reviewable
+   artifact). Implemented with a **lightweight generator** (Jinja2 / string
+   templates over `templates/experiment/`) — no cookiecutter dependency.
+5. **Workflow path contract — `ExperimentPaths` resolver.** Add a resolver keyed
+   off the experiment name in `src/experiments/registry.py` (alongside
+   `ExperimentSpec`): `experiments/<name>/{results,trained_models,configs}/`,
+   resolved **repo-root-relative** with an env/flag override for large/scratch
+   storage. The pipeline's `--experiment` + `output_dir` default to the
+   experiment's `results/`.
 
 ## 8. Relation to existing issues
 
