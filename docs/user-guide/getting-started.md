@@ -29,7 +29,7 @@ This is just creates a local version of this repository so you can start making 
 ### Local environment
 This ensures that everyone is working with the same tools and that the code you write will run on everyone else's machine, including our model training servers.
 
-3. Create a virtual environment with python 3.11 in your terminal in the projects root directory
+3. Create a virtual environment with python 3.12 in your terminal in the projects root directory
 
     `python3.12 -m venv .venv`
 

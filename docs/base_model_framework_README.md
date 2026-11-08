@@ -7,10 +7,10 @@ contributors must implement when adding a new model family.
 
 There are currently two constructor utilities in active runtime use:
 
-1. [`create_model_and_config`](/src/models/factory.py:35)
-   - used by evaluation/personalization entrypoints such as:
-     - [`nocturnal_hypo_eval.py`](/src/workflows/evaluation/nocturnal_hypo_eval.py)
-     - [`per_patient_finetune.py`](/src/workflows/personalization/per_patient_finetune.py)
+1. [`create_model_and_config`](/src/workflows/forecasting/modeling.py:150)
+   - used by evaluation entrypoints such as:
+     - [`validate_predict_batch.py`](/src/workflows/evaluation/validate_predict_batch.py)
+     - the nocturnal recipe's [`run_evaluation.py`](/experiments/nocturnal/run_evaluation.py)
 2. [`ModelFactory.create_model`](/src/workflows/forecasting/modeling.py:124) and [`ModelFactory.load_model`](/src/workflows/forecasting/modeling.py:601)
    - used by forecasting pipeline workflows:
      - [`pipeline.py`](/src/workflows/forecasting/pipeline.py)

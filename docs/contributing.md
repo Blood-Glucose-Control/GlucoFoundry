@@ -37,7 +37,7 @@ This project is committed to providing a welcoming and inclusive environment for
 
 ### Prerequisites
 
-- Python 3.9 or higher (Python 3.12 recommended)
+- Python 3.12 or higher
 - Git
 - CUDA-capable GPU (recommended for model training)
 - Sufficient disk space for datasets and model outputs
