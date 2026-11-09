@@ -106,7 +106,7 @@ def build_run_manifest(
     status: str = "success",
     failure_message: str | None = None,
 ) -> dict[str, Any]:
-    """Build canonical pre-MLflow run-manifest payload."""
+    """Build the canonical run-manifest payload for an experiment run."""
     if status not in {"success", "failed", "interrupted"}:
         raise ValueError(f"Unsupported run-manifest status: {status}")
 

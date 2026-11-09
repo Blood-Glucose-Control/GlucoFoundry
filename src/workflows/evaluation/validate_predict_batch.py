@@ -122,8 +122,8 @@ def build_episode_panel(
                 continue
 
         # Resolve the episode builder from the experiment registry by name (no
-        # import-time coupling to the nocturnal recipe). Parameterizing the
-        # experiment name by run config is tracked separately (#18).
+        # import-time coupling to the nocturnal recipe). The experiment name is
+        # fixed here; parameterizing it by run config is a separate concern.
         build_episodes = get_episode_builder("nocturnal")
         episodes, _ = build_episodes(
             patient_df,
