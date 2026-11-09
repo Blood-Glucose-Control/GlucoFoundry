@@ -178,6 +178,18 @@ def get_experiment_paths(
     """
     if not isinstance(name, str) or not name.strip():
         raise ValueError("experiment name must be a non-empty string")
+    name = name.strip()
+    if (
+        name in {os.curdir, os.pardir}
+        or "/" in name
+        or "\\" in name
+        or os.sep in name
+        or (os.altsep is not None and os.altsep in name)
+    ):
+        raise ValueError(
+            "experiment name must be a single path component without path "
+            f"separators or '.'/'..': {name!r}"
+        )
 
     root = experiments_root() / name
     override = (

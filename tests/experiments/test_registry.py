@@ -137,7 +137,7 @@ def test_broken_recipe_does_not_break_discovery(tmp_path):
 
 
 class TestExperimentPaths:
-    """Canonical experiment-owned path resolution (RFC-001)."""
+    """Canonical experiment-owned path resolution."""
 
     def test_default_paths_are_repo_local(self):
         paths = get_experiment_paths("nocturnal")
@@ -174,6 +174,19 @@ class TestExperimentPaths:
     def test_invalid_name_raises(self, bad):
         with pytest.raises(ValueError):
             get_experiment_paths(bad)  # type: ignore[arg-type]
+
+    @pytest.mark.parametrize(
+        "bad", ["..", ".", "../x", "a/b", "a\\b", "/abs", "nested/../escape"]
+    )
+    def test_path_traversal_names_rejected(self, bad):
+        with pytest.raises(ValueError):
+            get_experiment_paths(bad)
+
+    def test_name_is_stripped(self, tmp_path):
+        paths = get_experiment_paths("  demo  ", artifacts_root=tmp_path)
+        assert paths.name == "demo"
+        assert paths.root == experiments_root() / "demo"
+        assert paths.results == tmp_path / "demo" / "results"
 
     def test_ensure_creates_artifact_dirs(self, tmp_path):
         paths = get_experiment_paths("demo", artifacts_root=tmp_path)
