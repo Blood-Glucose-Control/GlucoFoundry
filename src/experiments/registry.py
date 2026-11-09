@@ -122,13 +122,13 @@ def experiments_root() -> Path:
 
 #: Environment variable that redirects large run artifacts (results/ and
 #: trained_models/) to external/scratch storage. Configs always stay in the
-#: versioned experiment directory. See RFC-001.
+#: versioned experiment directory.
 ARTIFACTS_ROOT_ENV = "GLUCOFOUNDRY_ARTIFACTS_ROOT"
 
 
 @dataclass(frozen=True)
 class ExperimentPaths:
-    """Canonical on-disk locations an experiment owns (RFC-001).
+    """Canonical on-disk locations an experiment owns.
 
     An experiment is self-contained under ``experiments/<name>/``: versioned
     inputs (``configs/``) plus run artifacts (``results/``, ``trained_models/``).
@@ -163,7 +163,7 @@ class ExperimentPaths:
 def get_experiment_paths(
     name: str, *, artifacts_root: str | Path | None = None
 ) -> ExperimentPaths:
-    """Resolve the canonical paths an experiment owns (RFC-001).
+    """Resolve the canonical paths an experiment owns.
 
     Args:
         name: Experiment identifier.
