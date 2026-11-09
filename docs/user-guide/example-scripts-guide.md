@@ -55,17 +55,17 @@ python scripts/orchestration/sweeps/sweep_eval.py --list-adapters
 
 Forecasting sweep profile specs:
 
-- `configs/experiments/nocturnal_forecast/*_forecasting_train_sweep.yaml`
-- `configs/experiments/nocturnal_forecast/*_forecasting_eval_sweep.yaml`
-- `configs/experiments/nocturnal_forecast/*_ctx_ablation_forecasting_train_sweep.yaml`
-- `configs/experiments/nocturnal_forecast/*_ctx_ablation_forecasting_eval_sweep.yaml`
+- `experiments/nocturnal/configs/*_forecasting_train_sweep.yaml`
+- `experiments/nocturnal/configs/*_forecasting_eval_sweep.yaml`
+- `experiments/nocturnal/configs/*_ctx_ablation_forecasting_train_sweep.yaml`
+- `experiments/nocturnal/configs/*_ctx_ablation_forecasting_eval_sweep.yaml`
 
 Concrete examples:
 
-- `configs/experiments/nocturnal_forecast/chronos2_forecasting_train_sweep.yaml`
-- `configs/experiments/nocturnal_forecast/moment_forecasting_train_sweep.yaml`
-- `configs/experiments/nocturnal_forecast/timesfm_forecasting_eval_sweep.yaml`
-- `configs/experiments/nocturnal_forecast/tft_ctx_ablation_forecasting_eval_sweep.yaml`
+- `experiments/nocturnal/configs/chronos2_forecasting_train_sweep.yaml`
+- `experiments/nocturnal/configs/moment_forecasting_train_sweep.yaml`
+- `experiments/nocturnal/configs/timesfm_forecasting_eval_sweep.yaml`
+- `experiments/nocturnal/configs/tft_ctx_ablation_forecasting_eval_sweep.yaml`
 
 Local usage:
 
@@ -73,7 +73,7 @@ Local usage:
 MODEL_TYPE=chronos2 \
 TASK_FAMILY=forecasting \
 EXPERIMENT_TYPE=nocturnal_forecast \
-SWEEP_SPEC=configs/experiments/nocturnal_forecast/chronos2_forecasting_train_sweep.yaml \
+SWEEP_SPEC=experiments/nocturnal/configs/chronos2_forecasting_train_sweep.yaml \
 GPUS="0 1" JOBS_PER_GPU=2 \
 bash scripts/training/sweeps/run_sweep_train.sh
 ```
@@ -162,7 +162,7 @@ flowchart LR
     SW[src/workflows/*]
     E[scripts/evaluation/*]
     O[scripts/orchestration/*]
-    A[scripts/analysis/* + scripts/visualization/*]
+    A[experiments/nocturnal/scripts/analysis/* + scripts/visualization/*]
 
     D --> W --> SW
     SW --> E

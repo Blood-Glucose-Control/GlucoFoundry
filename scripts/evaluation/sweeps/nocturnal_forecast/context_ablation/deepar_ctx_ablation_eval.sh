@@ -13,10 +13,10 @@ cd "$PROJECT_ROOT"
 MODEL_TYPE="deepar" \
 TASK_FAMILY="${TASK_FAMILY:-forecasting}" \
 EXPERIMENT_TYPE="${EXPERIMENT_TYPE:-nocturnal_forecast}" \
-SWEEP_SPEC="configs/experiments/nocturnal_forecast/deepar_ctx_ablation_forecasting_eval_sweep.yaml" \
+SWEEP_SPEC="experiments/nocturnal/configs/deepar_ctx_ablation_forecasting_eval_sweep.yaml" \
 EVAL_PYTHON="${EVAL_PYTHON:-.venvs/autogluon/bin/python}" \
 JOBS_PER_GPU="${JOBS_PER_GPU:-10}" \
 bash scripts/evaluation/sweeps/run_sweep_eval.sh \
-  --manifest-path "trained_models/artifacts/deepar/ctx_ablation_manifest.txt" \
+  --manifest-path "experiments/nocturnal/trained_models/artifacts/deepar/ctx_ablation_manifest.txt" \
   --done-file "logs/deepar_ctx_ablation_eval_done.log" \
   "$@"

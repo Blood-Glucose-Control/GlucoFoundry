@@ -13,7 +13,7 @@ cd "$PROJECT_ROOT"
 MODEL_TYPE="statistical" \
 TASK_FAMILY="${TASK_FAMILY:-forecasting}" \
 EXPERIMENT_TYPE="${EXPERIMENT_TYPE:-nocturnal_forecast}" \
-SWEEP_SPEC="configs/experiments/nocturnal_forecast/statistical_forecasting_train_sweep.yaml" \
+SWEEP_SPEC="experiments/nocturnal/configs/statistical_forecasting_train_sweep.yaml" \
 VENV_NAME="${VENV_NAME:-chronos2}" \
 SKIP_STEPS="${SKIP_STEPS:-1 2 4 7}" \
 JOBS_PER_GPU="${JOBS_PER_GPU:-1}" \

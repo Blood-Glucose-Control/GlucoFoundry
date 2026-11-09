@@ -13,7 +13,7 @@ cd "$PROJECT_ROOT"
 MODEL_TYPE="tide" \
 TASK_FAMILY="${TASK_FAMILY:-forecasting}" \
 EXPERIMENT_TYPE="${EXPERIMENT_TYPE:-nocturnal_forecast}" \
-SWEEP_SPEC="configs/experiments/nocturnal_forecast/tide_forecasting_train_sweep.yaml" \
+SWEEP_SPEC="experiments/nocturnal/configs/tide_forecasting_train_sweep.yaml" \
 SKIP_STEPS="${SKIP_STEPS:-7}" \
 JOBS_PER_GPU="${JOBS_PER_GPU:-1}" \
 bash scripts/training/sweeps/run_sweep_train.sh "$@"

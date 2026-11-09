@@ -32,8 +32,8 @@ Usage
 -----
     python scripts/visualization/plot_pit_histograms.py
     python scripts/visualization/plot_pit_histograms.py \\
-        --best-csv results/nocturnal_forecasting/best_by_model_dataset.csv \\
-        --outdir   results/pit_histograms
+        --best-csv experiments/nocturnal/results/nocturnal_forecasting/best_by_model_dataset.csv \\
+        --outdir   experiments/nocturnal/results/pit_histograms
 """
 
 from __future__ import annotations
@@ -90,8 +90,10 @@ MODEL_LABELS: Dict[str, str] = {
 N_BINS = 10
 UNIFORM_DENSITY = 1.0  # PIT ~ U[0,1] → density = 1 everywhere
 
-DEFAULT_BEST_CSV = "results/nocturnal_forecasting/best_by_model_dataset.csv"
-DEFAULT_OUTDIR = "results/pit_histograms"
+DEFAULT_BEST_CSV = (
+    "experiments/nocturnal/results/nocturnal_forecasting/best_by_model_dataset.csv"
+)
+DEFAULT_OUTDIR = "experiments/nocturnal/results/pit_histograms"
 
 
 # ---------------------------------------------------------------------------

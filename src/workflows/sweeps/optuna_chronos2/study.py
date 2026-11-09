@@ -11,7 +11,7 @@ point at the same ``--storage`` and cooperatively explore one search space.
 Usage (single worker)::
 
     CUDA_VISIBLE_DEVICES=0 python -m src.workflows.sweeps.optuna_chronos2.study \\
-        run --config configs/experiments/nocturnal_forecast/chronos2_optuna_poc.yaml \\
+        run --config experiments/nocturnal/configs/chronos2_optuna_poc.yaml \\
         --n-trials 20 --gpu-label 0
 
 Use the ``create`` subcommand once to initialise the study, then launch workers

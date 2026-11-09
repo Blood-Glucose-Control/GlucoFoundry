@@ -13,6 +13,6 @@ cd "$PROJECT_ROOT"
 MODEL_TYPE="deepar" \
 TASK_FAMILY="${TASK_FAMILY:-forecasting}" \
 EXPERIMENT_TYPE="${EXPERIMENT_TYPE:-nocturnal_forecast}" \
-SWEEP_SPEC="configs/experiments/nocturnal_forecast/deepar_forecasting_train_sweep.yaml" \
+SWEEP_SPEC="experiments/nocturnal/configs/deepar_forecasting_train_sweep.yaml" \
 JOBS_PER_GPU="${JOBS_PER_GPU:-6}" \
 bash scripts/training/sweeps/run_sweep_train.sh "$@"

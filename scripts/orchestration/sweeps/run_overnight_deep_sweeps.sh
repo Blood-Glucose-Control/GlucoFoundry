@@ -66,7 +66,7 @@ PY
 record_failures() {
     local model="$1"
     local sweep_spec="$2"
-    local manifest="trained_models/artifacts/${model}/sweep_manifest.txt"
+    local manifest="experiments/nocturnal/trained_models/artifacts/${model}/sweep_manifest.txt"
     [[ -f "$manifest" ]] || touch "$manifest"
 
     local total=0 ok=0 missing=0
@@ -90,7 +90,7 @@ record_failures() {
 run_stage() {
     local model="$1"
     local sweep_script="scripts/training/sweeps/models/${model}_sweep_train.sh"
-    local sweep_spec="configs/experiments/nocturnal_forecast/${model}_forecasting_train_sweep.yaml"
+    local sweep_spec="experiments/nocturnal/configs/${model}_forecasting_train_sweep.yaml"
     local stage_log="${LOG_DIR}/overnight_${model}_train.log"
 
     echo ""

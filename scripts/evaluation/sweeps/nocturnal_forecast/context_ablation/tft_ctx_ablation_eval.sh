@@ -13,10 +13,10 @@ cd "$PROJECT_ROOT"
 MODEL_TYPE="tft" \
 TASK_FAMILY="${TASK_FAMILY:-forecasting}" \
 EXPERIMENT_TYPE="${EXPERIMENT_TYPE:-nocturnal_forecast}" \
-SWEEP_SPEC="configs/experiments/nocturnal_forecast/tft_ctx_ablation_forecasting_eval_sweep.yaml" \
+SWEEP_SPEC="experiments/nocturnal/configs/tft_ctx_ablation_forecasting_eval_sweep.yaml" \
 EVAL_PYTHON="${EVAL_PYTHON:-.venvs/autogluon/bin/python}" \
 JOBS_PER_GPU="${JOBS_PER_GPU:-10}" \
 bash scripts/evaluation/sweeps/run_sweep_eval.sh \
-  --manifest-path "trained_models/artifacts/tft/ctx_ablation_manifest.txt" \
+  --manifest-path "experiments/nocturnal/trained_models/artifacts/tft/ctx_ablation_manifest.txt" \
   --done-file "logs/tft_ctx_ablation_eval_done.log" \
   "$@"

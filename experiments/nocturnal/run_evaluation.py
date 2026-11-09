@@ -52,6 +52,7 @@ from experiments.nocturnal.grand_summary import (
 from src.data.utils import get_patient_column
 from src.data.versioning.dataset_registry import DatasetRegistry
 from src.evaluation.storage import write_nocturnal_results
+from src.experiments.registry import get_experiment_paths
 from src.utils import get_git_commit_hash, setup_file_logging
 from src.workflows.forecasting.modeling import (
     create_model_and_config,
@@ -82,10 +83,13 @@ def setup_output_directory(
     if output_dir is None:
         timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
         mode = "finetuned" if checkpoint else "zeroshot"
-        output_dir = (
-            f"./results/nocturnal_forecasting/"
-            f"{context_length}ctx_{forecast_length}fh/{model_name}/"
-            f"{timestamp}_{dataset_name}_{mode}"
+        results_root = get_experiment_paths("nocturnal").results
+        output_dir = str(
+            results_root
+            / "nocturnal_forecasting"
+            / f"{context_length}ctx_{forecast_length}fh"
+            / model_name
+            / f"{timestamp}_{dataset_name}_{mode}"
         )
 
     output_path = Path(output_dir)

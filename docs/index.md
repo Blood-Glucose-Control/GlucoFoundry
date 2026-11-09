@@ -15,12 +15,11 @@ improvements back upstream. The toolkit ships **code**, not experiment artifacts
 
 ```
 src/            core (experiment-agnostic): data, models, workflows, evaluation
-experiments/    droppable experiment recipes (e.g. experiments/nocturnal/)
-configs/        config templates (data, models, evaluation)
-scripts/        canonical CLI/sweep entry points
+experiments/    droppable, self-contained experiments (e.g. experiments/nocturnal/):
+                each owns its configs/, scripts/, results/, trained_models/
+configs/        toolkit-generic config templates (data, models, evaluation)
+scripts/        canonical experiment-agnostic CLI/sweep entry points
 tests/          core + recipe tests
-results/        run output — gitignored (populated locally)
-trained_models/ model weights — gitignored (populated locally)
 ```
 
 ## Getting started

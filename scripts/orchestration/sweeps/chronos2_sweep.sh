@@ -38,7 +38,7 @@ CONFIG_DIR="configs/data/holdout_10pct"
 WORKFLOW="scripts/workflows/forecasting/run_forecasting_workflow.sh"
 TRAIN_SCRIPT="scripts/training/sweeps/run_sweep_train.sh"
 
-ARTIFACT_BASE="trained_models/artifacts/chronos2"
+ARTIFACT_BASE="experiments/nocturnal/trained_models/artifacts/chronos2"
 LOG_DIR="logs"
 mkdir -p "$ARTIFACT_BASE" "$LOG_DIR"
 
@@ -107,7 +107,7 @@ echo "  (tail -f ${SWEEP_LOG} to monitor)"
 echo ""
 
 if MODEL_TYPE="chronos2" \
-   SWEEP_SPEC="configs/experiments/nocturnal_forecast/chronos2_forecasting_train_sweep.yaml" \
+   SWEEP_SPEC="experiments/nocturnal/configs/chronos2_forecasting_train_sweep.yaml" \
    GPUS="${GPUS:-}" \
    bash "$TRAIN_SCRIPT" 2>&1 | tee "$SWEEP_LOG"; then
     pass "Full sweep training complete."
@@ -119,7 +119,7 @@ echo ""
 echo "================================================================"
 echo "  All phases complete  $(date)"
 echo ""
-echo "  Sweep results land in results/nocturnal_forecasting/."
+echo "  Sweep results land in experiments/nocturnal/results/nocturnal_forecasting/."
 echo "  Summarise with:"
-echo "    python scripts/analysis/summarize_experiments.py"
+echo "    python experiments/nocturnal/scripts/analysis/summarize_experiments.py"
 echo "================================================================"

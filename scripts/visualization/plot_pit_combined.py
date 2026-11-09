@@ -27,7 +27,7 @@ Usage
     python scripts/visualization/plot_pit_combined.py \\
         --eval-dirs <dir1> <dir2> ... \\
         --labels    <label1> <label2> ... \\
-        --outdir    results/pit_combined/ \\
+        --outdir    experiments/nocturnal/results/pit_combined/ \\
         --step-bins 32 --annotate --no-pdf
 """
 
@@ -99,8 +99,10 @@ TOTAL_STEPS: int = 96
 N_BINS: int = 10  # PIT-value buckets (Y-axis of heatmap, X-axis of histogram)
 UNIFORM_DENSITY: float = 1.0
 
-DEFAULT_BEST_CSV = "results/nocturnal_forecasting/best_by_model_dataset.csv"
-DEFAULT_OUTDIR = "results/pit_combined"
+DEFAULT_BEST_CSV = (
+    "experiments/nocturnal/results/nocturnal_forecasting/best_by_model_dataset.csv"
+)
+DEFAULT_OUTDIR = "experiments/nocturnal/results/pit_combined"
 
 
 # ---------------------------------------------------------------------------
