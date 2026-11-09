@@ -13,7 +13,7 @@ cd "$PROJECT_ROOT"
 MODEL_TYPE="statistical" \
 TASK_FAMILY="${TASK_FAMILY:-forecasting}" \
 EXPERIMENT_TYPE="${EXPERIMENT_TYPE:-nocturnal_forecast}" \
-SWEEP_SPEC="configs/experiments/nocturnal_forecast/statistical_forecasting_eval_sweep.yaml" \
+SWEEP_SPEC="experiments/nocturnal/configs/statistical_forecasting_eval_sweep.yaml" \
 EVAL_PYTHON="${EVAL_PYTHON:-.venvs/autogluon/bin/python}" \
 JOBS_PER_GPU="${JOBS_PER_GPU:-${JOBS_PER_CPU:-4}}" \
 bash scripts/evaluation/sweeps/run_sweep_eval.sh "$@"

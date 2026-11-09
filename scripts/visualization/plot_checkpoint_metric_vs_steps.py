@@ -25,11 +25,11 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-DEFAULT_CHECKPOINT_BASE = (
-    "results/nocturnal_forecasting/512ctx_96fh/chronos2/250k_checkpoints"
-)
+DEFAULT_CHECKPOINT_BASE = "experiments/nocturnal/results/nocturnal_forecasting/512ctx_96fh/chronos2/250k_checkpoints"
 DEFAULT_RESULTS_FILE = "nocturnal_results.json"
-DEFAULT_OUTPUT_PATH = "results/checkpoint_wql_vs_steps_all_datasets.png"
+DEFAULT_OUTPUT_PATH = (
+    "experiments/nocturnal/results/checkpoint_wql_vs_steps_all_datasets.png"
+)
 DEFAULT_DATASETS = ["aleppo_2017", "brown_2019", "lynch_2022"]
 COLORS = {"aleppo_2017": "#1f77b4", "brown_2019": "#ff7f0e", "lynch_2022": "#2ca02c"}
 LABELS = {

@@ -62,9 +62,12 @@ src/data/diabetes_datasets/**/test.csv
 src/data/diabetes_datasets/**/sample_submission.csv
 src/data/diabetes_datasets/**/processed/*
 scripts/notebooks/**/*.csv
-# trained_models/ ships empty (README only); runs populate it locally.
-trained_models/*
-!trained_models/README.md
+# Root results/ and trained_models/ are gitignored scratch for ad-hoc generic
+# runs. Experiments own their artifacts under experiments/<name>/, which ship a
+# committed README scaffold only.
+/trained_models/
+experiments/*/trained_models/*
+!experiments/*/trained_models/README.md
 # Ignore sensative Groo files
 
 
@@ -73,9 +76,11 @@ scripts/notebooks/AutogluonModels*
 cache/data/gluroo/processed/parquet/*
 
 
-# results/ ships empty (README only); experiment runs populate it locally.
-results/*
-!results/README.md
+# Root results/ is gitignored scratch for ad-hoc generic runs. Experiment run
+# outputs live under experiments/<name>/results/ (committed README scaffold only).
+/results/
+experiments/*/results/*
+!experiments/*/results/README.md
 
 # Local-only research notes
 notes/
@@ -226,5 +231,5 @@ logs/*.txt
 # Competition-private Chronos-2 x Optuna search configs, studies, and results.
 # Keep tuned search spaces / winning configs OFF the public remote.
 /private/
-results/optuna/
+experiments/nocturnal/results/optuna/
 optuna_chronos2_*.db

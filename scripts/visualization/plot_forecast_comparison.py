@@ -15,11 +15,11 @@ Two-stage workflow to handle models that require different Python environments:
 
       source scripts/setup_model_env.sh autogluon
       python scripts/visualization/plot_forecast_comparison.py --model chronos2::Chronos2 --no-plot
-      # → prints: Results cached at: results/forecast_comparisons/a3f82c1d.json
+      # → prints: Results cached at: experiments/nocturnal/results/forecast_comparisons/a3f82c1d.json
 
       source scripts/setup_model_env.sh ttm
       python scripts/visualization/plot_forecast_comparison.py --model ttm::TTM --no-plot
-      # → prints: Results cached at: results/forecast_comparisons/9b14e702.json
+      # → prints: Results cached at: experiments/nocturnal/results/forecast_comparisons/9b14e702.json
 
   Both runs must use the same --dataset, --seed, --n-patients (or --patients),
   and --forecast-length so the patient lists match for comparison.
@@ -28,9 +28,9 @@ Two-stage workflow to handle models that require different Python environments:
 
       python scripts/visualization/plot_forecast_comparison.py \\
           --from-results \\
-              results/forecast_comparisons/a3f82c1d.json \\
-              results/forecast_comparisons/9b14e702.json
-      # → saves figure + sidecar to results/forecast_comparisons/
+              experiments/nocturnal/results/forecast_comparisons/a3f82c1d.json \\
+              experiments/nocturnal/results/forecast_comparisons/9b14e702.json
+      # → saves figure + sidecar to experiments/nocturnal/results/forecast_comparisons/
       # Grid: n_patients rows x 4 cols (P10/P30/P60/P90 RMSE per patient)
       # Override percentile columns: --percentiles 25 50 75
 
@@ -38,7 +38,7 @@ Two-stage workflow to handle models that require different Python environments:
 
       python -c "
       import json, pathlib
-      for f in sorted(pathlib.Path('results/forecast_comparisons').glob('*.json')):
+      for f in sorted(pathlib.Path('experiments/nocturnal/results/forecast_comparisons').glob('*.json')):
           m = json.loads(f.read_text())['metadata']
           print(f, m['label'], m['dataset'], 'seed=' + str(m['seed']))
       "
@@ -48,7 +48,7 @@ Two-stage workflow to handle models that require different Python environments:
 
       python scripts/visualization/plot_forecast_comparison.py \\
           --model ttm::TTM-v1 \\
-          --model ttm:trained_models/artifacts/ttm-ft-iob:TTM-IOB
+          --model ttm:experiments/nocturnal/trained_models/artifacts/ttm-ft-iob:TTM-IOB
 
   After Stage 1 the script prints the result file path(s); pass those
   to --from-results in Stage 2. Inference results are cached by content
@@ -85,8 +85,8 @@ DEFAULT_PERCENTILES = [10, 30, 70, 90]
 DEFAULT_SEED = 42
 DEFAULT_HOLDOUT_CONFIG_DIR = "configs/data/holdout_10pct"
 
-RESULTS_DIR = Path("results/forecast_comparisons")
-FIGURES_DIR = Path("results/forecast_comparisons")
+RESULTS_DIR = Path("experiments/nocturnal/results/forecast_comparisons")
+FIGURES_DIR = Path("experiments/nocturnal/results/forecast_comparisons")
 
 COLOR_CYCLE = [
     "#1f77b4",

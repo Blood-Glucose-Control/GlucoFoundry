@@ -13,11 +13,11 @@ cd "$PROJECT_ROOT"
 MODEL_TYPE="patchtst" \
 TASK_FAMILY="${TASK_FAMILY:-forecasting}" \
 EXPERIMENT_TYPE="${EXPERIMENT_TYPE:-nocturnal_forecast}" \
-SWEEP_SPEC="configs/experiments/nocturnal_forecast/patchtst_ctx_ablation_forecasting_train_sweep.yaml" \
+SWEEP_SPEC="experiments/nocturnal/configs/patchtst_ctx_ablation_forecasting_train_sweep.yaml" \
 VENV_NAME="${VENV_NAME:-chronos2}" \
 SKIP_STEPS="${SKIP_STEPS:-1 2 4 7}" \
 JOBS_PER_GPU="${JOBS_PER_GPU:-2}" \
 bash scripts/training/sweeps/run_sweep_train.sh \
-  --artifacts-root "trained_models/artifacts/patchtst" \
-  --manifest-path "trained_models/artifacts/patchtst/ctx_ablation_manifest.txt" \
+  --artifacts-root "experiments/nocturnal/trained_models/artifacts/patchtst" \
+  --manifest-path "experiments/nocturnal/trained_models/artifacts/patchtst/ctx_ablation_manifest.txt" \
   "$@"

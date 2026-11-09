@@ -29,8 +29,8 @@ Usage
 -----
     python scripts/visualization/plot_coverage_error_2d.py
     python scripts/visualization/plot_coverage_error_2d.py \\
-        --summary results/nocturnal_forecasting/summary.csv \\
-        --out results/coverage_error_2d.png
+        --summary experiments/nocturnal/results/nocturnal_forecasting/summary.csv \\
+        --out experiments/nocturnal/results/coverage_error_2d.png
 """
 
 from __future__ import annotations
@@ -76,8 +76,8 @@ DATASET_LABELS: dict[str, str] = {
     "tamborlane_2008": "Tamborlane 2008",
 }
 
-DEFAULT_SUMMARY = "results/nocturnal_forecasting/summary.csv"
-DEFAULT_OUT = "results/coverage_error_2d.png"
+DEFAULT_SUMMARY = "experiments/nocturnal/results/nocturnal_forecasting/summary.csv"
+DEFAULT_OUT = "experiments/nocturnal/results/coverage_error_2d.png"
 
 
 # ---------------------------------------------------------------------------

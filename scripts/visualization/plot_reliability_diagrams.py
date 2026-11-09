@@ -33,8 +33,8 @@ Usage
 -----
     python scripts/visualization/plot_reliability_diagrams.py
     python scripts/visualization/plot_reliability_diagrams.py \\
-        --best-csv results/nocturnal_forecasting/best_by_model_dataset.csv \\
-        --outdir   results/reliability_diagrams
+        --best-csv experiments/nocturnal/results/nocturnal_forecasting/best_by_model_dataset.csv \\
+        --outdir   experiments/nocturnal/results/reliability_diagrams
 """
 
 from __future__ import annotations
@@ -93,8 +93,10 @@ MODEL_LABELS: Dict[str, str] = {
     "sundial": "Sundial",
 }
 
-DEFAULT_BEST_CSV = "results/nocturnal_forecasting/best_by_model_dataset.csv"
-DEFAULT_OUTDIR = "results/reliability_diagrams"
+DEFAULT_BEST_CSV = (
+    "experiments/nocturnal/results/nocturnal_forecasting/best_by_model_dataset.csv"
+)
+DEFAULT_OUTDIR = "experiments/nocturnal/results/reliability_diagrams"
 
 
 # ---------------------------------------------------------------------------

@@ -29,6 +29,7 @@ from typing import Any
 
 # Local imports
 from src.experiments.base.experiment import ExperimentSummarizer
+from src.experiments.registry import get_experiment_paths
 
 from .grand_summary import (
     bucket_from_covariates,
@@ -72,11 +73,14 @@ class NocturnalSummarizer(ExperimentSummarizer):
     Parameters
     ----------
     experiments_root:
-        Path to the top-level ``experiments/`` directory.  Defaults to
-        ``"experiments"`` (relative to the working directory).
+        Directory holding this experiment's run artifacts. Defaults to the
+        nocturnal experiment's ``results/`` directory (resolved via
+        :func:`~src.experiments.registry.get_experiment_paths`).
     """
 
-    def __init__(self, experiments_root: str | Path = "results") -> None:
+    def __init__(self, experiments_root: str | Path | None = None) -> None:
+        if experiments_root is None:
+            experiments_root = get_experiment_paths("nocturnal").results
         super().__init__(experiments_root, _EXPERIMENT_TYPE)
 
     # ------------------------------------------------------------------

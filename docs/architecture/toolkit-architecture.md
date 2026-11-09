@@ -14,12 +14,11 @@ improvements back upstream. The installed library ships **code**, not artifacts.
 
 ```
 src/            core (experiment-agnostic): data, models, workflows, evaluation
-experiments/    droppable experiment recipes (e.g. experiments/nocturnal/)
-configs/        config templates (data, models, evaluation)
-scripts/        canonical CLI/sweep entry points
+experiments/    droppable, self-contained experiments (e.g. experiments/nocturnal/):
+                each owns its configs/, scripts/, results/, trained_models/
+configs/        toolkit-generic config templates (data, models, evaluation)
+scripts/        canonical experiment-agnostic CLI/sweep entry points
 tests/          core + recipe tests
-results/        run output — gitignored (populated locally)
-trained_models/ model weights — gitignored (populated locally)
 ```
 
 ## The core is experiment-agnostic
@@ -128,10 +127,12 @@ tied to any one experiment.
 
 ## Artifact scaffolding
 
-`results/` and `trained_models/` ship as **empty but present** directories (a
-README only); everything else under them is gitignored. The toolkit ships the
-code to produce artifacts, not the artifacts. Experiment output is written under
-`results/<experiment>/…` locally.
+Each experiment owns its artifacts: `experiments/<name>/results/` and
+`experiments/<name>/trained_models/` ship as **README-only** directories;
+everything else under them is gitignored. The toolkit ships the code to produce
+artifacts, not the artifacts. Run output is written under the experiment's own
+`results/` locally, and can be redirected to scratch/external storage with the
+`GLUCOFOUNDRY_ARTIFACTS_ROOT` environment variable.
 
 ## Adding a new experiment
 

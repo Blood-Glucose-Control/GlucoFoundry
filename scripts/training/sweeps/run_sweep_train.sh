@@ -9,7 +9,7 @@
 #   GPUS, JOBS_PER_GPU, CONFIG_DIR, SKIP_STEPS, DRY_RUN
 #
 # Examples:
-#   MODEL_TYPE=chronos2 SWEEP_SPEC=configs/experiments/nocturnal_forecast/chronos2_forecasting_train_sweep.yaml \
+#   MODEL_TYPE=chronos2 SWEEP_SPEC=experiments/nocturnal/configs/chronos2_forecasting_train_sweep.yaml \
 #     bash scripts/training/sweeps/run_sweep_train.sh
 #   DRY_RUN=1 GPUS="0" JOBS_PER_GPU=1 bash scripts/training/sweeps/run_sweep_train.sh
 
@@ -20,7 +20,7 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
 cd "$PROJECT_ROOT"
 
 MODEL_TYPE="${MODEL_TYPE:-chronos2}"
-SWEEP_SPEC="${SWEEP_SPEC:-configs/experiments/nocturnal_forecast/chronos2_forecasting_train_sweep.yaml}"
+SWEEP_SPEC="${SWEEP_SPEC:-experiments/nocturnal/configs/chronos2_forecasting_train_sweep.yaml}"
 TASK_FAMILY="${TASK_FAMILY:-forecasting}"
 EXPERIMENT_TYPE="${EXPERIMENT_TYPE:-nocturnal_forecast}"
 

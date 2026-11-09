@@ -72,7 +72,7 @@ import numpy as np
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-DEFAULT_OUTPUT_DIR = "results/figures/forecast_episode_overlays"
+DEFAULT_OUTPUT_DIR = "experiments/nocturnal/results/figures/forecast_episode_overlays"
 DEFAULT_COMBINED_NAME = "forecast_episodes_combined.png"
 DEFAULT_STEP_MINUTES = 5
 

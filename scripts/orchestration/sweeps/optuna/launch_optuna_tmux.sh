@@ -51,7 +51,7 @@ cd "$PROJECT_ROOT"
 
 TRIALS_PER_GPU="${TRIALS_PER_GPU:-2}"
 N_TRIALS="${N_TRIALS:-20}"
-CONFIG="${CONFIG:-configs/experiments/nocturnal_forecast/chronos2_optuna_poc.yaml}"
+CONFIG="${CONFIG:-experiments/nocturnal/configs/chronos2_optuna_poc.yaml}"
 SESSION="${SESSION:-optuna_chronos2}"
 PYTHON="${PYTHON:-.venvs/autogluon/bin/python}"
 # Sweep worker module: default is the Chronos-2 sweep; set to

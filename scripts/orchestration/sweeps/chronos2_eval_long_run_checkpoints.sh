@@ -16,23 +16,23 @@
 #   # Evaluate all datasets (default):
 #   MODEL_CONFIG=configs/models/chronos2/<config>.yaml \
 #   bash scripts/orchestration/sweeps/chronos2_eval_long_run_checkpoints.sh \
-#       trained_models/artifacts/chronos2/<run_id>_forecasting_workflow
+#       experiments/nocturnal/trained_models/artifacts/chronos2/<run_id>_forecasting_workflow
 #
 #   # Evaluate a single dataset:
 #   DATASETS="brown_2019" \
 #   MODEL_CONFIG=configs/models/chronos2/<config>.yaml \
 #   bash scripts/orchestration/sweeps/chronos2_eval_long_run_checkpoints.sh \
-#       trained_models/artifacts/chronos2/<run_id>_forecasting_workflow
+#       experiments/nocturnal/trained_models/artifacts/chronos2/<run_id>_forecasting_workflow
 #
 #   # Override CUDA device (default: 0):
 #   CUDA_DEVICE=1 \
 #   MODEL_CONFIG=configs/models/chronos2/<config>.yaml \
 #   bash scripts/orchestration/sweeps/chronos2_eval_long_run_checkpoints.sh \
-#       trained_models/artifacts/chronos2/<run_id>_forecasting_workflow
+#       experiments/nocturnal/trained_models/artifacts/chronos2/<run_id>_forecasting_workflow
 #
 # OUTPUT
 # ------
-#   results/nocturnal_forecasting/512ctx_96fh/chronos2/
+#   experiments/nocturnal/results/nocturnal_forecasting/512ctx_96fh/chronos2/
 #     long_run_checkpoints/          (override with OUTPUT_BASE=)
 #       step_5000_aleppo_2017/
 #         nocturnal_results.json
@@ -57,7 +57,7 @@ MODEL_CONFIG="${MODEL_CONFIG:-configs/models/chronos2/99_250k_checkpoints.yaml}"
 
 EVAL="python scripts/evaluation/nocturnal_hypo_eval.py"
 CONFIG_DIR="configs/data/holdout_10pct"
-OUTPUT_BASE="${OUTPUT_BASE:-results/nocturnal_forecasting/512ctx_96fh/chronos2/long_run_checkpoints}"
+OUTPUT_BASE="${OUTPUT_BASE:-experiments/nocturnal/results/nocturnal_forecasting/512ctx_96fh/chronos2/long_run_checkpoints}"
 
 SNAPSHOTS_DIR="${ARTIFACT_DIR}/snapshots"
 

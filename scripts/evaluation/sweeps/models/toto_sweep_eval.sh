@@ -13,7 +13,7 @@ cd "$PROJECT_ROOT"
 MODEL_TYPE="toto" \
 TASK_FAMILY="${TASK_FAMILY:-forecasting}" \
 EXPERIMENT_TYPE="${EXPERIMENT_TYPE:-nocturnal_forecast}" \
-SWEEP_SPEC="configs/experiments/nocturnal_forecast/toto_forecasting_eval_sweep.yaml" \
+SWEEP_SPEC="experiments/nocturnal/configs/toto_forecasting_eval_sweep.yaml" \
 EVAL_PYTHON="${EVAL_PYTHON:-.venvs/toto/bin/python}" \
 GPUS="${GPUS:-${CUDA_VISIBLE_DEVICES:-0}}" \
 JOBS_PER_GPU="${JOBS_PER_GPU:-1}" \
