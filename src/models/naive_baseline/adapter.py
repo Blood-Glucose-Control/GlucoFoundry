@@ -13,7 +13,7 @@ def build_naive_baseline_adapter(
 ) -> ModelAdapter[NaiveBaselineConfig]:
     """Return a protocol-typed NaiveBaselineForecaster instance.
 
-    This is the Phase A reference port proving one existing model family can be
+    This is a reference adapter demonstrating how an existing model family is
     consumed through the common ModelAdapter contract without behavior changes.
     """
     return assert_model_adapter(NaiveBaselineForecaster(config))
