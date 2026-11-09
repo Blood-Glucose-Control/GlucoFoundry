@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import importlib.util
 import logging
+import os
 import sys
 import threading
 from dataclasses import dataclass
@@ -117,6 +118,95 @@ def experiments_root() -> Path:
     ``src/experiments/registry.py`` -> ``parents[2]`` is the repository root.
     """
     return Path(__file__).resolve().parents[2] / "experiments"
+
+
+#: Environment variable that redirects large run artifacts (results/ and
+#: trained_models/) to external/scratch storage. Configs always stay in the
+#: versioned experiment directory.
+ARTIFACTS_ROOT_ENV = "GLUCOFOUNDRY_ARTIFACTS_ROOT"
+
+
+@dataclass(frozen=True)
+class ExperimentPaths:
+    """Canonical on-disk locations an experiment owns.
+
+    An experiment is self-contained under ``experiments/<name>/``: versioned
+    inputs (``configs/``) plus run artifacts (``results/``, ``trained_models/``).
+    Artifacts may be redirected to scratch/external storage via
+    :data:`ARTIFACTS_ROOT_ENV` without moving the versioned ``configs/``.
+
+    Attributes:
+        name: Experiment identifier (e.g. ``"nocturnal"``).
+        root: ``experiments/<name>/``.
+        configs: ``experiments/<name>/configs/`` (always repo-local).
+        scripts: ``experiments/<name>/scripts/`` (always repo-local).
+        docs: ``experiments/<name>/docs/`` (always repo-local).
+        results: Run outputs (under ``root`` or the artifacts override).
+        trained_models: Saved checkpoints (under ``root`` or the override).
+    """
+
+    name: str
+    root: Path
+    configs: Path
+    scripts: Path
+    docs: Path
+    results: Path
+    trained_models: Path
+
+    def ensure(self) -> "ExperimentPaths":
+        """Create the ``results/`` and ``trained_models/`` dirs (idempotent)."""
+        self.results.mkdir(parents=True, exist_ok=True)
+        self.trained_models.mkdir(parents=True, exist_ok=True)
+        return self
+
+
+def get_experiment_paths(
+    name: str, *, artifacts_root: str | Path | None = None
+) -> ExperimentPaths:
+    """Resolve the canonical paths an experiment owns.
+
+    Args:
+        name: Experiment identifier.
+        artifacts_root: Optional override root for large run artifacts
+            (``results/`` + ``trained_models/``). Falls back to the
+            ``GLUCOFOUNDRY_ARTIFACTS_ROOT`` env var, then to the experiment
+            directory itself. ``configs/`` always stays repo-local.
+
+    Returns:
+        An :class:`ExperimentPaths` for ``experiments/<name>/`` (artifacts
+        redirected under ``<artifacts_root>/<name>/`` when an override is set).
+    """
+    if not isinstance(name, str) or not name.strip():
+        raise ValueError("experiment name must be a non-empty string")
+    name = name.strip()
+    if (
+        name in {os.curdir, os.pardir}
+        or "/" in name
+        or "\\" in name
+        or os.sep in name
+        or (os.altsep is not None and os.altsep in name)
+    ):
+        raise ValueError(
+            "experiment name must be a single path component without path "
+            f"separators or '.'/'..': {name!r}"
+        )
+
+    root = experiments_root() / name
+    override = (
+        artifacts_root
+        if artifacts_root is not None
+        else os.environ.get(ARTIFACTS_ROOT_ENV)
+    )
+    artifacts_base = Path(override).expanduser() / name if override else root
+    return ExperimentPaths(
+        name=name,
+        root=root,
+        configs=root / "configs",
+        scripts=root / "scripts",
+        docs=root / "docs",
+        results=artifacts_base / "results",
+        trained_models=artifacts_base / "trained_models",
+    )
 
 
 def discover_experiments(root: Path | None = None, *, force: bool = False) -> None:
