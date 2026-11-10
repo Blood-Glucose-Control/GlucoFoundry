@@ -12,15 +12,15 @@ produce DIFFERENT RMSE numbers and must never be compared on the same leaderboar
 
 Usage:
     # Zero-shot:
-    python scripts/evaluation/nocturnal_hypo_eval.py --model chronos2 --dataset brown_2019
+    python experiments/nocturnal/scripts/evaluation/nocturnal_hypo_eval.py --model chronos2 --dataset brown_2019
 
     # Fine-tuned with checkpoint:
-    python scripts/evaluation/nocturnal_hypo_eval.py \
+    python experiments/nocturnal/scripts/evaluation/nocturnal_hypo_eval.py \
         --model chronos2 --dataset tamborlane_2008 \
         --checkpoint trained_models/artifacts/chronos2/.../model.pt
 
     # Full options:
-    python scripts/evaluation/nocturnal_hypo_eval.py \
+    python experiments/nocturnal/scripts/evaluation/nocturnal_hypo_eval.py \
         --model chronos2 --dataset brown_2019 \
         --config-dir configs/data/holdout_10pct \
         --context-length 512 --forecast-length 96 \

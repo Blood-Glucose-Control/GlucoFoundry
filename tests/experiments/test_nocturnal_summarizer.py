@@ -6,7 +6,7 @@ Tests for NocturnalSummarizer.
 
 Uses a temporary directory tree with synthetic ``nocturnal_results.json``
 and ``experiment_config.json`` files matching the structure produced by
-``scripts/evaluation/nocturnal_hypo_eval.py``.
+``experiments/nocturnal/scripts/evaluation/nocturnal_hypo_eval.py``.
 """
 
 import json

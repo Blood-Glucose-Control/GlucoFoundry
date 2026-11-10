@@ -9,7 +9,7 @@
 # RMSE / MARD / DTS at +30/+60/+90/+120 are also recorded per trial.
 #
 # A shared SQLite study lets multiple GPU-pinned tmux workers cooperate.
-# Launch with scripts/orchestration/sweeps/optuna/launch_optuna_tmux.sh
+# Launch with experiments/nocturnal/scripts/sweeps/optuna/launch_optuna_tmux.sh
 # =============================================================================
 
 study_name: "chronos2_metabonet_poc"

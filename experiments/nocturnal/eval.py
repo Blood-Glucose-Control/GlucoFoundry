@@ -9,7 +9,7 @@ clinical evaluation mode for this project. Context ends at midnight (00:00), and
 the model forecasts 6 hours overnight when hypoglycemia risk is highest.
 
 These functions back the nocturnal evaluation entry point
-(``scripts/evaluation/nocturnal_hypo_eval.py`` → ``experiments.nocturnal.run_evaluation``).
+(``experiments/nocturnal/scripts/evaluation/nocturnal_hypo_eval.py`` → ``experiments.nocturnal.run_evaluation``).
 
 Distinct from sliding-window evaluation (general forecast accuracy across all
 times of day): these two modes produce different RMSE numbers and must never

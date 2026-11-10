@@ -20,106 +20,17 @@ Model-specific one-off experiment scripts were retired from the maintained
 toolkit surface. Reproduce model-specific workflows via the canonical entrypoints
 (the forecasting pipeline and the Python-first sweep framework) described below.
 
-## Python-first sweep orchestration
+## Sweep orchestration (Optuna)
 
-Sweep orchestration now uses model-agnostic Python entrypoints with canonical
-taxonomy-aligned shell launchers:
+Hyperparameter sweeps run through per-model-family **Optuna** studies in
+[`src/workflows/sweeps/`](/src/workflows/sweeps) (for example
+`src/workflows/sweeps/optuna_chronos2/study.py`). The earlier hand-rolled shell
+sweep harness was removed in favor of this Optuna-based orchestration.
 
-- Generic training CLI: `scripts/orchestration/sweeps/sweep_train.py`
-- Generic evaluation CLI: `scripts/orchestration/sweeps/sweep_eval.py`
-- Canonical training launcher: `scripts/training/sweeps/run_sweep_train.sh`
-- Canonical evaluation launcher: `scripts/evaluation/sweeps/run_sweep_eval.sh`
-
-Model-family sweep shell entrypoints are now canonicalized under:
-
-- `scripts/training/sweeps/models/*_sweep_train.sh`
-- `scripts/evaluation/sweeps/models/*_sweep_eval.sh`
-
-The Python sweep CLIs are now dispatcher entrypoints keyed by:
-
-- `--task-family` / `TASK_FAMILY`
-- `--experiment-type` / `EXPERIMENT_TYPE`
-
-Currently implemented adapter:
-
-- `task-family=forecasting`, `experiment-type=nocturnal_forecast`
-- deferred future adapter key (P4/Fall roadmap):
-  - `task-family=event_detection`, `experiment-type=nocturnal_events`
-
-Discover available adapters:
-
-```bash
-python scripts/orchestration/sweeps/sweep_train.py --list-adapters
-python scripts/orchestration/sweeps/sweep_eval.py --list-adapters
-```
-
-Forecasting sweep profile specs:
-
-- `experiments/nocturnal/configs/*_forecasting_train_sweep.yaml`
-- `experiments/nocturnal/configs/*_forecasting_eval_sweep.yaml`
-- `experiments/nocturnal/configs/*_ctx_ablation_forecasting_train_sweep.yaml`
-- `experiments/nocturnal/configs/*_ctx_ablation_forecasting_eval_sweep.yaml`
-
-Concrete examples:
-
-- `experiments/nocturnal/configs/chronos2_forecasting_train_sweep.yaml`
-- `experiments/nocturnal/configs/moment_forecasting_train_sweep.yaml`
-- `experiments/nocturnal/configs/timesfm_forecasting_eval_sweep.yaml`
-- `experiments/nocturnal/configs/tft_ctx_ablation_forecasting_eval_sweep.yaml`
-
-Local usage:
-
-```bash
-MODEL_TYPE=chronos2 \
-TASK_FAMILY=forecasting \
-EXPERIMENT_TYPE=nocturnal_forecast \
-SWEEP_SPEC=experiments/nocturnal/configs/chronos2_forecasting_train_sweep.yaml \
-GPUS="0 1" JOBS_PER_GPU=2 \
-bash scripts/training/sweeps/run_sweep_train.sh
-```
-
-Path-check (no training execution):
-
-```bash
-DRY_RUN=1 GPUS="0" JOBS_PER_GPU=1 bash scripts/training/sweeps/run_sweep_train.sh
-```
-
-Chronos-2 eval path-check (no evaluation execution):
-
-```bash
-DRY_RUN=1 GPUS="0" JOBS_PER_GPU=1 bash scripts/evaluation/sweeps/run_sweep_eval.sh
-```
-
-Generic config-directory mode (same datasets applied to every model config):
-
-```bash
-python scripts/orchestration/sweeps/sweep_train.py \
-  --model-type chronos2 \
-  --model-config-dir configs/models/chronos2 \
-  --datasets aleppo_2017 brown_2019 lynch_2022 tamborlane_2008 \
-  --gpus "0 1" \
-  --jobs-per-gpu 2 \
-  --dry-run
-```
-
-## Multi-stage orchestration chains
-
-Canonical chain/orchestration scripts now live under:
-
-- `scripts/orchestration/sweeps/chronos2_eval_long_run_checkpoints.sh`
-- `scripts/orchestration/sweeps/run_ctx_ablation_sweeps.sh`
-- `scripts/orchestration/sweeps/run_overnight_deep_sweeps.sh`
-
-Context-ablation model scripts are canonicalized as a `nocturnal_forecast`
-sub-experiment under:
-
-- `scripts/training/sweeps/nocturnal_forecast/context_ablation/`
-- `scripts/evaluation/sweeps/nocturnal_forecast/context_ablation/`
-
-Context-ablation evaluation is available directly on the nocturnal evaluation
-entry point via `--episode-context-length` (episodes are selected at that length
-while the model sees `--context-length` steps, enabling apples-to-apples context
-comparisons).
+The nocturnal experiment drives its Optuna runs from
+[`experiments/nocturnal/scripts/sweeps/optuna/`](/experiments/nocturnal/scripts/sweeps/optuna)
+(launcher + feature-cache prebuild), seeded by
+`experiments/nocturnal/configs/chronos2_optuna_poc.yaml`.
 
 ## Canonical workflow example
 
@@ -160,15 +71,10 @@ flowchart LR
     D[configs/data + raw/prepared inputs]
     W[scripts/workflows/*]
     SW[src/workflows/*]
-    E[scripts/evaluation/*]
-    O[scripts/orchestration/*]
-    A[experiments/nocturnal/scripts/analysis/* + scripts/visualization/*]
+    A["experiments/nocturnal/scripts/{analysis,visualization}/*"]
 
     D --> W --> SW
-    SW --> E
-    SW --> O
-    E --> A
-    O --> A
+    SW --> A
 ```
 
 Shared visualization helpers for retained nocturnal plotting scripts now live in
@@ -202,18 +108,12 @@ depended on model-base surfaces that were already pruned from runtime. If you ne
 the old behavior, use git history for reference and prefer rebuilding on top of
 the maintained scripts listed above.
 
-## Generic visualization entrypoints (Wave 4)
+## Generic visualization entrypoints
 
-Wave 4 removes model-specific visualization entrypoints in favor of generic
-plotting contracts:
+Visualization entrypoints use generic plotting contracts and live with the
+experiment that produces their inputs:
 
-- [`plot_probabilistic_forecast_grid.py`](/scripts/visualization/plot_probabilistic_forecast_grid.py)
-- [`plot_forecast_episode_overlays.py`](/scripts/visualization/plot_forecast_episode_overlays.py)
+- [`plot_probabilistic_forecast_grid.py`](/experiments/nocturnal/scripts/visualization/plot_probabilistic_forecast_grid.py)
+- [`plot_forecast_episode_overlays.py`](/experiments/nocturnal/scripts/visualization/plot_forecast_episode_overlays.py)
 
 Each script documents its required input data format at the top of the file.
-
-Retained step-sweep visualization scripts are also now model-agnostic via CLI
-series mapping instead of hardcoded model/config labels:
-
-- [`plot_step_sweep.py`](/scripts/visualization/plot_step_sweep.py)
-- [`plot_step_sweep_long_run.py`](/scripts/visualization/plot_step_sweep_long_run.py)
