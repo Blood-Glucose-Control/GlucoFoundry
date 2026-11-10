@@ -28,6 +28,10 @@ _SLUG_RE = re.compile(r"^[a-z][a-z0-9_]*$")
 # ---------------------------------------------------------------------------
 # Locations
 # ---------------------------------------------------------------------------
+class ScaffolderError(RuntimeError):
+    """Raised when the scaffolder cannot run (e.g. templates are unavailable)."""
+
+
 def repo_root() -> Path:
     """Repository root (``src/cli/new_experiment.py`` → parents[2])."""
     return Path(__file__).resolve().parents[2]
@@ -37,9 +41,27 @@ def templates_dir() -> Path:
     return repo_root() / "templates"
 
 
+def require_templates() -> Path:
+    """Return the templates directory, or raise a clear error if it is missing.
+
+    The scaffolder writes ``experiments/<name>/`` into the repository and renders
+    ``templates/experiment/``, so it must run from a GlucoFoundry source checkout
+    (for example a fork installed with ``pip install -e .``) rather than a
+    packaged wheel, where ``templates/`` is not available.
+    """
+    root = templates_dir()
+    if not (root / "experiment.yaml").is_file() or not (root / "experiment").is_dir():
+        raise ScaffolderError(
+            f"Scaffold templates not found at {root}. Run `glucofoundry "
+            "new-experiment` from a GlucoFoundry source checkout (e.g. a fork "
+            "installed with `pip install -e .`), not from a packaged wheel."
+        )
+    return root
+
+
 def load_manifest() -> dict[str, Any]:
     """Load the interview manifest (``templates/experiment.yaml``)."""
-    return yaml.safe_load((templates_dir() / "experiment.yaml").read_text())
+    return yaml.safe_load((require_templates() / "experiment.yaml").read_text())
 
 
 # ---------------------------------------------------------------------------
@@ -182,7 +204,7 @@ def render_experiment(
         raise FileExistsError(f"{dest} already exists (use --force to overwrite)")
 
     tokens = {**answers, **derive_tokens(answers)}
-    src = templates_dir() / "experiment"
+    src = require_templates() / "experiment"
     for path in sorted(src.rglob("*")):
         if path.is_dir():
             continue
@@ -292,5 +314,11 @@ def run(args: argparse.Namespace) -> int:
     print("Next steps:")
     print(f"  1. Implement the stubs in {dest.name}/episodes.py, eval.py, summarize.py")
     print(f"  2. Add data/model configs under {dest.name}/configs/")
-    print(f"  3. Run the forecasting workflow with --experiment {name}")
+    if answers["task_family"] == "forecasting":
+        print(f"  3. Run the forecasting workflow with --experiment {name}")
+    else:
+        print(
+            f"  3. Wire up a {answers['task_family']} workflow for this "
+            f"experiment (--experiment {name})"
+        )
     return 0

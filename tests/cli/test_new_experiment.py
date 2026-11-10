@@ -194,3 +194,29 @@ def test_run_interview_scripted(manifest: dict) -> None:
     assert answers["task_family"] == "forecasting"  # first numbered choice
     assert answers["models"] == ["ttm", "chronos2"]
     assert answers["target_col"] == "bg_mM"  # default via empty input
+
+
+def test_require_templates_missing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        ne, "templates_dir", lambda: tmp_path
+    )  # no experiment.yaml here
+    with pytest.raises(ne.ScaffolderError):
+        ne.require_templates()
+
+
+def test_next_steps_message_non_forecasting(
+    tmp_path: Path, capsys: pytest.CaptureFixture
+) -> None:
+    answers_file = tmp_path / "answers.yaml"
+    answers_file.write_text(
+        yaml.safe_dump({**_ANSWERS, "task_family": "event_detection"})
+    )
+    out = tmp_path / "out"
+    cli_main.main(
+        ["new-experiment", "--from-file", str(answers_file), "--output-dir", str(out)]
+    )
+    captured = capsys.readouterr().out
+    assert "forecasting workflow" not in captured
+    assert "event_detection workflow" in captured
