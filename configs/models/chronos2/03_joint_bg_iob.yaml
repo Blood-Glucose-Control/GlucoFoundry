@@ -8,8 +8,8 @@
 # Compare against 01_bg_iob_insulin_availability.yaml (covariate mode) to
 # measure the effect of joint training vs past-only covariate context.
 #
-# Usage: run this config through the generic forecasting workflow
-#   (scripts/workflows/forecasting/run_forecasting_workflow.sh).
+# Usage: run this config through the generic forecasting orchestrator
+#   (scripts/workflows/forecasting/forecasting_workflow_orchestrator.py).
 # =============================================================================
 
 model_path: "autogluon/chronos-2"

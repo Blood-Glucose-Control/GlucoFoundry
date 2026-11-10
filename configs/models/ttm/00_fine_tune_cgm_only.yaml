@@ -5,7 +5,7 @@
 # Uses lower learning rate and moderate epochs.
 #
 # Usage:
-#   MODEL_CONFIG="configs/models/ttm/fine_tune.yaml" ./scripts/experiments/run_forecasting_workflow.sh
+#   MODEL_CONFIG="configs/models/ttm/fine_tune.yaml" python scripts/workflows/forecasting/forecasting_workflow_orchestrator.py --model-type "$MODEL_TYPE" --model-config "$MODEL_CONFIG" --datasets $DATASETS
 # =============================================================================
 
 model_path: "ibm-granite/granite-timeseries-ttm-r2"

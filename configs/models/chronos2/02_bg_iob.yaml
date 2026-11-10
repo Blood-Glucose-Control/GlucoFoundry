@@ -19,7 +19,7 @@
 #   MODEL_CONFIG="configs/models/chronos2/02_bg_iob.yaml" \
 #   DATASETS="aleppo_2017 brown_2019 lynch_2022" \
 #   SKIP_TRAINING="false" \
-#     ./scripts/experiments/run_forecasting_workflow.sh
+#     python scripts/workflows/forecasting/forecasting_workflow_orchestrator.py --model-type "$MODEL_TYPE" --model-config "$MODEL_CONFIG" --datasets $DATASETS
 # =============================================================================
 
 model_path: "autogluon/chronos-2"

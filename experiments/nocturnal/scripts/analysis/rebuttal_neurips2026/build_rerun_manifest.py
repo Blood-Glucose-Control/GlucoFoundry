@@ -43,7 +43,7 @@ from experiments.nocturnal.rebuttal import common as C
 
 OUT = Path(__file__).resolve().parent / "outputs" / "reruns"
 REPO = C.REPO
-EVAL = "scripts/experiments/nocturnal_hypo_eval.py"
+EVAL = "experiments/nocturnal/scripts/evaluation/nocturnal_hypo_eval.py"
 CTX, FH = 512, 96
 
 # Models the CURRENT branch's nocturnal_hypo_eval.py can run (its --model choices).
