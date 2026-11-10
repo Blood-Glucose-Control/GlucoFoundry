@@ -10,7 +10,6 @@ This guide lists the maintained scripts in `scripts/examples/`,
 | `example_forecasting_workflow.py` | Thin onboarding entrypoint for generic forecasting workflow | Quick walkthrough and CLI discovery |
 | `forecasting_workflow_orchestrator.py` (`scripts/workflows/forecasting/`) | Production CLI entrypoint for generic forecasting workflow | Stable runtime surface for wrappers and automation |
 | `run_forecasting_workflow.sh` (`scripts/workflows/forecasting/`) | Local shell wrapper for the production orchestrator | Repeatable local runs with environment variables |
-| `forecasting_workflow_regression_smoke.sh` (`scripts/workflows/forecasting/`) | Deterministic bounded regression profile | Major-change workflow smoke/regression runs |
 | `example_data_holdout_system.py` | Demonstrates holdout config generation/validation/loading APIs | Data split and holdout debugging |
 | `example_load_holdout_data.py` | Minimal holdout loading example | Quick data-access sanity checks |
 
@@ -56,12 +55,6 @@ MODEL_TYPE=chronos2 \
 DATASETS="brown_2019 lynch_2022" \
 CONFIG_DIR="configs/data/holdout_10pct" \
 bash scripts/workflows/forecasting/run_forecasting_workflow.sh
-```
-
-Regression profile (bounded end-to-end guardrail):
-
-```bash
-bash scripts/workflows/forecasting/forecasting_workflow_regression_smoke.sh
 ```
 
 ## Taxonomy flow (Wave 1)
