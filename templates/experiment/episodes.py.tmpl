@@ -1,0 +1,48 @@
+# Copyright (c) 2025 Blood-Glucose-Control
+# SPDX-License-Identifier: {{ license }}
+
+"""Episode construction for the {{ experiment_name }} experiment.
+
+Builds the evaluation episodes consumed by the forecasting path, using the
+``{{ anchoring_strategy }}`` anchoring strategy.
+"""
+
+from __future__ import annotations
+
+from typing import Any
+
+import pandas as pd
+
+#: Sampling cadence of the input series, in minutes.
+SAMPLING_INTERVAL_MINUTES = {{ sampling_interval_minutes }}
+
+
+def build_episodes(
+    patient_df: pd.DataFrame,
+    context_length: int = {{ context_length }},
+    forecast_length: int = {{ forecast_length }},
+    target_col: str = "{{ target_col }}",
+    covariate_cols: list[str] | None = None,
+    interval_mins: int = SAMPLING_INTERVAL_MINUTES,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Build evaluation episodes for the {{ experiment_name }} task.
+
+    Anchoring strategy: ``{{ anchoring_strategy }}``.
+
+    Args:
+        patient_df: One patient's regularly-sampled series.
+        context_length: Number of context steps per episode.
+        forecast_length: Number of forecast steps per episode.
+        target_col: Target variable column name.
+        covariate_cols: Optional covariate columns to carry through.
+        interval_mins: Sampling interval in minutes.
+
+    Returns:
+        A ``(episodes, metadata)`` tuple, where each episode is a dict holding
+        the context/target windows (and any covariates) for a single forecast.
+
+    TODO: implement the ``{{ anchoring_strategy }}`` anchoring for this experiment.
+    """
+    raise NotImplementedError(
+        "Implement build_episodes for the {{ experiment_name }} experiment."
+    )

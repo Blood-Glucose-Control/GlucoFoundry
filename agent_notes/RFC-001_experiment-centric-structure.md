@@ -103,6 +103,19 @@ builder + metrics + datasets + models from the answers).
 3. **Migrate nocturnal** — move its configs/results/scripts into
    `experiments/nocturnal/` (absorbs #36 and part of #6).
 4. **Scaffolder** — build `glucofoundry new-experiment` + `templates/experiment/`.
+   Broken into subphases:
+   - **4a** — `templates/experiment/` skeleton: the minimal scaffold (`register`/
+     `episodes`/`eval`/`summarize` stub templates, `configs/`, README-only
+     `results/`+`trained_models/`, `scripts/`/`docs/`/`notebooks/`) plus a
+     self-describing `templates/experiment.yaml` interview manifest (the full §5
+     question set).
+   - **4b** — `glucofoundry new-experiment` CLI: a lightweight stdlib generator
+     (no cookiecutter) wired as a `[project.scripts]` console entry point;
+     drives the full §5 interview (and `--from-file`), renders the template into
+     `experiments/<name>/`, and wires `register.py` from the answers.
+   - **4c** — `configs/models/` templates split (decision 1): one baseline per
+     family → `templates/experiment/configs/models/`; nocturnal-tuned variants →
+     `experiments/nocturnal/configs/models/`.
 5. **Docs + governance** — update `docs/architecture/*` with the ratified
    structure and the experiment contract.
 

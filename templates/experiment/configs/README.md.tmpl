@@ -1,0 +1,13 @@
+# {{ experiment_name }}/configs/
+
+Experiment-owned configuration. The toolkit ships generic schemas and baseline
+templates; this directory holds **this experiment's** tuned values.
+
+- `data/` — dataset/holdout configs for `{{ experiment_name }}` (seeded from the
+  `{{ holdout_strategy }}` holdout strategy, held-out fraction `{{ split_ratios }}`).
+- `models/` — tuned model config copies for {{ models }}.
+- `sweeps/` — Optuna sweep configs (study specs) for this experiment.
+
+Versioned configs always stay in the repo; large run artifacts
+(`../results/`, `../trained_models/`) are gitignored and can be redirected to
+scratch/external storage via `GLUCOFOUNDRY_ARTIFACTS_ROOT`.

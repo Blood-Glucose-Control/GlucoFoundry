@@ -11,7 +11,7 @@
 > Note: `project_tracking.csv` was removed from GlucoFoundry (#42) as old-project
 > cruft and is **not** used here; GitHub issues (umbrella #12) are the canonical tracker.
 
-**Last updated:** 2026-11-10 · **Totals:** 39 done · 3 in progress · 11 pending
+**Last updated:** 2026-11-10 · **Totals:** 42 done · 3 in progress · 13 pending
 
 Status key: ✅ done · 🔄 in progress · ⬜ pending
 
@@ -91,7 +91,12 @@ umbrella **#64** (artifacts live inside `experiments/<name>/`; 5 decisions resol
 | Scrub internal planning refs from `src/` docstrings | ✅ | PR #67 |
 | Phase 3: migrate nocturnal self-contained (absorbs #36, part of #6) | ✅ | PR #68 |
 | Prune hand-rolled sweep harness; relocate keepers (Optuna pivot) | ✅ | PR #69 |
-| Phase 4: `glucofoundry new-experiment` CLI + `templates/experiment/` | ⬜ | #64 |
+| Post-prune housekeeping (progress + model-config sweep refs) | ✅ | PR #70 |
+| Prune legacy/obsolete scripts (sync, regression-smoke suite) | ✅ | PR #71 |
+| Prune forecasting workflow shells; fix stale `scripts/experiments` refs | ✅ | PR #72 |
+| Phase 4a: `templates/experiment/` skeleton + interview manifest | ⬜ | #64 |
+| Phase 4b: `glucofoundry new-experiment` CLI (full §5 interview + `--from-file`) | ⬜ | #64 |
+| Phase 4c: `configs/models/` templates split (baseline→templates, tuned→experiment) | ⬜ | #64 |
 | Phase 5: docs/governance update | ⬜ | #64 |
 
 ### Small follow-ups (open)

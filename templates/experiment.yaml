@@ -1,0 +1,130 @@
+# Interview manifest for `glucofoundry new-experiment`.
+#
+# The scaffolder CLI (Phase 4b) reads this file to drive the interactive
+# interview (and to validate a non-interactive `--from-file` answers file),
+# then renders `templates/experiment/` into `experiments/<name>/`, replacing
+# `{{ token }}` placeholders with the collected answers.
+#
+# Each question has:
+#   key            token name used in the templates
+#   prompt         human-readable question
+#   type           slug | str | int | choice | multichoice | bool
+#   default        optional default value
+#   choices        static option list (for choice / multichoice)
+#   choices_source registry to resolve options at runtime (keeps this file from
+#                  going stale): dataset_loaders | supported_models
+#   required       true for answers that must be provided
+
+version: 1
+
+questions:
+  # ── Identity ──────────────────────────────────────────────────────────────
+  - key: experiment_name
+    prompt: "Experiment name (slug, lowercase, e.g. nocturnal)"
+    type: slug
+    required: true
+  - key: experiment_title
+    prompt: "One-line title"
+    type: str
+    required: true
+  - key: research_question
+    prompt: "One-line research question"
+    type: str
+    default: ""
+
+  # ── Task family ───────────────────────────────────────────────────────────
+  - key: task_family
+    prompt: "Task family"
+    type: choice
+    choices: [forecasting, event_detection, classification, imputation, representation_learning]
+    default: forecasting
+
+  # ── Target & horizon ──────────────────────────────────────────────────────
+  - key: target_col
+    prompt: "Target variable"
+    type: str
+    default: bg_mM
+  - key: context_length
+    prompt: "Context length (steps)"
+    type: int
+    default: 512
+  - key: forecast_length
+    prompt: "Forecast length (steps)"
+    type: int
+    default: 96
+  - key: sampling_interval_minutes
+    prompt: "Sampling interval (minutes)"
+    type: int
+    default: 5
+
+  # ── Datasets & modality ───────────────────────────────────────────────────
+  - key: datasets
+    prompt: "Datasets"
+    type: multichoice
+    choices_source: dataset_loaders
+    default: []
+  - key: modality
+    prompt: "Modality"
+    type: choice
+    choices: [unimodal, multimodal]
+    default: unimodal
+
+  # ── Episode / anchoring strategy ──────────────────────────────────────────
+  - key: anchoring_strategy
+    prompt: "Episode anchoring strategy"
+    type: choice
+    choices: [whole_series, sliding_window, time_anchored, event_anchored]
+    default: sliding_window
+
+  # ── Covariates ────────────────────────────────────────────────────────────
+  - key: covariates
+    prompt: "Covariates (e.g. iob, cob, insulin_availability, carbs)"
+    type: multichoice
+    choices: [iob, cob, insulin_availability, carbs]
+    default: []
+
+  # ── Models ────────────────────────────────────────────────────────────────
+  - key: models
+    prompt: "Models to evaluate"
+    type: multichoice
+    choices_source: supported_models
+    default: []
+
+  # ── Evaluation ────────────────────────────────────────────────────────────
+  - key: metrics
+    prompt: "Evaluation metrics"
+    type: multichoice
+    choices: [rmse, mae, dtw, crps, pit, hypo_recall]
+    default: [rmse, mae]
+  - key: holdout_strategy
+    prompt: "Holdout strategy"
+    type: choice
+    choices: [patient_level, temporal, nested_cv]
+    default: patient_level
+  - key: split_ratios
+    prompt: "Holdout split ratio (held-out fraction)"
+    type: str
+    default: "0.1"
+
+  # ── Extras ────────────────────────────────────────────────────────────────
+  - key: include_sweeps
+    prompt: "Include Optuna sweep config stubs?"
+    type: bool
+    default: false
+  - key: include_notebooks
+    prompt: "Include an example notebooks/ directory?"
+    type: bool
+    default: false
+  - key: license
+    prompt: "License identifier"
+    type: str
+    default: Apache-2.0
+  - key: citation
+    prompt: "Citation (optional)"
+    type: str
+    default: ""
+
+# Tokens the CLI derives from the answers above (not asked directly).
+derived:
+  summarizer_class: "PascalCase(experiment_name) + 'Summarizer'"
+  experiment_type: "'<experiment_name>_<task_family>'"
