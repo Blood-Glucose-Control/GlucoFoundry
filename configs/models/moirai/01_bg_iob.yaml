@@ -10,7 +10,7 @@
 #   CONFIG_DIR="configs/data/holdout_10pct" \
 #   DATASETS="aleppo_2017 brown_2019 lynch_2022 tamborlane_2008" \
 #   SKIP_TRAINING="false" SKIP_STEPS="7" \
-#     ./scripts/experiments/run_forecasting_workflow.sh
+#     python scripts/workflows/forecasting/forecasting_workflow_orchestrator.py --model-type "$MODEL_TYPE" --model-config "$MODEL_CONFIG" --datasets $DATASETS
 # =============================================================================
 
 model_path: "Salesforce/moirai-1.0-R-small"

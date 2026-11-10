@@ -8,7 +8,7 @@
 #   MODEL_TYPE="timegrad" \
 #   EPOCHS=10 \
 #   DATASETS="lynch_2022 aleppo_2017 brown_2019 tamborlane_2008" \
-#   ./scripts/experiments/run_forecasting_workflow.sh
+#   python scripts/workflows/forecasting/forecasting_workflow_orchestrator.py --model-type "$MODEL_TYPE" --model-config "$MODEL_CONFIG" --datasets $DATASETS
 #
 # CLI arguments (--epochs, --batch-size) override values in this file.
 # =============================================================================

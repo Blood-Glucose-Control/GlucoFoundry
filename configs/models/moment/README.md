@@ -51,7 +51,7 @@ all sweep eval scripts:
 Usage example:
 
 ```bash
-python scripts/experiments/forecasting_workflow_orchestrator.py \
+python scripts/workflows/forecasting/forecasting_workflow_orchestrator.py \
   --model-type moment \
   --model-config configs/models/moment/00_baseline.yaml \
   --datasets aleppo_2017 \

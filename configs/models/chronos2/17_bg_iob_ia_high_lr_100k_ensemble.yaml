@@ -11,12 +11,6 @@
 # Datasets: aleppo_2017, brown_2019, lynch_2022
 # (tamborlane excluded: no insulin_availability covariate)
 #
-# Evaluate snapshots with:
-#   MODEL_CONFIG=configs/models/chronos2/17_bg_iob_ia_high_lr_100k_ensemble.yaml \
-#   DATASETS="aleppo_2017 brown_2019 lynch_2022" \
-#   bash scripts/experiments/chronos2_eval_long_run_checkpoints.sh \
-#       trained_models/artifacts/chronos2/<run_id>
-#
 # Comparison targets:
 #   16_bg_iob_ia_high_lr_100k.yaml  → same config without ensemble
 #   04_bg_iob_ia_high_lr.yaml       → same covariates at 10k steps
