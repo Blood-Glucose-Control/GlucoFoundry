@@ -15,17 +15,6 @@ fall back to Naive — no work is lost.
 
 ## Run
 
-```bash
-# 1. Train (CPU — runs configs sequentially, writes manifest)
-bash scripts/training/sweeps/models/statistical_sweep_train.sh
-
-# 2. Evaluate (CPU — parallel workers, reads manifest)
-bash scripts/evaluation/sweeps/models/statistical_sweep_eval.sh
-
-# Control CPU parallelism for eval
-JOBS_PER_CPU=2 bash scripts/evaluation/sweeps/models/statistical_sweep_eval.sh
-
-# Log both to file
-bash scripts/training/sweeps/models/statistical_sweep_train.sh 2>&1 | tee logs/statistical_sweep_train.log
-bash scripts/evaluation/sweeps/models/statistical_sweep_eval.sh  2>&1 | tee logs/statistical_sweep_eval.log
-```
+The earlier hand-rolled per-model sweep shells were removed. These CPU
+statistical configs run through the generic forecasting workflow in
+`scripts/workflows/forecasting/`.

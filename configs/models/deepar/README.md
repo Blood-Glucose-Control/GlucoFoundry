@@ -28,8 +28,8 @@ All configs use `forecast_length=96`, `batch_size=128`,
 
 ## Run
 
-```bash
-bash scripts/training/sweeps/models/deepar_sweep_train.sh
-GPUS="0 1" JOBS_PER_GPU=6 bash scripts/training/sweeps/models/deepar_sweep_train.sh 2>&1 | tee logs/deepar_sweep_train.log
-GPUS="0 1" JOBS_PER_GPU=6 bash scripts/evaluation/sweeps/models/deepar_sweep_eval.sh  2>&1 | tee logs/deepar_sweep_eval.log
-```
+Hyperparameter search for this family runs through its Optuna study in
+`src/workflows/sweeps/optuna_deepar/` (see the module docstring for the
+`create` / `run` CLI). The earlier hand-rolled per-model sweep shells were
+removed. To run a single config end to end, use the generic forecasting
+workflow in `scripts/workflows/forecasting/`.

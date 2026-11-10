@@ -11,7 +11,7 @@
 > Note: `project_tracking.csv` was removed from GlucoFoundry (#42) as old-project
 > cruft and is **not** used here; GitHub issues (umbrella #12) are the canonical tracker.
 
-**Last updated:** 2026-11-08 · **Totals:** 34 done · 4 in progress · 13 pending
+**Last updated:** 2026-11-10 · **Totals:** 39 done · 3 in progress · 11 pending
 
 Status key: ✅ done · 🔄 in progress · ⬜ pending
 
@@ -86,8 +86,11 @@ umbrella **#64** (artifacts live inside `experiments/<name>/`; 5 decisions resol
 | Task | Status | Ref |
 |------|--------|-----|
 | RFC-001 ratified (5 decisions resolved) | ✅ | PR #63 |
-| Phase 2: `ExperimentPaths` resolver + workflow path resolution | ⬜ | #64 |
-| Phase 3: migrate nocturnal self-contained (absorbs #36, part of #6) | ⬜ | #64 |
+| RFC quick wins (remove dead `configs/models/timegpt/`, progress mirror) | ✅ | PR #65 |
+| Phase 2: `ExperimentPaths` resolver + workflow path resolution | ✅ | PR #66 |
+| Scrub internal planning refs from `src/` docstrings | ✅ | PR #67 |
+| Phase 3: migrate nocturnal self-contained (absorbs #36, part of #6) | ✅ | PR #68 |
+| Prune hand-rolled sweep harness; relocate keepers (Optuna pivot) | ✅ | PR #69 |
 | Phase 4: `glucofoundry new-experiment` CLI + `templates/experiment/` | ⬜ | #64 |
 | Phase 5: docs/governance update | ⬜ | #64 |
 

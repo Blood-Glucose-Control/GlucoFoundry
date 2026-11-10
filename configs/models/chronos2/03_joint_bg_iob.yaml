@@ -8,9 +8,8 @@
 # Compare against 01_bg_iob_insulin_availability.yaml (covariate mode) to
 # measure the effect of joint training vs past-only covariate context.
 #
-# Usage:
-#   MODEL_CONFIG=configs/models/chronos2/03_joint_bg_iob.yaml \
-#     bash scripts/training/sweeps/run_sweep_train.sh
+# Usage: run this config through the generic forecasting workflow
+#   (scripts/workflows/forecasting/run_forecasting_workflow.sh).
 # =============================================================================
 
 model_path: "autogluon/chronos-2"
