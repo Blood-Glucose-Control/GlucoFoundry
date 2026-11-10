@@ -1,6 +1,6 @@
 # Forecast Comparison Script
 
-`scripts/visualization/plot_forecast_comparison.py` generates publication-quality grid figures
+`experiments/nocturnal/scripts/visualization/plot_forecast_comparison.py` generates publication-quality grid figures
 comparing nocturnal BG forecasts across any combination of models (zero-shot or
 fine-tuned) on midnight-anchored holdout episodes.
 
@@ -31,14 +31,14 @@ with identical arguments is a no-op — it hits the cache and skips inference.
 ```bash
 # Chronos2 (in its own env)
 source scripts/setup_model_env.sh autogluon
-python scripts/visualization/plot_forecast_comparison.py \
+python experiments/nocturnal/scripts/visualization/plot_forecast_comparison.py \
     --model chronos2::Chronos2 \
     --no-plot
 # → Results cached at: results/forecast_comparisons/a3f82c1d.json
 
 # TimesFM (in its own env)
 source scripts/setup_model_env.sh timesfm
-python scripts/visualization/plot_forecast_comparison.py \
+python experiments/nocturnal/scripts/visualization/plot_forecast_comparison.py \
     --model timesfm::TimesFM \
     --no-plot
 # → Results cached at: results/forecast_comparisons/9b14e702.json
@@ -53,7 +53,7 @@ python scripts/visualization/plot_forecast_comparison.py \
 ```bash
 # Any env (e.g. the base .venv)
 source .venv/bin/activate
-python scripts/visualization/plot_forecast_comparison.py \
+python experiments/nocturnal/scripts/visualization/plot_forecast_comparison.py \
     --from-results \
         results/forecast_comparisons/12496a49.json \
         results/forecast_comparisons/d8453cc4.json
@@ -75,14 +75,14 @@ in one command and the plot is generated automatically:
 
 ```bash
 source scripts/setup_model_env.sh tide
-python scripts/visualization/plot_forecast_comparison.py \
+python experiments/nocturnal/scripts/visualization/plot_forecast_comparison.py \
     --model tide::TiDE-ZS \
-    --model tide:trained_models/artifacts/tide-ft-run42:TiDE-FT
+    --model tide:experiments/nocturnal/trained_models/artifacts/tide-ft-run42:TiDE-FT
 ```
 
 ### Specific patients
 ```bash
-python scripts/visualization/plot_forecast_comparison.py \
+python experiments/nocturnal/scripts/visualization/plot_forecast_comparison.py \
     --model chronos2::Chronos2 \
     --no-plot \
     --patients bro_22 bro_65 bro_75 bro_93 bro_121
@@ -90,7 +90,7 @@ python scripts/visualization/plot_forecast_comparison.py \
 
 ### Custom percentile columns
 ```bash
-python scripts/visualization/plot_forecast_comparison.py \
+python experiments/nocturnal/scripts/visualization/plot_forecast_comparison.py \
     --from-results results/forecast_comparisons/a3f82c1d.json \
                    results/forecast_comparisons/9b14e702.json \
     --percentiles 95 75 50 25 5
@@ -100,15 +100,15 @@ python scripts/visualization/plot_forecast_comparison.py \
 ```bash
 # Stage 1a: zero-shot Chronos2
 source scripts/setup_model_env.sh autogluon
-python scripts/visualization/plot_forecast_comparison.py --model chronos2::Chronos2-ZS --no-plot
+python experiments/nocturnal/scripts/visualization/plot_forecast_comparison.py --model chronos2::Chronos2-ZS --no-plot
 
 # Stage 1b: fine-tuned Chronos2 checkpoint (same env)
-python scripts/visualization/plot_forecast_comparison.py \
-    --model chronos2:trained_models/artifacts/chronos2-ft-run42:Chronos2-FT \
+python experiments/nocturnal/scripts/visualization/plot_forecast_comparison.py \
+    --model chronos2:experiments/nocturnal/trained_models/artifacts/chronos2-ft-run42:Chronos2-FT \
     --no-plot
 
 # Stage 2
-python scripts/visualization/plot_forecast_comparison.py \
+python experiments/nocturnal/scripts/visualization/plot_forecast_comparison.py \
     --from-results \
         results/forecast_comparisons/<zs-hash>.json \
         results/forecast_comparisons/<ft-hash>.json

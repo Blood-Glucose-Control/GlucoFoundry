@@ -8,7 +8,7 @@ Scans all run directories under ``results/nocturnal_forecasting/`` and
 builds a tidy CSV with one row per run.  Extends
 :class:`~src.experiments.base.experiment.ExperimentSummarizer` with logic to
 parse ``nocturnal_results.json`` files as produced by
-``scripts/evaluation/nocturnal_hypo_eval.py``.
+``experiments/nocturnal/scripts/evaluation/nocturnal_hypo_eval.py``.
 
 Note: nocturnal evaluation only computes RMSE at the overall level; MAE, MAPE,
 and MSE are ``NaN`` in the summary (they are available per-patient only).
@@ -56,7 +56,7 @@ class NocturnalSummarizer(ExperimentSummarizer):
 
     Each completed run is expected to contain a ``nocturnal_results.json``
     file with the structure written by
-    ``scripts/evaluation/nocturnal_hypo_eval.py``::
+    ``experiments/nocturnal/scripts/evaluation/nocturnal_hypo_eval.py``::
 
         {
           "evaluation_type": "nocturnal_hypoglycemia",

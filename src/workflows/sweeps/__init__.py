@@ -1,6 +1,1 @@
-"""Task/experiment-aware sweep orchestration entrypoints."""
-
-from .eval import main as eval_main
-from .train import main as train_main
-
-__all__ = ["eval_main", "train_main"]
+"""Optuna-based sweep studies, organized per model family."""

@@ -16,11 +16,11 @@
 #
 # Usage:
 #   GPUS="0 1" TRIALS_PER_GPU=1 N_TRIALS=40 \
-#     bash scripts/orchestration/sweeps/optuna/launch_optuna_tmux.sh
+#     bash experiments/nocturnal/scripts/sweeps/optuna/launch_optuna_tmux.sh
 #
 #   # smoke run (tiny data + tiny steps, single worker):
 #   SMOKE=1 GPUS="0" N_TRIALS=1 \
-#     bash scripts/orchestration/sweeps/optuna/launch_optuna_tmux.sh
+#     bash experiments/nocturnal/scripts/sweeps/optuna/launch_optuna_tmux.sh
 #
 # Environment:
 #   GPUS            Space-separated GPU ids            (default: auto-detect)
@@ -46,7 +46,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../../.." && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../../../.." && pwd)"
 cd "$PROJECT_ROOT"
 
 TRIALS_PER_GPU="${TRIALS_PER_GPU:-2}"

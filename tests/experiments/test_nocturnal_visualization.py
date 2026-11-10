@@ -167,7 +167,10 @@ def test_visualization_scripts_use_shared_quantile_defaults():
     repo_root = Path(__file__).resolve().parents[2]
 
     rmse_horizon_ns = runpy.run_path(
-        str(repo_root / "scripts/visualization/plot_rmse_vs_horizon.py")
+        str(
+            repo_root
+            / "experiments/nocturnal/scripts/visualization/plot_rmse_vs_horizon.py"
+        )
     )
     rmse_horizon_parser = rmse_horizon_ns["_build_parser"]()
     rmse_horizon_args = rmse_horizon_parser.parse_args(
@@ -176,14 +179,20 @@ def test_visualization_scripts_use_shared_quantile_defaults():
     assert tuple(rmse_horizon_args.quantiles) == DEFAULT_BOXPLOT_QUANTILES
 
     rmse_grid_ns = runpy.run_path(
-        str(repo_root / "scripts/visualization/plot_rmse_vs_horizon_grid.py")
+        str(
+            repo_root
+            / "experiments/nocturnal/scripts/visualization/plot_rmse_vs_horizon_grid.py"
+        )
     )
     rmse_grid_parser = rmse_grid_ns["_build_parser"]()
     rmse_grid_args = rmse_grid_parser.parse_args([])
     assert tuple(rmse_grid_args.iqr_quantiles) == DEFAULT_IQR_QUANTILES
 
     probabilistic_ns = runpy.run_path(
-        str(repo_root / "scripts/visualization/plot_probabilistic_forecast_grid.py")
+        str(
+            repo_root
+            / "experiments/nocturnal/scripts/visualization/plot_probabilistic_forecast_grid.py"
+        )
     )
     probabilistic_args = probabilistic_ns["parse_args"]([])
     assert (

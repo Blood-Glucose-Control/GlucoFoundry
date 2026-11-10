@@ -15,7 +15,7 @@ Usage (single worker)::
         --n-trials 20 --gpu-label 0
 
 Use the ``create`` subcommand once to initialise the study, then launch workers
-(see ``scripts/orchestration/sweeps/optuna/launch_optuna_tmux.sh``).
+(see ``experiments/nocturnal/scripts/sweeps/optuna/launch_optuna_tmux.sh``).
 """
 
 from __future__ import annotations

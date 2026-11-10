@@ -24,35 +24,35 @@ as a panel — batching may cause tiny floating-point differences (~1e-6).
 Usage
 -----
     # Fine-tuned TTM on aleppo_2017 (50 episodes, strict tolerance)
-    python scripts/evaluation/validate_predict_batch.py \
+    python experiments/nocturnal/scripts/evaluation/validate_predict_batch.py \
         --model ttm \
         --dataset aleppo_2017 \
         --checkpoint trained_models/artifacts/ttm/2026-02-27_03:53_RID20260227_035316_193673_forecasting_workflow/model.pt \
         --context-length 512 --forecast-length 96
 
     # Fine-tuned Chronos2 on aleppo_2017
-    python scripts/evaluation/validate_predict_batch.py \
+    python experiments/nocturnal/scripts/evaluation/validate_predict_batch.py \
         --model chronos2 \
         --dataset aleppo_2017 \
         --checkpoint trained_models/artifacts/chronos2/2026-02-28_05:54_RID20260228_055400_391511_forecasting_workflow/resumed_training/model.pt \
         --context-length 512 --forecast-length 96
 
     # Fine-tuned TiDE on aleppo_2017
-    python scripts/evaluation/validate_predict_batch.py \
+    python experiments/nocturnal/scripts/evaluation/validate_predict_batch.py \
         --model tide \
         --dataset aleppo_2017 \
         --checkpoint trained_models/artifacts/tide/2026-02-28_21:28_RID20260228_212852_496983_forecasting_workflow/model.pt \
         --context-length 512 --forecast-length 96
 
     # Zero-shot TTM (looser tolerance expected)
-    python scripts/evaluation/validate_predict_batch.py \
+    python experiments/nocturnal/scripts/evaluation/validate_predict_batch.py \
         --model ttm \
         --dataset aleppo_2017 \
         --context-length 512 --forecast-length 96 \
         --tolerance 1e-4
 
     # All three fine-tuned, 100 episodes each
-    python scripts/evaluation/validate_predict_batch.py \
+    python experiments/nocturnal/scripts/evaluation/validate_predict_batch.py \
         --model ttm --dataset aleppo_2017 --max-episodes 100 \
         --checkpoint trained_models/artifacts/ttm/2026-02-27_03:53_RID20260227_035316_193673_forecasting_workflow/model.pt \
         --context-length 512 --forecast-length 96
