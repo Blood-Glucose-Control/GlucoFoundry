@@ -164,4 +164,3 @@ else
 fi
 
 echo "Python: $(which python)"
-echo "transformers version: $(python -c 'import transformers; print(transformers.__version__)' 2>/dev/null || echo 'not installed')"
