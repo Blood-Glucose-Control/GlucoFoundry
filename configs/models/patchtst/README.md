@@ -27,8 +27,7 @@ datasets = `aleppo_2017 brown_2019 lynch_2022 tamborlane_2008`.
 
 ## Run
 
-```bash
-bash scripts/training/sweeps/models/patchtst_sweep_train.sh
-GPUS="0 1" JOBS_PER_GPU=6 bash scripts/training/sweeps/models/patchtst_sweep_train.sh 2>&1 | tee logs/patchtst_sweep_train.log
-GPUS="0 1" JOBS_PER_GPU=6 bash scripts/evaluation/sweeps/models/patchtst_sweep_eval.sh  2>&1 | tee logs/patchtst_sweep_eval.log
-```
+The earlier hand-rolled per-model sweep shells were removed. Run individual
+configs through the generic forecasting workflow in
+`scripts/workflows/forecasting/`. Hyperparameter search for tuned deep-model
+families runs through the per-family Optuna studies in `src/workflows/sweeps/`.

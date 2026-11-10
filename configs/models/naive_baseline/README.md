@@ -13,13 +13,6 @@ Two zero-parameter baselines. AutoGluon fits Naive/Average in seconds.
 
 ## Run
 
-```bash
-# Step 1 — Train (fits AutoGluon predictor; ~seconds per config)
-bash scripts/training/sweeps/models/naive_baseline_sweep_train.sh 2>&1 | tee logs/naive_train.log
-
-# Step 2 — Evaluate
-bash scripts/evaluation/sweeps/models/naive_baseline_sweep_eval.sh 2>&1 | tee logs/naive_eval.log
-
-# Control eval parallelism
-JOBS_PER_CPU=4 bash scripts/evaluation/sweeps/models/naive_baseline_sweep_eval.sh | tee logs/naive_eval.log
-```
+The earlier hand-rolled per-model sweep shells were removed. These AutoGluon
+baseline configs run through the generic forecasting workflow in
+`scripts/workflows/forecasting/`.
