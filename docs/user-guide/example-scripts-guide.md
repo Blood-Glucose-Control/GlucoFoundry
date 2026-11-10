@@ -3,6 +3,25 @@
 This guide lists the maintained scripts in `scripts/examples/`,
 `scripts/workflows/`, and `scripts/orchestration/` and when to use each one.
 
+## Creating a new experiment
+
+Scaffold a new, self-contained experiment under `experiments/<name>/` with the
+`glucofoundry new-experiment` CLI:
+
+```bash
+# Interactive interview (identity, task family, datasets, models, anchoring, …)
+glucofoundry new-experiment
+
+# Non-interactive from a YAML/JSON answers file
+glucofoundry new-experiment --from-file my_experiment.yaml
+```
+
+It renders [`templates/experiment/`](/templates/experiment) into a ready-to-edit
+recipe (`register.py` wired to the core, plus `episodes.py`/`eval.py`/
+`summarize.py` stubs, `configs/`, and gitignored `results/`+`trained_models/`
+scaffolds). The questions and their defaults are declared in
+[`templates/experiment.yaml`](/templates/experiment.yaml).
+
 ## Active examples
 
 | Script | Purpose | Typical use |

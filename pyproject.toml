@@ -49,6 +49,9 @@ dependencies = [
     "mkdocs-material",
 ]
 
+[project.scripts]
+glucofoundry = "src.cli.main:main"
+
 [project.optional-dependencies]
 ttm = [
     "granite-tsfm[notebooks] @ git+https://github.com/ibm-granite/granite-tsfm.git@v0.3.3",
