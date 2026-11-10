@@ -1,0 +1,19 @@
+# Copyright (c) 2025 Blood-Glucose-Control
+# SPDX-License-Identifier: Apache-2.0
+# Toolkit baseline for ttm — a generic CGM-only starting point.
+# Copy into your experiment's configs/models/ and tune from here.
+model_path: ibm-granite/granite-timeseries-ttm-r2
+context_length: 512
+forecast_length: 96
+training_mode: zero_shot
+freeze_backbone: true
+num_epochs: 0
+batch_size: 4096
+input_features: []
+target_features:
+- bg_mM
+scaler_type: standard
+resolution_min: 5
+num_input_channels: 5
+num_output_channels: 1
+fp16: true

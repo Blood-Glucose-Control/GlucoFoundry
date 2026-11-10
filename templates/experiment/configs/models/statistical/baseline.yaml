@@ -1,0 +1,20 @@
+# Copyright (c) 2025 Blood-Glucose-Control
+# SPDX-License-Identifier: Apache-2.0
+# Toolkit baseline for statistical — a generic CGM-only starting point.
+# Copy into your experiment's configs/models/ and tune from here.
+model_type: statistical
+training_mode: from_scratch
+model_name: AutoARIMA
+context_length: 512
+forecast_length: 96
+autoarima_max_p: 3
+autoarima_max_q: 3
+covariate_cols: []
+target_col: bg_mM
+patient_col: patient_id
+time_col: datetime
+interval_mins: 5
+time_limit: 7200
+eval_metric: WQL
+enable_ensemble: false
+imputation_threshold_mins: 45

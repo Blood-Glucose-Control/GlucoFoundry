@@ -1,0 +1,17 @@
+# Copyright (c) 2025 Blood-Glucose-Control
+# SPDX-License-Identifier: Apache-2.0
+# Toolkit baseline for toto — a generic CGM-only starting point.
+# Copy into your experiment's configs/models/ and tune from here.
+context_length: 512
+forecast_length: 96
+training_mode: fine_tune
+freeze_backbone: false
+max_steps: 10000
+lr: 0.0001
+min_lr: 1.0e-05
+warmup_steps: 200
+stable_steps: 1000
+decay_steps: 1000
+train_batch_size: 4
+val_batch_size: 1
+covariate_cols: []

@@ -140,9 +140,21 @@ def test_render_experiment_omits_optional_dirs(tmp_path: Path) -> None:
     dest = ne.render_experiment(answers, tmp_path)
     assert not (dest / "configs/sweeps").exists()
     assert not (dest / "notebooks").exists()
-    assert (
-        dest / "configs/models/.gitkeep"
-    ).is_file()  # non-optional dir still present
+    assert (dest / "configs/data/.gitkeep").is_file()  # non-optional dir still present
+
+
+def test_render_copies_only_selected_model_baselines(tmp_path: Path) -> None:
+    dest = ne.render_experiment({**_ANSWERS, "models": ["ttm", "chronos2"]}, tmp_path)
+    assert (dest / "configs/models/ttm/baseline.yaml").is_file()
+    assert (dest / "configs/models/chronos2/baseline.yaml").is_file()
+    assert not (dest / "configs/models/moirai").exists()  # not selected
+    assert not (dest / "configs/models/tft").exists()
+
+
+def test_render_no_models_keeps_full_baseline_gallery(tmp_path: Path) -> None:
+    dest = ne.render_experiment({**_ANSWERS, "models": []}, tmp_path)
+    assert (dest / "configs/models/ttm/baseline.yaml").is_file()
+    assert (dest / "configs/models/moirai/baseline.yaml").is_file()
 
 
 def test_render_experiment_existing_dir(tmp_path: Path) -> None:

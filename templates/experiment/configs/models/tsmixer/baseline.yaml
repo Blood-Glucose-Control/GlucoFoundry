@@ -1,0 +1,30 @@
+# Copyright (c) 2025 Blood-Glucose-Control
+# SPDX-License-Identifier: Apache-2.0
+# Toolkit baseline for tsmixer — a generic CGM-only starting point.
+# Copy into your experiment's configs/models/ and tune from here.
+model_type: tsmixer
+training_mode: from_scratch
+context_length: 128
+forecast_length: 96
+hidden_size: 32
+ff_size: 32
+num_blocks: 1
+activation: ReLU
+dropout: 0.1
+norm_type: LayerNorm
+normalize_before: false
+use_static_covariates: false
+random_state: 42
+learning_rate: 0.001
+batch_size: 32
+num_epochs: 1
+quantile_levels:
+- 0.1
+- 0.5
+- 0.9
+covariate_cols: []
+target_col: bg_mM
+patient_col: patient_id
+time_col: datetime
+interval_mins: 5
+imputation_threshold_mins: 45
