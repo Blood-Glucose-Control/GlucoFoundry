@@ -107,7 +107,8 @@ builder + metrics + datasets + models from the answers).
    - **4a** — `templates/experiment/` skeleton: the minimal scaffold (`register`/
      `episodes`/`eval`/`summarize` stub templates, `configs/`, README-only
      `results/`+`trained_models/`, `scripts/`/`docs/`/`notebooks/`) plus a
-     self-describing `template.yaml` interview manifest (the full §5 question set).
+     self-describing `templates/experiment.yaml` interview manifest (the full §5
+     question set).
    - **4b** — `glucofoundry new-experiment` CLI: a lightweight stdlib generator
      (no cookiecutter) wired as a `[project.scripts]` console entry point;
      drives the full §5 interview (and `--from-file`), renders the template into

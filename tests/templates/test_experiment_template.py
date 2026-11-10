@@ -54,7 +54,13 @@ def _declared_tokens() -> set[str]:
 
 
 def _render(text: str) -> str:
-    return _TOKEN_RE.sub(lambda m: _SAMPLE_ANSWERS.get(m.group(1), m.group(1)), text)
+    def _sub(match: re.Match[str]) -> str:
+        key = match.group(1)
+        if key not in _SAMPLE_ANSWERS:
+            raise AssertionError(f"no sample answer for token {{{{ {key} }}}}")
+        return _SAMPLE_ANSWERS[key]
+
+    return _TOKEN_RE.sub(_sub, text)
 
 
 def test_manifest_questions_are_well_formed() -> None:
@@ -80,6 +86,11 @@ def test_rendered_python_stubs_compile(tmp_path: Path) -> None:
     stubs = sorted(EXPERIMENT_TMPL.rglob("*.py.tmpl"))
     assert stubs, "expected rendered .py.tmpl recipe stubs"
     for stub in stubs:
+        tokens = set(_TOKEN_RE.findall(stub.read_text()))
+        missing = tokens - set(_SAMPLE_ANSWERS)
+        assert not missing, (
+            f"{stub.name}: no sample answer for tokens {sorted(missing)}"
+        )
         out = tmp_path / stub.name[: -len(".tmpl")]
         out.write_text(_render(stub.read_text()))
         py_compile.compile(str(out), doraise=True)
