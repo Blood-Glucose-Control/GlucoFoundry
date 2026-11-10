@@ -1,0 +1,24 @@
+# Copyright (c) 2025 Blood-Glucose-Control
+# SPDX-License-Identifier: {{ license }}
+
+"""Registration hook for the {{ experiment_name }} experiment recipe.
+
+Auto-discovered by the experiment registry (``src/experiments/registry.py``). The
+core resolves this experiment by name and never imports the recipe directly, so
+the ``experiments/{{ experiment_name }}/`` directory can be dropped cleanly.
+"""
+
+from experiments.{{ experiment_name }}.episodes import build_episodes
+from experiments.{{ experiment_name }}.eval import evaluate
+from experiments.{{ experiment_name }}.summarize import {{ summarizer_class }}
+from src.experiments.registry import ExperimentSpec, register_experiment
+
+register_experiment(
+    ExperimentSpec(
+        name="{{ experiment_name }}",
+        build_episodes=build_episodes,
+        summarizer={{ summarizer_class }},
+        evaluate=evaluate,
+        description="{{ experiment_title }}",
+    )
+)

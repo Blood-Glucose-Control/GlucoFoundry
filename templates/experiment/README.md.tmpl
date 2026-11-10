@@ -1,0 +1,48 @@
+# {{ experiment_title }}
+
+> {{ research_question }}
+
+Experiment recipe generated with `glucofoundry new-experiment`. This directory is
+**self-contained** — it owns its code, configs, run artifacts, scripts, and docs,
+and can be dropped (or carved into its own fork) without touching the toolkit core.
+
+## At a glance
+
+| | |
+|---|---|
+| **Task family** | `{{ task_family }}` |
+| **Target** | `{{ target_col }}` |
+| **Context / forecast** | `{{ context_length }}` / `{{ forecast_length }}` steps ({{ sampling_interval_minutes }}-min cadence) |
+| **Datasets** | {{ datasets }} |
+| **Modality** | `{{ modality }}` |
+| **Anchoring** | `{{ anchoring_strategy }}` |
+| **Covariates** | {{ covariates }} |
+| **Models** | {{ models }} |
+| **Metrics** | {{ metrics }} |
+| **Holdout** | `{{ holdout_strategy }}` (held-out fraction `{{ split_ratios }}`) |
+
+## Layout
+
+```
+{{ experiment_name }}/
+  register.py        # registers this recipe with the core
+  episodes.py        # build_episodes — {{ anchoring_strategy }} anchoring
+  eval.py            # evaluate — model -> metrics
+  summarize.py       # {{ summarizer_class }} — runs -> leaderboard CSV
+  configs/           # data/ models/ sweeps/ (experiment-owned)
+  results/           # run output (gitignored; README only)
+  trained_models/    # checkpoints (gitignored; README only)
+  scripts/ docs/     # experiment-specific tooling and notes
+```
+
+## Getting started
+
+1. Implement the three `NotImplementedError` stubs: `build_episodes`
+   (`episodes.py`), `evaluate` (`eval.py`), and `_parse_run_dir` (`summarize.py`).
+2. Add data/model configs under `configs/`.
+3. Run the forecasting workflow with `--experiment {{ experiment_name }}`; run
+   outputs resolve under this experiment's `results/` and `trained_models/`.
+
+## Citation
+
+{{ citation }}

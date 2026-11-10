@@ -1,0 +1,34 @@
+# Copyright (c) 2025 Blood-Glucose-Control
+# SPDX-License-Identifier: {{ license }}
+
+"""Evaluation entry point for the {{ experiment_name }} experiment."""
+
+from __future__ import annotations
+
+from typing import Any
+
+import pandas as pd
+
+from experiments.{{ experiment_name }}.episodes import build_episodes
+
+
+def evaluate(
+    model: Any,
+    holdout_data: pd.DataFrame,
+    context_length: int = {{ context_length }},
+    forecast_length: int = {{ forecast_length }},
+    target_col: str = "{{ target_col }}",
+    covariate_cols: list[str] | None = None,
+    **kwargs: Any,
+) -> dict[str, Any]:
+    """Evaluate ``model`` on the {{ experiment_name }} task.
+
+    Builds episodes with :func:`build_episodes`, runs batched prediction via
+    ``model.predict_batch(...)``, and returns a metrics dict (for example
+    {{ metrics }}).
+
+    TODO: implement the evaluation for this experiment.
+    """
+    raise NotImplementedError(
+        "Implement evaluate for the {{ experiment_name }} experiment."
+    )

@@ -1,0 +1,41 @@
+# Copyright (c) 2025 Blood-Glucose-Control
+# SPDX-License-Identifier: {{ license }}
+
+"""Result summarizer for the {{ experiment_name }} experiment."""
+
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Any
+
+from src.experiments.base.experiment import ExperimentSummarizer
+from src.experiments.registry import get_experiment_paths
+
+#: Run-artifact subdirectory this experiment writes under
+#: (``<results>/<experiment_type>/...``).
+_EXPERIMENT_TYPE = "{{ experiment_type }}"
+
+
+class {{ summarizer_class }}(ExperimentSummarizer):
+    """Summarize runs under this experiment's ``results/{{ experiment_type }}/``."""
+
+    def __init__(self, experiments_root: str | Path | None = None) -> None:
+        if experiments_root is None:
+            experiments_root = get_experiment_paths("{{ experiment_name }}").results
+        super().__init__(experiments_root, _EXPERIMENT_TYPE)
+
+    def _parse_run_dir(
+        self,
+        ctx_fh: str,
+        model: str,
+        run_dir: Path,
+    ) -> dict[str, Any] | None:
+        """Extract a flat summary row from a single run directory.
+
+        Return ``None`` to skip a run whose results file is absent or malformed.
+
+        TODO: implement parsing of this experiment's per-run results file.
+        """
+        raise NotImplementedError(
+            "Implement _parse_run_dir for the {{ experiment_name }} experiment."
+        )
