@@ -15,7 +15,9 @@ pipeline.
 
 **Datasets → Preprocessing & Features → Training → Evaluation → Reproducible
 Results**, with **Models** plugged into training and **Hyperparameter
-Optimization (Optuna) + tracking (MLflow)** tuning the models along the way.
+Optimization (Optuna)** tuning the models along the way. Every run is captured by
+the canonical **run manifest** (JSON); a richer experiment-tracking backend is
+planned ([#45](https://github.com/Blood-Glucose-Control/GlucoFoundry/issues/45)).
 
 ```mermaid
 flowchart LR
@@ -27,7 +29,7 @@ flowchart LR
     D[("Datasets<br/>CGM / glucose time series")]:::io
     P["Preprocessing &<br/>Feature Engineering"]:::core
     T["Training /<br/>Fine-tuning"]:::core
-    H["Hyperparameter Optimization<br/>Optuna + MLflow tracking"]:::core
+    H["Hyperparameter Optimization<br/>Optuna"]:::core
     E["Evaluation &<br/>Metrics"]:::core
     R[("Experiments &<br/>Reproducible Results")]:::io
     M["Models<br/>foundation models via<br/>the ModelAdapter protocol"]:::model
@@ -43,6 +45,29 @@ flowchart LR
     xE(["+ Add a metric"]):::ext -.-> E
 ```
 
+## Workflow deep-dives
+
+Three companion diagrams zoom into the pieces of the pipeline above. Each has a
+scalable vector (`*.svg`), a raster copy (`*.png`), and a Mermaid source
+(`*.mmd`) that renders natively on GitHub.
+
+- **Scaffolding a new experiment** —
+  [`scaffolder_workflow.svg`](./scaffolder_workflow.svg) ·
+  [PNG](./scaffolder_workflow.png) · [Mermaid](./scaffolder_workflow.mmd). How
+  `glucofoundry new-experiment` drives the interview (or `--from-file`), renders
+  `templates/experiment/`, and emits a self-contained `experiments/<name>/` that
+  the registry auto-discovers.
+- **Optuna sweep** — [`optuna_sweep_workflow.svg`](./optuna_sweep_workflow.svg) ·
+  [PNG](./optuna_sweep_workflow.png) · [Mermaid](./optuna_sweep_workflow.mmd).
+  The cooperative, shared-study hyperparameter search: a study on RDB storage,
+  GPU workers each running `study.optimize(objective)`, and result export.
+- **Single-model training / evaluation** —
+  [`single_model_training_workflow.svg`](./single_model_training_workflow.svg) ·
+  [PNG](./single_model_training_workflow.png) ·
+  [Mermaid](./single_model_training_workflow.mmd). The "one run" inner loop that
+  Optuna wraps per trial: config → pipeline (load → build model → train →
+  evaluate) → experiment-owned results.
+
 ## Built to be extended
 
 The dashed boxes are the toolkit's **extension points** — you add capability
@@ -54,16 +79,19 @@ without rewriting the pipeline:
   and more; the toolkit is task-general, not forecasting-only.
 - **Add a metric** — register new evaluation criteria.
 
-## Regenerating the image
+## Regenerating the images
 
-The PNG/SVG are produced by a small matplotlib script (only dependency is
-matplotlib):
+The PNG/SVG are produced by small matplotlib scripts (only dependency is
+matplotlib — shared drawing helpers live in `_diagram_common.py`):
 
 ```bash
 python agent_notes/diagrams/render_glucofoundry_workflow.py
+python agent_notes/diagrams/render_scaffolder_workflow.py
+python agent_notes/diagrams/render_optuna_sweep_workflow.py
+python agent_notes/diagrams/render_single_model_training_workflow.py
 ```
 
-The Mermaid source (`glucofoundry_workflow.mmd`) is the same diagram in a form
+Each diagram also ships a Mermaid source (`*.mmd`) — the same diagram in a form
 that renders natively on GitHub and can be exported with `mmdc` if the Mermaid
 CLI is installed.
 
