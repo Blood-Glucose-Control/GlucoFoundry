@@ -71,8 +71,9 @@ composed approach from reputable sources:
 
 ### 3.6 Visualization
 
-- Plot/report generation utilities live in `experiments/nocturnal/scripts/visualization/` and reusable
-  plotting utilities in `src/` when shared.
+- Reusable plotting utilities live in `src/visualization/` (shared, core);
+  experiment-specific figure scripts live under the owning experiment's
+  `scripts/` directory.
 
 ## 4) Layer boundaries and ownership
 
