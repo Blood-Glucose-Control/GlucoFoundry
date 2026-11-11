@@ -31,7 +31,7 @@ from typing import Any
 from src.experiments.base.experiment import ExperimentSummarizer
 from src.experiments.registry import get_experiment_paths
 
-from .grand_summary import (
+from .covariates import (
     bucket_from_covariates,
     read_covariate_cols,
 )
