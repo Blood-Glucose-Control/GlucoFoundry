@@ -11,7 +11,7 @@
 > Note: `project_tracking.csv` was removed from GlucoFoundry (#42) as old-project
 > cruft and is **not** used here; GitHub issues (umbrella #12) are the canonical tracker.
 
-**Last updated:** 2026-11-10 · **Totals:** 42 done · 3 in progress · 13 pending
+**Last updated:** 2026-11-10 · **Totals:** 44 done · 2 in progress · 19 pending
 
 Status key: ✅ done · 🔄 in progress · ⬜ pending
 
@@ -94,13 +94,36 @@ umbrella **#64** (artifacts live inside `experiments/<name>/`; 5 decisions resol
 | Post-prune housekeeping (progress + model-config sweep refs) | ✅ | PR #70 |
 | Prune legacy/obsolete scripts (sync, regression-smoke suite) | ✅ | PR #71 |
 | Prune forecasting workflow shells; fix stale `scripts/experiments` refs | ✅ | PR #72 |
-| Phase 4a: `templates/experiment/` skeleton + interview manifest | ⬜ | #64 |
-| Phase 4b: `glucofoundry new-experiment` CLI (full §5 interview + `--from-file`) | ⬜ | #64 |
-| Phase 4c: `configs/models/` templates split (baseline→templates, tuned→experiment) | ⬜ | #64 |
+| Phase 4a: `templates/experiment/` skeleton + interview manifest | ✅ | PR #73 |
+| Phase 4b: `glucofoundry new-experiment` CLI (full §5 interview + `--from-file`) | ✅ | PR #74 |
+| Phase 4c: `configs/models/` templates split (baseline→templates, tuned→experiment) | 🔄 | PR #75 |
 | Phase 5: docs/governance update | ⬜ | #64 |
 
-### Small follow-ups (open)
-`#53` gluroo DB COPY paths · `#54` skill workspace path · `#55` config-schema index + mkdocs links · `#37` audit scripts.
+### Phase 4 review finding → Optuna-first redesign (umbrella #76)
+
+Reviewing Phase 4 surfaced that the scaffold template is **forecasting-rigid +
+single-model-centric**, and the Optuna infra has anti-patterns + a core/experiment
+boundary violation (the "nocturnal" Optuna config actually runs on MetaboNet data).
+Workflow diagrams are in [`agent_notes/diagrams/`](./diagrams). Tracked under
+umbrella **#76**; do **R1–R5 before revisiting the scaffolder CLI (R6)**.
+
+| Task | Status | Ref |
+|------|--------|-----|
+| R1 extract a neutral shared Optuna runner (out of `optuna_chronos2/`) | ⬜ | #77 |
+| R2 fix anti-patterns (SQLite→`JournalStorage`; monkey-patch pruning→`trial.report`) | ⬜ | #78 |
+| R3 move experiment-specific objective/data out of `src/` core | ⬜ | #79 |
+| R4 clean house on `experiments/nocturnal/` (archive rebuttal/grand-summary/viz cruft) | ⬜ | #80 |
+| R5 stand up nocturnal's Optuna on the reported core metrics | ⬜ | #81 |
+| R6 Optuna-first scaffold + de-forecasting the stubs (revises #64) | ⬜ | #82 |
+| R7 Optuna/scaffolder/single-model workflow docs | ⬜ | #83 |
+
+### Other open items (for pickup once this phase settles)
+
+- **Optuna-first redesign:** umbrella **#76** → R1–R7 (**#77–#83**) — see the table above.
+- **Docs / usability:** `#55` config-schema index + mkdocs links · `#56` docs audit + Pages · `#54` skill workspace path · `#53` gluroo DB COPY paths.
+- **Reproducibility:** `#8` fresh-clone smoke validation · `#30` hash-locked lockfile · `#45` experiment tracking (MLflow replacement).
+- **Forks (Phase C/D):** `#32` nocturnal + metabonet forks · `#33` meal-image fork.
+- **Likely already done — candidates to close:** `#6` strip/move tuned sweep configs (done via #68/#69/#75) · `#36` scripts reorg by core-vs-experiment (done via #68/#69/#72) · `#37` audit scripts for nocturnal assumptions (done via #71/#72).
 
 ## Phase C — Carve experiment forks — ⬜ not started
 | Task | Status | Ref |
