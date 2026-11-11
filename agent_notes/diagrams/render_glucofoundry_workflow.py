@@ -166,7 +166,7 @@ def main() -> None:
         7.0,
         3.3,
         1.0,
-        "Hyperparameter Optimization\n(Optuna) + Tracking (MLflow)",
+        "Hyperparameter Optimization\n(Optuna)",
         CORE,
         fontsize=11,
     )
