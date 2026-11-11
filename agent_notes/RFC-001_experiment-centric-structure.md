@@ -1,8 +1,9 @@
 # RFC-001 — Experiment-centric repository structure + scaffolding CLI
 
-**Status:** Accepted — §7 decisions resolved 2026-11-08
+**Status:** Accepted — §7 decisions resolved 2026-11-08; **implemented** via
+Phase 2 (#66), Phase 3 (#68), and Phase 4b/4c (#74, #75).
 **Date:** 2026-11-08
-**Tracking:** umbrella issue (reframes #36, #6)
+**Tracking:** umbrella #64 (reframes #36, #6)
 **Decisions locked by maintainer:** lean into experiment-centric organization;
 run artifacts live **inside** each experiment (`experiments/<name>/results/` and `experiments/<name>/trained_models/`).
 
