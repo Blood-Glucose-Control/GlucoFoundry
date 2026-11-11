@@ -1,0 +1,7 @@
+# Copyright (c) 2025 Blood-Glucose-Control
+# SPDX-License-Identifier: Apache-2.0
+# Toolkit baseline for sundial — a generic CGM-only starting point.
+# Copy into your experiment's configs/models/ and tune from here.
+num_samples: 50
+context_length: 512
+forecast_length: 96

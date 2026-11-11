@@ -20,44 +20,136 @@ from src.workflows.forecasting.modeling import (
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 TSMIXER_SMOKE_CONFIG_PATH = (
-    REPO_ROOT / "configs" / "models" / "tsmixer" / "00_iob_cob_smoke.yaml"
+    REPO_ROOT
+    / "experiments"
+    / "nocturnal"
+    / "configs"
+    / "models"
+    / "tsmixer"
+    / "00_iob_cob_smoke.yaml"
 )
-TIDE_SMOKE_CONFIG_PATH = REPO_ROOT / "configs" / "models" / "tide" / "00_bg_only.yaml"
-TTM_SMOKE_CONFIG_PATH = REPO_ROOT / "configs" / "models" / "ttm" / "00_zs_cgm_only.yaml"
+TIDE_SMOKE_CONFIG_PATH = (
+    REPO_ROOT
+    / "experiments"
+    / "nocturnal"
+    / "configs"
+    / "models"
+    / "tide"
+    / "00_bg_only.yaml"
+)
+TTM_SMOKE_CONFIG_PATH = (
+    REPO_ROOT
+    / "experiments"
+    / "nocturnal"
+    / "configs"
+    / "models"
+    / "ttm"
+    / "00_zs_cgm_only.yaml"
+)
 SUNDIAL_SMOKE_CONFIG_PATH = (
-    REPO_ROOT / "configs" / "models" / "sundial" / "00_baseline.yaml"
+    REPO_ROOT
+    / "experiments"
+    / "nocturnal"
+    / "configs"
+    / "models"
+    / "sundial"
+    / "00_baseline.yaml"
 )
 MOIRAI_SMOKE_CONFIG_PATH = (
-    REPO_ROOT / "configs" / "models" / "moirai" / "bg_only_smoke_test.yaml"
+    REPO_ROOT
+    / "experiments"
+    / "nocturnal"
+    / "configs"
+    / "models"
+    / "moirai"
+    / "bg_only_smoke_test.yaml"
 )
 MOMENT_SMOKE_CONFIG_PATH = (
-    REPO_ROOT / "configs" / "models" / "moment" / "00_baseline.yaml"
+    REPO_ROOT
+    / "experiments"
+    / "nocturnal"
+    / "configs"
+    / "models"
+    / "moment"
+    / "00_baseline.yaml"
 )
 TIMEGRAD_SMOKE_CONFIG_PATH = (
-    REPO_ROOT / "configs" / "models" / "timegrad" / "cgm_only.yaml"
+    REPO_ROOT
+    / "experiments"
+    / "nocturnal"
+    / "configs"
+    / "models"
+    / "timegrad"
+    / "cgm_only.yaml"
 )
 TOTO_SMOKE_CONFIG_PATH = (
-    REPO_ROOT / "configs" / "models" / "toto" / "bg_only_smoke_test.yaml"
+    REPO_ROOT
+    / "experiments"
+    / "nocturnal"
+    / "configs"
+    / "models"
+    / "toto"
+    / "bg_only_smoke_test.yaml"
 )
 TIMESFM_SMOKE_CONFIG_PATH = (
-    REPO_ROOT / "configs" / "models" / "timesfm" / "00_long_run.yaml"
+    REPO_ROOT
+    / "experiments"
+    / "nocturnal"
+    / "configs"
+    / "models"
+    / "timesfm"
+    / "00_long_run.yaml"
 )
 AUTOGLUON_SCHEMA_SMOKE_CONFIGS = {
-    "chronos2": REPO_ROOT / "configs" / "models" / "chronos2" / "00_bg_only.yaml",
-    "deepar": REPO_ROOT / "configs" / "models" / "deepar" / "00_baseline.yaml",
-    "gbm": REPO_ROOT / "configs" / "models" / "gbm" / "00_baseline.yaml",
+    "chronos2": REPO_ROOT
+    / "experiments"
+    / "nocturnal"
+    / "configs"
+    / "models"
+    / "chronos2"
+    / "00_bg_only.yaml",
+    "deepar": REPO_ROOT
+    / "experiments"
+    / "nocturnal"
+    / "configs"
+    / "models"
+    / "deepar"
+    / "00_baseline.yaml",
+    "gbm": REPO_ROOT
+    / "experiments"
+    / "nocturnal"
+    / "configs"
+    / "models"
+    / "gbm"
+    / "00_baseline.yaml",
     "naive_baseline": REPO_ROOT
+    / "experiments"
+    / "nocturnal"
     / "configs"
     / "models"
     / "naive_baseline"
     / "00_naive.yaml",
-    "patchtst": REPO_ROOT / "configs" / "models" / "patchtst" / "00_baseline.yaml",
+    "patchtst": REPO_ROOT
+    / "experiments"
+    / "nocturnal"
+    / "configs"
+    / "models"
+    / "patchtst"
+    / "00_baseline.yaml",
     "statistical": REPO_ROOT
+    / "experiments"
+    / "nocturnal"
     / "configs"
     / "models"
     / "statistical"
     / "00_autoarima_bg_only.yaml",
-    "tft": REPO_ROOT / "configs" / "models" / "tft" / "00_bg_baseline.yaml",
+    "tft": REPO_ROOT
+    / "experiments"
+    / "nocturnal"
+    / "configs"
+    / "models"
+    / "tft"
+    / "00_bg_baseline.yaml",
     "tide": TIDE_SMOKE_CONFIG_PATH,
 }
 

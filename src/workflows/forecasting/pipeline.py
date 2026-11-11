@@ -952,7 +952,7 @@ stored in separate subdirectories for comparison.
         "--model-config",
         type=str,
         default=None,
-        help="Path to YAML model configuration file (e.g., configs/models/ttm/fine_tune.yaml)",
+        help="Path to YAML model configuration file (e.g., experiments/<name>/configs/models/ttm/fine_tune.yaml)",
     )
     parser.add_argument(
         "--experiment",
