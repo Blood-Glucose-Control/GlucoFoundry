@@ -1,0 +1,22 @@
+%% Single-model training/eval — the "one run" that Optuna wraps per trial.
+%% Render: GitHub renders ```mermaid blocks natively; or `mmdc -i single_model_training_workflow.mmd -o single_model_training_workflow.png`.
+flowchart LR
+    classDef io fill:#CFF3EE,stroke:#2C7A7B,color:#1D4044,stroke-width:1.5px;
+    classDef core fill:#D6E4FF,stroke:#2B6CB0,color:#1A365D,stroke-width:1.5px;
+    classDef model fill:#D7F5DD,stroke:#2F855A,color:#1C4532,stroke-width:1.5px;
+
+    MC[("model config<br/>configs/models/&lt;family&gt;/*.yaml")]:::io
+    DC[("data/holdout config<br/>+ --experiment &lt;name&gt;")]:::io
+    O["forecasting_workflow_orchestrator.py<br/>→ src/workflows/forecasting/pipeline.py"]:::core
+    LD["load + preprocess data"]:::core
+    M["build model via ModelAdapter"]:::model
+    TR["train / fine-tune"]:::core
+    EV["evaluate → metrics"]:::core
+    R[("experiments/&lt;name&gt;/results/<br/>results_summary.json + run_manifest.json")]:::io
+
+    MC --> O
+    DC --> O
+    O --> LD --> M --> TR --> EV --> R
+
+    note["Optuna's objective() runs exactly this inner loop per trial,<br/>with hyperparameters sampled from the search space."]:::core
+    EV -. "one Optuna trial" .- note

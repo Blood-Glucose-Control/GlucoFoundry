@@ -1,0 +1,31 @@
+%% Optuna sweep workflow — how src/workflows/sweeps/optuna_<family>/ works.
+%% Render: GitHub renders ```mermaid blocks natively; or `mmdc -i optuna_sweep_workflow.mmd -o optuna_sweep_workflow.png`.
+flowchart TD
+    classDef io fill:#CFF3EE,stroke:#2C7A7B,color:#1D4044,stroke-width:1.5px;
+    classDef core fill:#D6E4FF,stroke:#2B6CB0,color:#1A365D,stroke-width:1.5px;
+    classDef worker fill:#D7F5DD,stroke:#2F855A,color:#1C4532,stroke-width:1.5px;
+    classDef store fill:#FFF4D6,stroke:#D69E2E,color:#744210,stroke-width:1.5px;
+
+    C[("study config (YAML)<br/>study_name, storage, search space,<br/>sampler, pruner, direction")]:::io
+    CR["study.py create<br/>optuna.create_study(load_if_exists)"]:::core
+    S[("Shared Optuna study<br/>SQLite RDB storage + heartbeat<br/>(TPE sampler, median pruner)")]:::store
+    L["launch_optuna_tmux.sh<br/>GPUS, TRIALS_PER_GPU"]:::core
+
+    W1["worker (GPU 0)<br/>study.py run"]:::worker
+    W2["worker (GPU 1)<br/>study.py run"]:::worker
+    OBJ["objective(trial)"]:::core
+    SS["search_space.suggest(trial)<br/>sample hyperparameters"]:::core
+    TR["train model (AutoGluon / HF)<br/>ModelAdapter"]:::core
+    RP["report val loss → prune?"]:::core
+    MET["return primary metric"]:::core
+
+    EXP["export_results / build_submission<br/>best config · leaderboard · ensemble"]:::core
+    R[("Reproducible results")]:::io
+
+    C --> CR --> S
+    L --> W1 & W2
+    W1 & W2 -- "study.optimize(objective, n_trials)" --> OBJ
+    OBJ --> SS --> TR --> RP --> MET
+    MET -- write trial --> S
+    RP -. TrialPruned .-> S
+    S --> EXP --> R
