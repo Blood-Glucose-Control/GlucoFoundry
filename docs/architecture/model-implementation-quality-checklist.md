@@ -136,7 +136,9 @@ Each model family should have tests covering:
    - required properties/method expectations are satisfied;
    - load/save/predict path assumptions tested where practical.
 4. **Regression coverage**
-   - at least one fixture-backed real config from `configs/models/<family>/`.
+   - at least one fixture-backed real config from
+     `experiments/<name>/configs/models/<family>/` (or the
+     `templates/experiment/configs/models/<family>/` baseline).
 5. **Field semantics consistency**
    - parameters with similar names (for example `learning_rate` vs
      `fine_tune_lr`) are either intentionally distinct and documented, or

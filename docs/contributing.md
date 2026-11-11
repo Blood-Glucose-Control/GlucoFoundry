@@ -741,7 +741,7 @@ When contributing new models, follow the [Foundation Model Template](./foundatio
 
 3. **Provide comprehensive configuration**:
    ```yaml
-   # configs/models/your_model_default.yaml
+   # your_model_config.yaml
    model:
      type: "your_model"
      path: "path/to/pretrained/model"

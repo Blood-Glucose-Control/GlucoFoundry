@@ -1,0 +1,24 @@
+# Copyright (c) 2025 Blood-Glucose-Control
+# SPDX-License-Identifier: Apache-2.0
+# Toolkit baseline for moirai2 — a generic CGM-only starting point.
+# Copy into your experiment's configs/models/ and tune from here.
+model_path: Salesforce/moirai-2.0-R-small
+variant: moirai2
+context_length: 512
+forecast_length: 96
+training_mode: fine_tune
+freeze_backbone: false
+learning_rate: 0.0001
+batch_size: 32
+num_epochs: 5
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+patch_size: auto
+num_samples: 50
+past_covariate_dim: 0
+covariate_cols: []
+target_col: bg_mM
+interval_mins: 5
+fp16: true
+use_cpu: false

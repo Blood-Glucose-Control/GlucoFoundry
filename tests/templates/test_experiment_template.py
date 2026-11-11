@@ -102,3 +102,18 @@ def test_rendered_python_stubs_compile(tmp_path: Path) -> None:
 )
 def test_core_recipe_files_present(required: str) -> None:
     assert (EXPERIMENT_TMPL / required).is_file()
+
+
+_MODEL_BASELINES = sorted(
+    p.name for p in (EXPERIMENT_TMPL / "configs" / "models").iterdir() if p.is_dir()
+)
+
+
+@pytest.mark.parametrize("family", _MODEL_BASELINES)
+def test_model_baseline_validates_via_schema(family: str) -> None:
+    """Each templates/experiment/configs/models/<family>/baseline.yaml is valid."""
+    from src.workflows.forecasting.modeling import load_model_config_from_yaml
+
+    cfg = EXPERIMENT_TMPL / "configs" / "models" / family / "baseline.yaml"
+    assert cfg.is_file()
+    load_model_config_from_yaml(str(cfg), model_type=family)

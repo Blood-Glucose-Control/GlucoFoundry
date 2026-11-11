@@ -188,6 +188,12 @@ def _skip(rel: Path, answers: dict[str, Any]) -> bool:
         return True
     if not answers.get("include_notebooks") and parts[:1] == ("notebooks",):
         return True
+    # Model-config baselines: copy only the baselines for the selected models.
+    # If no models were selected, keep the full baseline gallery as reference.
+    if len(parts) >= 3 and parts[:2] == ("configs", "models"):
+        selected = answers.get("models") or []
+        if selected and parts[2] not in selected:
+            return True
     return False
 
 

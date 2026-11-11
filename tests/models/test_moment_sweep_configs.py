@@ -70,7 +70,7 @@ def test_moment_quantile_request_raises(patched_moment_import):
 
 
 def _load_moment_sweep_configs():
-    sweep_dir = Path("configs/models/moment")
+    sweep_dir = Path("experiments/nocturnal/configs/models/moment")
     files = sorted(sweep_dir.glob("[0-9][0-9]_*.yaml"))
     configs = []
     for path in files:

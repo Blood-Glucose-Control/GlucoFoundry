@@ -24,7 +24,7 @@ def test_forecasting_workflow_request_schema_valid_payload() -> None:
             "skip_steps": [4, 7],
             "epochs": 2,
             "batch_size": 32,
-            "model_config_path": "configs/models/tsmixer/00_iob_cob_smoke.yaml",
+            "model_config_path": "experiments/nocturnal/configs/models/tsmixer/00_iob_cob_smoke.yaml",
         }
     )
 
@@ -33,7 +33,10 @@ def test_forecasting_workflow_request_schema_valid_payload() -> None:
     assert validated.skip_steps == [4, 7]
     assert validated.epochs == 2
     assert validated.batch_size == 32
-    assert validated.model_config_path == "configs/models/tsmixer/00_iob_cob_smoke.yaml"
+    assert (
+        validated.model_config_path
+        == "experiments/nocturnal/configs/models/tsmixer/00_iob_cob_smoke.yaml"
+    )
 
 
 def test_forecasting_workflow_request_experiment_defaults_to_nocturnal() -> None:
@@ -116,7 +119,7 @@ def test_forecasting_train_sweep_spec_loader_validates_jobs(tmp_path: Path) -> N
         tmp_path / "train_sweep.yaml",
         """
 jobs:
-  - model_config: " configs/models/ttm/fine_tune.yaml "
+  - model_config: " experiments/nocturnal/configs/models/ttm/fine_tune.yaml "
     datasets:
       - " aleppo_2017 "
       - " lynch_2022 "
@@ -126,7 +129,10 @@ jobs:
     parsed = load_forecasting_train_sweep_spec_from_yaml(spec)
 
     assert len(parsed.jobs) == 1
-    assert parsed.jobs[0].model_config_path == "configs/models/ttm/fine_tune.yaml"
+    assert (
+        parsed.jobs[0].model_config_path
+        == "experiments/nocturnal/configs/models/ttm/fine_tune.yaml"
+    )
     assert parsed.jobs[0].datasets == ["aleppo_2017", "lynch_2022"]
 
 
@@ -137,7 +143,7 @@ def test_forecasting_train_sweep_spec_loader_rejects_empty_dataset_entry(
         tmp_path / "train_sweep_invalid.yaml",
         """
 jobs:
-  - model_config: configs/models/ttm/fine_tune.yaml
+  - model_config: experiments/nocturnal/configs/models/ttm/fine_tune.yaml
     datasets:
       - " "
         """,
@@ -160,10 +166,10 @@ no_dilate: true
 forecast_length: 120
 output_dir_template: " runs/{dataset} "
 jobs:
-  - model_config: " configs/models/ttm/fine_tune.yaml "
+  - model_config: " experiments/nocturnal/configs/models/ttm/fine_tune.yaml "
     context_length: 512
     finetuned_datasets: [" aleppo_2017 "]
-  - model_config: "configs/models/ttm/zero_shot.yaml"
+  - model_config: "experiments/nocturnal/configs/models/ttm/zero_shot.yaml"
     context_length: 256
     zeroshot_datasets: ["lynch_2022"]
     forecast_length: 96
@@ -178,7 +184,10 @@ jobs:
     assert parsed.no_dilate is True
     assert parsed.forecast_length == 120
     assert parsed.output_dir_template == "runs/{dataset}"
-    assert parsed.jobs[0].model_config_path == "configs/models/ttm/fine_tune.yaml"
+    assert (
+        parsed.jobs[0].model_config_path
+        == "experiments/nocturnal/configs/models/ttm/fine_tune.yaml"
+    )
     assert parsed.jobs[0].finetuned_datasets == ["aleppo_2017"]
     assert parsed.jobs[0].forecast_length is None
     assert parsed.jobs[1].forecast_length == 96
@@ -194,7 +203,7 @@ def test_forecasting_eval_sweep_spec_loader_rejects_blank_output_template(
         """
 output_dir_template: " "
 jobs:
-  - model_config: configs/models/ttm/fine_tune.yaml
+  - model_config: experiments/nocturnal/configs/models/ttm/fine_tune.yaml
     context_length: 512
         """,
     )

@@ -1,0 +1,21 @@
+# Copyright (c) 2025 Blood-Glucose-Control
+# SPDX-License-Identifier: Apache-2.0
+# Toolkit baseline for timesfm — a generic CGM-only starting point.
+# Copy into your experiment's configs/models/ and tune from here.
+model_type: timesfm
+training_mode: fine_tune
+context_length: 512
+forecast_length: 96
+loss_fn: pinball
+learning_rate: 1.0e-05
+num_epochs: 35
+batch_size: 256
+gradient_accumulation_steps: 4
+weight_decay: 0.01
+torch_dtype: bfloat16
+eval_during_training: true
+eval_temporal_frac: 0.1
+target_col: bg_mM
+interval_mins: 5
+imputation_threshold_mins: 45
+freq_type: 0

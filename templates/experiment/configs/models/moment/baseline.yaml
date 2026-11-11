@@ -1,0 +1,17 @@
+# Copyright (c) 2025 Blood-Glucose-Control
+# SPDX-License-Identifier: Apache-2.0
+# Toolkit baseline for moment — a generic CGM-only starting point.
+# Copy into your experiment's configs/models/ and tune from here.
+model_path: AutonLab/MOMENT-1-small
+training_mode: fine_tune
+context_length: 512
+forecast_length: 96
+use_wrapper_normalization: false
+covariate_cols: []
+learning_rate: 0.0001
+batch_size: 16
+num_epochs: 5
+window_stride: 96
+max_train_windows: 4096
+target_col: bg_mM
+interval_mins: 5

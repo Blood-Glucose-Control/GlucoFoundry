@@ -1,0 +1,26 @@
+# Copyright (c) 2025 Blood-Glucose-Control
+# SPDX-License-Identifier: Apache-2.0
+# Toolkit baseline for tft — a generic CGM-only starting point.
+# Copy into your experiment's configs/models/ and tune from here.
+model_type: tft
+training_mode: from_scratch
+context_length: 512
+forecast_length: 96
+hidden_dim: 32
+variable_dim: 32
+num_heads: 4
+dropout_rate: 0.1
+lr: 0.001
+num_batches_per_epoch: 50
+batch_size: 256
+max_epochs: 100
+early_stopping_patience: 20
+gradient_clip_val: 1.0
+covariate_cols: []
+target_col: bg_mM
+patient_col: patient_id
+time_col: datetime
+interval_mins: 5
+eval_metric: WQL
+enable_ensemble: false
+imputation_threshold_mins: 45

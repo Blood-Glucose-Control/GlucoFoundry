@@ -1,0 +1,46 @@
+# =============================================================================
+# Moirai-2 (LoRA fine-tune) — Blood Glucose Only Baseline
+# =============================================================================
+# BG (bg_mM) as the sole input — no covariates. past_covariate_dim=0.
+# Uses Moirai-2.0-R-small with LoRA fine-tuning (variant="moirai2").
+# Set variant="moirai_moe" and model_path="Salesforce/moirai-moe-1.0-R-small"
+# to fine-tune the Moirai-MoE variant instead.
+#
+# Usage:
+#   CUDA_VISIBLE_DEVICES=0 MODEL_TYPE="moirai2" \
+#   MODEL_CONFIG="experiments/nocturnal/configs/models/moirai2/00_bg_only.yaml" \
+#   CONFIG_DIR="configs/data/holdout_10pct" \
+#   DATASETS="aleppo_2017 brown_2019 lynch_2022 tamborlane_2008" \
+#   SKIP_TRAINING="false" SKIP_STEPS="7" \
+#     python scripts/workflows/forecasting/forecasting_workflow_orchestrator.py --model-type "$MODEL_TYPE" --model-config "$MODEL_CONFIG" --datasets $DATASETS
+# =============================================================================
+
+model_path: "Salesforce/moirai-2.0-R-small"
+variant: "moirai2"
+context_length: 512
+forecast_length: 96  # 8 hours at 5-min intervals
+
+training_mode: "fine_tune"
+freeze_backbone: false
+learning_rate: 1.0e-4
+batch_size: 32
+num_epochs: 5
+
+# LoRA
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+
+# Inference
+patch_size: "auto"
+num_samples: 50
+
+# BG only — no covariates
+past_covariate_dim: 0
+covariate_cols: []
+target_col: "bg_mM"
+interval_mins: 5
+
+# Hardware
+fp16: true
+use_cpu: false
