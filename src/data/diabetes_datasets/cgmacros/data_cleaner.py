@@ -20,7 +20,7 @@ Pipeline Steps (per participant):
 2. Floor timestamps to a 5-min grid (same as Brown 2019)
 3. Aggregate each bin (glucose = the real reading in the bin, HR/METs = mean,
    activity calories/steps = sum, intensity = max, macros = sum,
-   meal metadata = first)
+   meal metadata = first, photo paths = all, joined with ";")
 4. Reindex onto a regular 5-min grid, from the first to the last glucose
    reading of either sensor
 5. Rename to the standard schema (bg_mM, carbohydrate_g, msg_type, hr_bpm, ...).
@@ -37,6 +37,10 @@ Notes:
   5-min row holds the real reading taken in that bin, or NaN. Libre has a
   value in about 1 of every 3 rows.
 - Meal types are normalized to breakfast / lunch / dinner / snack.
+- Most meals have a second photo a few minutes later on a row with no meal
+  label (usually the leftovers, sometimes a drink or food that was
+  never logged). These stay on the row where they were taken, in
+  ``unlabeled_image_paths``.
 """
 
 import logging
@@ -99,6 +103,7 @@ FAT_COL = "fat_g"
 FIBER_COL = "fiber_g"
 AMOUNT_CONSUMED_COL = "amount_consumed"
 IMAGE_PATH_COL = "image_path"
+UNLABELED_IMAGE_PATHS_COL = "unlabeled_image_paths"
 
 # Raw meal labels seen in v1.0.0: Breakfast/breakfast, Lunch/lunch, Dinner/dinner,
 # Snack/snack/Snacks/snack 1
@@ -127,6 +132,15 @@ def read_participant_csv(path: Path) -> pd.DataFrame:
     if RAW_COLS["timestamp"] not in df.columns:
         raise ValueError(f"{path.name}: missing '{RAW_COLS['timestamp']}' column")
     df[RAW_COLS["timestamp"]] = pd.to_datetime(df[RAW_COLS["timestamp"]])
+
+    # A few photo paths name files that aren't in the download; drop them
+    col = RAW_COLS["image_path"]
+    if col in df.columns:
+        listed = df[col].dropna()
+        missing = listed[~listed.map(lambda p: (path.parent / p).exists())]
+        if not missing.empty:
+            logger.warning(f"{path.name}: photos not found: {list(missing)}")
+            df.loc[missing.index, col] = np.nan
     return df
 
 
@@ -243,6 +257,12 @@ def clean_participant_data(
         else pd.Series(False, index=df.index)
     )
     df["_is_meal"] = is_meal
+    # Photos: labeled ones go with their meal, unlabeled ones stay where taken
+    has_photos = RAW_COLS["image_path"] in df.columns
+    if has_photos:
+        photo = df[RAW_COLS["image_path"]]
+        df["_unlabeled_image_paths"] = photo.where(~is_meal)
+        df[RAW_COLS["image_path"]] = photo.where(is_meal)
     if RAW_COLS["meal_type"] in df.columns:
         df[RAW_COLS["meal_type"]] = df[RAW_COLS["meal_type"]].map(normalize_meal_type)
 
@@ -265,7 +285,6 @@ def clean_participant_data(
         ("intensity", "max"),
         ("meal_type", "first"),
         ("amount_consumed", "first"),
-        ("image_path", "first"),
     ]:
         if RAW_COLS[key] in df.columns:
             agg[RAW_COLS[key]] = how
@@ -278,6 +297,11 @@ def clean_participant_data(
     for key in ("activity_calories", "steps"):
         if RAW_COLS[key] in df.columns:
             binned[RAW_COLS[key]] = df.groupby(dt_col)[RAW_COLS[key]].sum(min_count=1)
+    # Photos: every path in the bin, joined with ";" (two meals can share a bin)
+    if has_photos:
+        for col in (RAW_COLS["image_path"], "_unlabeled_image_paths"):
+            photos = df.dropna(subset=col)
+            binned[col] = photos.groupby(dt_col)[col].agg(";".join)
 
     # Regular grid between the first and last reading of either sensor
     valid = binned.index[binned[glucose_cols].notna().any(axis=1)]
@@ -321,6 +345,8 @@ def clean_participant_data(
     for key, new in extras.items():
         if RAW_COLS[key] in binned.columns:
             out[new] = binned[RAW_COLS[key]].where(is_meal_bin)
+    if has_photos:
+        out[UNLABELED_IMAGE_PATHS_COL] = binned["_unlabeled_image_paths"]
 
     return out
 
