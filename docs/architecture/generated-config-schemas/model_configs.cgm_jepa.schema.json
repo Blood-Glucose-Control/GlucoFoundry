@@ -1,0 +1,213 @@
+{
+  "additionalProperties": false,
+  "description": "Schema contract for CGM-JEPA (encoder + quantile head) YAML configs.\n\nThe encoder was pre-trained on 24 h windows (288 steps at 5 min) split into\nhourly patches of 12, so ``context_length`` must be a multiple of 12.\n``pretrained_subfolder`` picks the published weights; leave it out to use\nthe default ``cgm_jepa`` weights.",
+  "properties": {
+    "batch_size": {
+      "default": 128,
+      "exclusiveMinimum": 0,
+      "title": "Batch Size",
+      "type": "integer"
+    },
+    "context_length": {
+      "default": 288,
+      "exclusiveMinimum": 0,
+      "title": "Context Length",
+      "type": "integer"
+    },
+    "encoder_lr_mult": {
+      "default": 0.1,
+      "minimum": 0.0,
+      "title": "Encoder Lr Mult",
+      "type": "number"
+    },
+    "forecast_length": {
+      "default": 24,
+      "exclusiveMinimum": 0,
+      "title": "Forecast Length",
+      "type": "integer"
+    },
+    "fp16": {
+      "default": true,
+      "title": "Fp16",
+      "type": "boolean"
+    },
+    "freeze_encoder": {
+      "default": true,
+      "title": "Freeze Encoder",
+      "type": "boolean"
+    },
+    "head_dropout": {
+      "default": 0.1,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Head Dropout",
+      "type": "number"
+    },
+    "head_hidden": {
+      "default": 256,
+      "exclusiveMinimum": 0,
+      "title": "Head Hidden",
+      "type": "integer"
+    },
+    "head_type": {
+      "default": "mlp",
+      "enum": [
+        "linear",
+        "mlp"
+      ],
+      "title": "Head Type",
+      "type": "string"
+    },
+    "learning_rate": {
+      "default": 0.001,
+      "exclusiveMinimum": 0.0,
+      "title": "Learning Rate",
+      "type": "number"
+    },
+    "loss_function": {
+      "default": "pinball",
+      "enum": [
+        "pinball",
+        "mse",
+        "mae"
+      ],
+      "title": "Loss Function",
+      "type": "string"
+    },
+    "max_train_windows": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Max Train Windows"
+    },
+    "model_path": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "CRUISEResearchGroup/CGM-JEPA",
+      "title": "Model Path"
+    },
+    "model_type": {
+      "const": "cgm_jepa",
+      "default": "cgm_jepa",
+      "title": "Model Type",
+      "type": "string"
+    },
+    "num_epochs": {
+      "default": 20,
+      "minimum": 0,
+      "title": "Num Epochs",
+      "type": "integer"
+    },
+    "out_scale_mgdl": {
+      "default": 50.0,
+      "exclusiveMinimum": 0.0,
+      "title": "Out Scale Mgdl",
+      "type": "number"
+    },
+    "pretrained_local_dir": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Pretrained Local Dir"
+    },
+    "pretrained_repo_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Pretrained Repo Id"
+    },
+    "pretrained_subfolder": {
+      "default": "cgm_jepa",
+      "enum": [
+        "cgm_jepa",
+        "x_cgm_jepa"
+      ],
+      "title": "Pretrained Subfolder",
+      "type": "string"
+    },
+    "quantile_levels": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "number"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Quantile Levels"
+    },
+    "seed": {
+      "default": 42,
+      "title": "Seed",
+      "type": "integer"
+    },
+    "token_pool": {
+      "default": "mean_last",
+      "enum": [
+        "mean",
+        "last",
+        "mean_last",
+        "all"
+      ],
+      "title": "Token Pool",
+      "type": "string"
+    },
+    "training_mode": {
+      "default": "fine_tune",
+      "enum": [
+        "fine_tune",
+        "from_scratch"
+      ],
+      "title": "Training Mode",
+      "type": "string"
+    },
+    "use_cpu": {
+      "default": false,
+      "title": "Use Cpu",
+      "type": "boolean"
+    },
+    "weight_decay": {
+      "default": 0.01,
+      "minimum": 0.0,
+      "title": "Weight Decay",
+      "type": "number"
+    },
+    "window_stride": {
+      "default": 6,
+      "exclusiveMinimum": 0,
+      "title": "Window Stride",
+      "type": "integer"
+    }
+  },
+  "title": "CgmJepaModelConfigSchema",
+  "type": "object"
+}

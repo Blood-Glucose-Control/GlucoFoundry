@@ -77,6 +77,10 @@ timegrad = [
 moment = [
     "momentfm",
 ]
+cgm_jepa = [
+    "safetensors",
+    "huggingface_hub",
+]
 timesfm = [
     "transformers>=5.2.0",
 ]

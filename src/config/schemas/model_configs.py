@@ -833,6 +833,61 @@ class TTMModelConfigSchema(BaseConfigSchema):
         return target_features
 
 
+class CgmJepaModelConfigSchema(BaseConfigSchema):
+    """Schema contract for CGM-JEPA (encoder + quantile head) YAML configs.
+
+    The encoder was pre-trained on 24 h windows (288 steps at 5 min) split into
+    hourly patches of 12, so ``context_length`` must be a multiple of 12.
+    ``pretrained_subfolder`` picks the published weights; leave it out to use
+    the default ``cgm_jepa`` weights.
+    """
+
+    model_type: Literal["cgm_jepa"] = Field(default="cgm_jepa")
+    model_path: Optional[str] = Field(default="CRUISEResearchGroup/CGM-JEPA")
+    training_mode: Literal["fine_tune", "from_scratch"] = Field(default="fine_tune")
+    context_length: int = Field(default=288, gt=0)
+    forecast_length: int = Field(default=24, gt=0)
+    use_cpu: bool = Field(default=False)
+    fp16: bool = Field(default=True)
+
+    learning_rate: float = Field(
+        default=1e-3,
+        gt=0.0,
+        validation_alias=AliasChoices("learning_rate", "lr"),
+    )
+    batch_size: int = Field(default=128, gt=0)
+    num_epochs: int = Field(default=20, ge=0)
+    weight_decay: float = Field(default=1e-2, ge=0.0)
+    loss_function: Literal["pinball", "mse", "mae"] = Field(default="pinball")
+    quantile_levels: Optional[list[float]] = Field(default=None)
+
+    pretrained_subfolder: Literal["cgm_jepa", "x_cgm_jepa"] = Field(default="cgm_jepa")
+    pretrained_repo_id: Optional[str] = Field(default=None)
+    pretrained_local_dir: Optional[str] = Field(default=None)
+    freeze_encoder: bool = Field(default=True)
+    encoder_lr_mult: float = Field(default=0.1, ge=0.0)
+    head_type: Literal["linear", "mlp"] = Field(default="mlp")
+    head_hidden: int = Field(default=256, gt=0)
+    head_dropout: float = Field(default=0.1, ge=0.0, le=1.0)
+    token_pool: Literal["mean", "last", "mean_last", "all"] = Field(default="mean_last")
+    out_scale_mgdl: float = Field(default=50.0, gt=0.0)
+    window_stride: int = Field(default=6, gt=0)
+    max_train_windows: Optional[int] = Field(default=None, gt=0)
+    seed: int = Field(default=42)
+
+    @field_validator("learning_rate", mode="before")
+    @classmethod
+    def _normalize_learning_rate(cls, value: Any) -> Any:
+        return _coerce_numeric_string(value, "learning_rate")
+
+    @field_validator("context_length")
+    @classmethod
+    def _validate_context_length(cls, value: int) -> int:
+        if value % 12 != 0:
+            raise ValueError("context_length must be a multiple of 12 (hourly patches)")
+        return value
+
+
 RuntimeConfigAdapter = Callable[[dict[str, Any]], dict[str, Any]]
 
 
@@ -996,6 +1051,11 @@ def build_ttm_runtime_config(config_data: dict[str, Any]) -> dict[str, Any]:
     return _build_runtime_config("ttm", TTMModelConfigSchema, config_data)
 
 
+def build_cgm_jepa_runtime_config(config_data: dict[str, Any]) -> dict[str, Any]:
+    """Validate and normalize CGM-JEPA runtime config values."""
+    return _build_runtime_config("cgm_jepa", CgmJepaModelConfigSchema, config_data)
+
+
 MODEL_CONFIG_ROUTES: dict[str, ModelConfigRoute] = {
     "chronos2": ModelConfigRoute(
         schema_type=Chronos2ModelConfigSchema,
@@ -1068,6 +1128,10 @@ MODEL_CONFIG_ROUTES: dict[str, ModelConfigRoute] = {
     "tsmixer": ModelConfigRoute(
         schema_type=TSMixerModelConfigSchema,
         runtime_adapter=build_tsmixer_runtime_config,
+    ),
+    "cgm_jepa": ModelConfigRoute(
+        schema_type=CgmJepaModelConfigSchema,
+        runtime_adapter=build_cgm_jepa_runtime_config,
     ),
 }
 
