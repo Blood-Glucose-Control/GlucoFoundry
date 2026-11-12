@@ -9,6 +9,7 @@ from typing import Any, NamedTuple
 from .base import BaseConfigSchema
 from .data_configs import HoldoutConfigSchema
 from .model_configs import (
+    CgmJepaModelConfigSchema,
     Chronos2ModelConfigSchema,
     DeepARModelConfigSchema,
     GBMModelConfigSchema,
@@ -43,6 +44,11 @@ class SchemaArtifactSpec(NamedTuple):
 
 
 SCHEMA_ARTIFACT_SPECS: tuple[SchemaArtifactSpec, ...] = (
+    SchemaArtifactSpec(
+        filename="model_configs.cgm_jepa.schema.json",
+        schema_type=CgmJepaModelConfigSchema,
+        source_symbol="src.config.schemas.model_configs.CgmJepaModelConfigSchema",
+    ),
     SchemaArtifactSpec(
         filename="model_configs.chronos2.schema.json",
         schema_type=Chronos2ModelConfigSchema,

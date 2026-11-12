@@ -98,6 +98,11 @@ MODEL_FAMILY_CLASS_CONTRACT: dict[str, dict[str, object]] = {
         "model_class": "TSMixerForecaster",
         "allowed_model_bases": {"DartsGlobalModelBase"},
     },
+    "cgm_jepa": {
+        "config_class": "CgmJepaConfig",
+        "model_class": "CgmJepaForecaster",
+        "allowed_model_bases": {"BaseTimeSeriesFoundationModel"},
+    },
 }
 
 SCHEMA_ROUTED_FAMILIES = set(get_registered_model_config_types())

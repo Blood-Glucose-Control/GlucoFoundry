@@ -22,6 +22,7 @@ _MODEL_MODULES: Dict[str, str] = {
     "toto": "src.models.toto",
     "moirai": "src.models.moirai",
     "moment": "src.models.moment",
+    "cgm_jepa": "src.models.cgm_jepa",
 }
 
 
