@@ -19,12 +19,12 @@ def test_workflow_modeling_has_tsmixer_create_and_load_paths() -> None:
 
 
 def test_tsmixer_covariate_capability_and_smoke_profile() -> None:
-    grand_summary_text = Path("src/experiments/nocturnal/grand_summary.py").read_text(
+    model_registry_text = Path("experiments/nocturnal/covariates.py").read_text(
         encoding="utf-8"
     )
-    assert '"tsmixer": {' in grand_summary_text
-    assert '"supports_past_covariates": True' in grand_summary_text
-    assert '"probabilistic": True' in grand_summary_text
+    assert '"tsmixer": {' in model_registry_text
+    assert '"supports_past_covariates": True' in model_registry_text
+    assert '"probabilistic": True' in model_registry_text
 
     smoke_cfg = Path(
         "experiments/nocturnal/configs/models/tsmixer/00_iob_cob_smoke.yaml"
