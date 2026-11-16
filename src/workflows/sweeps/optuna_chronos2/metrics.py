@@ -14,7 +14,8 @@ Forecast steps map to clinical horizons at 5-minute sampling:
 
 from __future__ import annotations
 
-from typing import Dict, Sequence
+from collections.abc import Sequence
+from typing import Dict
 
 import numpy as np
 

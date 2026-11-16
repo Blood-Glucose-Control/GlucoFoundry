@@ -201,34 +201,3 @@ class pruning_context:
         if self._token is not None:
             _ACTIVE_CALLBACKS.reset(self._token)
         return False
-
-
-def build_pruner(config: dict):
-    """Construct an Optuna pruner from a config dict, or None if disabled."""
-    import optuna
-
-    if not config.get("enable_pruning"):
-        return None
-    spec = config.get("pruner", {}) or {}
-    kind = str(spec.get("type", "median")).lower()
-    if kind in ("asha", "successive_halving", "successivehalving"):
-        return optuna.pruners.SuccessiveHalvingPruner(
-            min_resource=spec.get("min_resource", 100),
-            reduction_factor=spec.get("reduction_factor", 3),
-            min_early_stopping_rate=spec.get("min_early_stopping_rate", 0),
-        )
-    if kind == "hyperband":
-        return optuna.pruners.HyperbandPruner(
-            min_resource=spec.get("min_resource", 100),
-            max_resource=spec.get("max_resource", "auto"),
-            reduction_factor=spec.get("reduction_factor", 3),
-        )
-    if kind == "median":
-        return optuna.pruners.MedianPruner(
-            n_startup_trials=spec.get("n_startup_trials", 5),
-            n_warmup_steps=spec.get("n_warmup_steps", 0),
-        )
-    raise ValueError(
-        f"Unknown pruner type {spec.get('type')!r}; use 'median', 'asha', "
-        f"or 'hyperband'."
-    )

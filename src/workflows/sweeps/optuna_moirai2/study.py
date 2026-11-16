@@ -1,38 +1,26 @@
 # Copyright (c) 2025 Blood-Glucose-Control
 # SPDX-License-Identifier: Apache-2.0
 
-"""CLI for the Moirai-2.0 / Moirai-MoE PEFT-LoRA x Optuna sweep.
+"""moirai2 x Optuna sweep worker.
 
-Each worker must run in the ``.venvs/moirai`` interpreter (uni2ts + gluonts +
-``peft``). Usage::
+Supplies the moirai2 search space, objective, and dashboard metadata to the shared
+sweep engine (:mod:`src.workflows.sweeps.engine`).
 
+Usage:
     python -m src.workflows.sweeps.optuna_moirai2.study create --config <yaml>
-    python -m src.workflows.sweeps.optuna_moirai2.study run --config <yaml> \
-        --n-trials 40 --gpu-label 0
-    # tiny end-to-end smoke (1 trial, few patients):
-    python -m src.workflows.sweeps.optuna_moirai2.study run --config <yaml> \
-        --smoke --n-trials 1
+    python -m src.workflows.sweeps.optuna_moirai2.study run --config <yaml> \\
+        --n-trials 200 --gpu-label 0
 """
 
 from __future__ import annotations
 
-import argparse
 import logging
-import os
 from typing import Any, Dict, Optional, Sequence
 
 import optuna
-import yaml
 
-from ..optuna_chronos2.pruning import build_pruner
-from ..optuna_chronos2.study import (
-    _build_sampler,
-    _build_storage,
-    _deep_merge,
-    _make_early_stopping_callback,
-    _parse_objectives,
-    build_data,
-)
+from ..engine import StudySpec, _parse_objectives, run_main
+from ..optuna_chronos2.data import build_data
 from .objective import Moirai2Objective
 from .search_space import Moirai2SearchSpaceBounds
 
@@ -102,17 +90,6 @@ DEFAULT_CONFIG: Dict[str, Any] = {
 }
 
 
-def load_config(path: Optional[str], smoke: bool = False) -> Dict[str, Any]:
-    config = {k: v for k, v in DEFAULT_CONFIG.items() if k != "smoke"}
-    if path:
-        with open(path) as fh:
-            config = _deep_merge(config, yaml.safe_load(fh) or {})
-    if smoke:
-        smoke_over = _deep_merge(dict(DEFAULT_CONFIG["smoke"]), config.get("smoke", {}))
-        config = _deep_merge(config, smoke_over)
-    return config
-
-
 def build_bounds(config: Dict[str, Any]) -> Moirai2SearchSpaceBounds:
     return Moirai2SearchSpaceBounds(**config.get("search_space", {}))
 
@@ -148,97 +125,40 @@ def _apply_dashboard_metadata(study: optuna.Study, config: Dict[str, Any]) -> No
     )
 
 
-def _create_study(config: Dict[str, Any]) -> optuna.Study:
-    metric_names, directions = _parse_objectives(config)
-    is_multi = len(metric_names) > 1
-    create_kwargs: Dict[str, Any] = dict(
-        study_name=config["study_name"],
-        storage=_build_storage(config),
-        load_if_exists=True,
-        sampler=_build_sampler(config),
-    )
-    if is_multi:
-        create_kwargs["directions"] = directions
-    else:
-        create_kwargs["direction"] = directions[0]
-        create_kwargs["pruner"] = build_pruner(config)
-    study = optuna.create_study(**create_kwargs)
-    _apply_dashboard_metadata(study, config)
-    return study
-
-
-def cmd_create(config: Dict[str, Any]) -> int:
-    study = _create_study(config)
-    print(f"Study '{study.study_name}' ready at {config['storage']}")
-    print(f"Existing trials: {len(study.trials)}")
-    return 0
-
-
-def cmd_run(config: Dict[str, Any], n_trials: int, gpu_label: str) -> int:
-    data = build_data(config)
-    bounds = build_bounds(config)
-    metric_names, _ = _parse_objectives(config)
-    is_multi = len(metric_names) > 1
+def build_objective(
+    config: Dict[str, Any],
+    data: Any,
+    bounds: Any,
+    gpu_label: str,
+    metric_names: Sequence[str],
+    is_multi: bool,
+) -> Any:
     fine_tune = dict(config.get("fine_tune", {}))
-    objective = Moirai2Objective(
+    return Moirai2Objective(
         data,
         config["output_root"],
         bounds=bounds,  # type: ignore[arg-type]  # Moirai2 bounds used via _suggest
         time_limit=config.get("time_limit"),
         keep_models=bool(config.get("keep_models", False)),
-        gpu_label=gpu_label or os.environ.get("CUDA_VISIBLE_DEVICES", ""),
+        gpu_label=gpu_label,
         primary_metric=metric_names[0],
-        objective_metrics=metric_names if is_multi else None,
+        objective_metrics=list(metric_names) if is_multi else None,
         report_intermediate=bool(config.get("report_intermediate", False)),
         **fine_tune,
     )
-    study = _create_study(config)
-
-    timeout = config.get("timeout")
-    effective_n_trials: Optional[int] = n_trials if n_trials and n_trials > 0 else None
-    if effective_n_trials is None and timeout is None:
-        raise ValueError(
-            "Set a positive --n-trials or a config 'timeout' so the worker terminates."
-        )
-
-    callbacks = []
-    patience = config.get("early_stopping_patience")
-    if patience and not is_multi:
-        callbacks.append(_make_early_stopping_callback(int(patience)))
-
-    study.optimize(
-        objective,
-        n_trials=effective_n_trials,
-        timeout=timeout,
-        gc_after_trial=True,
-        callbacks=callbacks,
-    )
-
-    print(f"Worker finished. Study now has {len(study.trials)} trials.")
-    try:
-        best = study.best_trial
-        print(f"Best {metric_names[0]}: {best.value:.3f} (trial {best.number})")
-    except ValueError:
-        pass
-    return 0
 
 
-def _build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Moirai-2/MoE LoRA Optuna sweep")
-    parser.add_argument("command", choices=["create", "run"], help="Action to run.")
-    parser.add_argument("--config", type=str, default=None)
-    parser.add_argument("--n-trials", type=int, default=10)
-    parser.add_argument("--gpu-label", type=str, default="")
-    parser.add_argument("--smoke", action="store_true")
-    return parser
+SPEC = StudySpec(
+    default_config=DEFAULT_CONFIG,
+    build_bounds=build_bounds,
+    build_objective=build_objective,
+    build_data=build_data,
+    apply_dashboard_metadata=_apply_dashboard_metadata,
+)
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
-    args = _build_parser().parse_args(argv)
-    config = load_config(args.config, smoke=args.smoke)
-    if args.command == "create":
-        return cmd_create(config)
-    return cmd_run(config, n_trials=args.n_trials, gpu_label=args.gpu_label)
+    return run_main(SPEC, argv)
 
 
 if __name__ == "__main__":

@@ -12,8 +12,9 @@ from __future__ import annotations
 
 import shutil
 import time
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np
 import optuna
@@ -77,7 +78,7 @@ class DeepARObjective:
         self.is_multi = bool(self.objective_metrics and len(self.objective_metrics) > 1)
         self.report_intermediate = bool(report_intermediate) and not self.is_multi
 
-    def _predict_matrix(self, forecast, item_ids: List[str]) -> np.ndarray:  # noqa: ANN001
+    def _predict_matrix(self, forecast, item_ids: List[str]) -> np.ndarray:
         """Extract an (n_windows, 24) mean-forecast matrix ordered by item_ids."""
         horizon = max(HORIZON_STEPS.values())
         pred_df = forecast["mean"].reset_index()
