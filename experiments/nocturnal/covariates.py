@@ -130,12 +130,13 @@ MODEL_PROPERTIES: dict[str, dict[str, Any]] = {
         "class": "deep_learning",
         "zero_shot_capable": False,
         "fine_tunable": True,
-        "supports_past_covariates": False,
-        "univariate_only": True,
-        "probabilistic": False,
+        "supports_past_covariates": True,
+        "univariate_only": False,
+        "probabilistic": True,
         "architecture_summary": (
             "Patch-tokenised transformer encoder, channel-independent. "
-            "Point/quantile forecasts; no native covariate support."
+            "AutoGluon-backed; accepts past covariates and emits quantile "
+            "(probabilistic) forecasts."
         ),
     },
     "tide": {
