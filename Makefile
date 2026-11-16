@@ -7,7 +7,7 @@ VENVS_DIR := $(ROOT_DIR)/.venvs
 # Most models have their own venv; AutoGluon-backed models share .venvs/autogluon.
 # ─────────────────────────────────────────────────────────────────────────────
 
-.PHONY: test-ttm test-sundial test-timesfm test-timesfm3 test-autogluon test-chronos2 test-models test lint help
+.PHONY: test-ttm test-sundial test-timesfm test-timesfm3 test-cgm_jepa test-autogluon test-chronos2 test-models test lint help
 
 test-ttm:
 	$(VENVS_DIR)/ttm/bin/python -m pytest tests/models/ -v -k ttm
@@ -23,6 +23,9 @@ test-timesfm:
 # aten kernels on hosts without CUDA/Python build headers for Triton.
 test-timesfm3:
 	TORCH_DISABLE_NATIVE_JIT=1 $(VENVS_DIR)/timesfm3/bin/python -m pytest tests/models/ -v -k timesfm3
+
+test-cgm_jepa:
+	$(VENVS_DIR)/cgm_jepa/bin/python -m pytest tests/models/ -v -k cgm_jepa
 
 test-autogluon:
 	$(VENVS_DIR)/autogluon/bin/python -m pytest tests/models/ -v -k "chronos2 or autogluon_base or deepar or patchtst or tft or naive_baseline or statistical"

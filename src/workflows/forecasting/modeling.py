@@ -238,6 +238,7 @@ class ModelFactory:
             "patchtst": "",
             "tft": "",
             "tsmixer": "",
+            "cgm_jepa": "CRUISEResearchGroup/CGM-JEPA",
         }
         return defaults.get(model_type, "")
 
@@ -664,10 +665,40 @@ class ModelFactory:
                 },
             )
             return TSMixerForecaster(TSMixerConfig(**runtime_config))
+        if model_type == "cgm_jepa":
+            try:
+                from ...models.cgm_jepa import CgmJepaConfig, CgmJepaForecaster
+            except ImportError as e:
+                raise ImportError(
+                    "CGM-JEPA model not available. Install with: "
+                    "source scripts/setup_model_env.sh cgm_jepa\n"
+                    f"{e}"
+                ) from e
+
+            extra = dict(config.extra_config) if config.extra_config else {}
+            if "lr" in extra and "learning_rate" not in extra:
+                extra["learning_rate"] = extra.pop("lr")
+            runtime_config = build_model_runtime_config(
+                model_type=model_type,
+                config_data={
+                    "model_type": "cgm_jepa",
+                    "model_path": config.model_path,
+                    "training_mode": config.training_mode,
+                    "use_cpu": config.use_cpu,
+                    "fp16": config.fp16,
+                    "context_length": config.context_length,
+                    "forecast_length": config.forecast_length,
+                    "batch_size": config.batch_size,
+                    "num_epochs": config.num_epochs,
+                    "learning_rate": config.learning_rate,
+                    **extra,
+                },
+            )
+            return CgmJepaForecaster(CgmJepaConfig(**runtime_config))
         raise ValueError(
             f"Unsupported model type: {model_type}. "
             "Supported types: sundial, ttm, chronos2, moment, timesfm, timesfm3, timegrad, tide, toto, moirai, moirai2, "
-            "naive_baseline, statistical, deepar, patchtst, tft, tsmixer"
+            "naive_baseline, statistical, deepar, patchtst, tft, tsmixer, cgm_jepa"
         )
 
     @staticmethod
@@ -1059,8 +1090,12 @@ class ModelFactory:
             from ...models.tsmixer import TSMixerForecaster
 
             return TSMixerForecaster.load(model_path)
+        if model_type_lower == "cgm_jepa":
+            from ...models.cgm_jepa import CgmJepaForecaster
+
+            return CgmJepaForecaster.load(model_path)
         raise ValueError(
             f"Unsupported model type for loading: {model_type}. "
             "Supported types: sundial, ttm, chronos2, moment, timesfm, timesfm3, timegrad, tide, toto, moirai, moirai2, "
-            "naive_baseline, statistical, deepar, patchtst, tft, gbm, tsmixer"
+            "naive_baseline, statistical, deepar, patchtst, tft, gbm, tsmixer, cgm_jepa"
         )
