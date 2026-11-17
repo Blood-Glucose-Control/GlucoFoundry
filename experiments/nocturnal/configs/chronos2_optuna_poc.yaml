@@ -13,11 +13,11 @@
 # =============================================================================
 
 study_name: "chronos2_metabonet_poc"
-storage: "sqlite:///optuna_chronos2_poc.db"
+storage: "sqlite:///chronos2_poc.db"
 direction: "minimize"
 
 processed_path: "cache/data/metabonet/processed"
-output_root: "experiments/nocturnal/trained_models/optuna_chronos2_poc"
+output_root: "experiments/nocturnal/trained_models/chronos2_poc"
 
 # Per-trial AutoGluon fit time cap (seconds); null = no cap.
 time_limit: null

@@ -27,7 +27,7 @@
 #   TRIALS_PER_GPU  Concurrent workers per GPU (1-4)   (default: 2)
 #   N_TRIALS        Trials each worker runs            (default: 20)
 #   CONFIG          Study YAML config                  (default: PoC config)
-#   SESSION         tmux session name                  (default: optuna_chronos2)
+#   SESSION         tmux session name                  (default: chronos2)
 #   PYTHON          Python interpreter                 (default: .venvs/autogluon)
 #   NUM_THREADS     Per-worker CPU thread cap          (default: unset = no cap)
 #                   Sets OMP/MKL/OpenBLAS/NumExpr/vecLib + torch intra-op threads.
@@ -40,8 +40,8 @@
 #                   Optuna stores datetime.now() naively; this makes the
 #                   dashboard "Started At" column read in your local zone.
 #
-# Monitor:   tmux attach -t optuna_chronos2
-# Stop all:  tmux kill-session -t optuna_chronos2
+# Monitor:   tmux attach -t chronos2
+# Stop all:  tmux kill-session -t chronos2
 
 set -euo pipefail
 
@@ -52,11 +52,11 @@ cd "$PROJECT_ROOT"
 TRIALS_PER_GPU="${TRIALS_PER_GPU:-2}"
 N_TRIALS="${N_TRIALS:-20}"
 CONFIG="${CONFIG:-experiments/nocturnal/configs/chronos2_optuna_poc.yaml}"
-SESSION="${SESSION:-optuna_chronos2}"
+SESSION="${SESSION:-chronos2}"
 PYTHON="${PYTHON:-.venvs/autogluon/bin/python}"
 # Sweep worker module: default is the Chronos-2 sweep; set to
-# src.workflows.sweeps.optuna_tft.study for the TFT sweep.
-MODULE="${MODULE:-src.workflows.sweeps.optuna_chronos2.study}"
+# src.workflows.hpo.tft.study for the TFT sweep.
+MODULE="${MODULE:-src.workflows.hpo.chronos2.study}"
 SMOKE="${SMOKE:-0}"
 # Per-worker CPU thread cap (unset = no cap). Exported into each worker command
 # so OpenMP/MKL/BLAS/NumExpr and torch intra-op all honor it, preventing the

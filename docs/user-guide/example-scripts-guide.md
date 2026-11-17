@@ -40,8 +40,8 @@ toolkit surface. Reproduce model-specific workflows via the canonical entrypoint
 ## Sweep orchestration (Optuna)
 
 Hyperparameter sweeps run through per-model-family **Optuna** studies in
-[`src/workflows/sweeps/`](/src/workflows/sweeps) (for example
-`src/workflows/sweeps/optuna_chronos2/study.py`). The earlier hand-rolled shell
+[`src/workflows/hpo/`](/src/workflows/hpo) (for example
+`src/workflows/hpo/chronos2/study.py`). The earlier hand-rolled shell
 sweep harness was removed in favor of this Optuna-based orchestration.
 
 The nocturnal experiment drives its Optuna runs from

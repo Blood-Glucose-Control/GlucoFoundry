@@ -232,4 +232,4 @@ logs/*.txt
 # Keep tuned search spaces / winning configs OFF the public remote.
 /private/
 experiments/nocturnal/results/optuna/
-optuna_chronos2_*.db
+chronos2_*.db
