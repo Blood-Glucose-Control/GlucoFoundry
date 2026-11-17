@@ -73,18 +73,14 @@ flowchart LR
     D[configs/data + raw/prepared inputs]
     W[scripts/workflows/*]
     SW[src/workflows/*]
-    A["experiments/nocturnal/scripts/{analysis,visualization}/*"]
+    A["experiments/nocturnal/scripts/{analysis,evaluation}/*"]
 
     D --> W --> SW
     SW --> A
 ```
 
-Shared visualization helpers for retained nocturnal plotting scripts now live in
+Shared visualization helpers live in
 [`src/visualization/nocturnal.py`](/src/visualization/nocturnal.py).
-
-Visualization script purposes, duplication assessment, and curated example
-outputs are documented in
-[`docs/user-guide/modeling/visualization-guide.md`](/docs/user-guide/modeling/visualization-guide.md).
 
 ## Canonical run manifest (v1)
 
@@ -109,13 +105,3 @@ Several older example scripts were removed during P1 scripts cleanup because the
 depended on model-base surfaces that were already pruned from runtime. If you need
 the old behavior, use git history for reference and prefer rebuilding on top of
 the maintained scripts listed above.
-
-## Generic visualization entrypoints
-
-Visualization entrypoints use generic plotting contracts and live with the
-experiment that produces their inputs:
-
-- [`plot_probabilistic_forecast_grid.py`](/experiments/nocturnal/scripts/visualization/plot_probabilistic_forecast_grid.py)
-- [`plot_forecast_episode_overlays.py`](/experiments/nocturnal/scripts/visualization/plot_forecast_episode_overlays.py)
-
-Each script documents its required input data format at the top of the file.

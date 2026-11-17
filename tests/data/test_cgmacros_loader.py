@@ -44,12 +44,24 @@ def _participant_frame() -> pd.DataFrame:
     row = int((MEAL_TIME - START) / pd.Timedelta(minutes=1))
     df.loc[row, ["Meal Type", "Image path"]] = ["Lunch", "photos/lunch_1.jpg"]
     df.loc[row, ["Calories", "Carbs", "Protein", "Fat", "Fiber"]] = [650, 80, 30, 20, 8]
+    # Unlabeled photos: two in the 07:15 bin, one later in the 08:30 bin
+    df.loc[row + 14, "Image path"] = "photos/drink.jpg"
+    df.loc[row + 17, "Image path"] = "photos/leftovers.jpg"
+    df.loc[row + 90, "Image path"] = "photos/later.jpg"
     return df
+
+
+def _write_photos(raw: pd.DataFrame, folder: Path) -> None:
+    """Create the photo files the frame refers to."""
+    for p in raw["Image path"].dropna():
+        (folder / p).parent.mkdir(parents=True, exist_ok=True)
+        (folder / p).touch()
 
 
 def _clean(raw: pd.DataFrame, tmp_path: Path) -> pd.DataFrame:
     path = tmp_path / "CGMacros-001.csv"
     raw.to_csv(path, index=False)
+    _write_photos(raw, tmp_path)
     out = clean_participant_data(read_participant_csv(path), "cgm_1")
     assert out is not None
     return out
@@ -73,10 +85,29 @@ def test_clean_participant_data(tmp_path: Path):
     assert meal["meal_type"] == "lunch"
     assert meal["image_path"] == "photos/lunch_1.jpg"
     assert (out.drop(index=meal_bin)["carbohydrate_g"] == 0).all()
+    assert out["image_path"].notna().sum() == 1  # labeled photo on the meal row only
+
+    # Unlabeled photos stay where they were taken
+    unlabeled = out["unlabeled_image_paths"].dropna()
+    assert unlabeled.to_dict() == {
+        pd.Timestamp("2025-03-01 07:15"): "photos/drink.jpg;photos/leftovers.jpg",
+        pd.Timestamp("2025-03-01 08:30"): "photos/later.jpg",
+    }
 
     # Fitbit: HR averaged, activity calories summed over the 5 minutes
     assert out["hr_bpm"].iloc[0] == 70
     assert out["calories"].iloc[0] == pytest.approx(7.5)
+
+
+def test_missing_photos_are_dropped(tmp_path: Path):
+    raw = _participant_frame()
+    raw.to_csv(tmp_path / "CGMacros-001.csv", index=False)
+    _write_photos(raw, tmp_path)
+    (tmp_path / "photos/drink.jpg").unlink()  # listed in the CSV, not on disk
+
+    df = read_participant_csv(tmp_path / "CGMacros-001.csv")
+    assert "photos/drink.jpg" not in set(df["Image path"].dropna())
+    assert "photos/leftovers.jpg" in set(df["Image path"].dropna())
 
 
 def test_recover_real_readings():
@@ -113,7 +144,9 @@ def test_loader_processes_and_reloads_cache(
     for num in (1, 2):
         folder = root / f"CGMacros-{num:03d}"
         folder.mkdir(parents=True)
-        _participant_frame().to_csv(folder / f"CGMacros-{num:03d}.csv", index=False)
+        raw = _participant_frame()
+        raw.to_csv(folder / f"CGMacros-{num:03d}.csv", index=False)
+        _write_photos(raw, folder)
     monkeypatch.setattr(cgmacros_module, "get_cache_manager", lambda: cm)
 
     loader = CGMacrosDataLoader(use_cached=False, parallel=False)

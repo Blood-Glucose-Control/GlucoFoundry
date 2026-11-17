@@ -65,7 +65,8 @@ loader = CGMacrosDataLoader(use_cached=False)
 | meal_type | breakfast / lunch / dinner / snack |
 | meal_calories, protein_g, fat_g, fiber_g | Meal macros (meal rows only) |
 | amount_consumed | Raw value; scale is inconsistent (0.75, 100, 300...) |
-| image_path | Meal photo path, relative to the participant folder |
+| image_path | Meal photo path, relative to the participant folder (`;`-separated in the rare bin with two meals) |
+| unlabeled_image_paths | Photos with no meal label, on the row where they were taken (usually leftovers; sometimes a drink or unlogged food), `;`-separated if more than one |
 | hr_bpm | Heart rate |
 | calories, step_count, mets, activity_intensity | Fitbit activity; which ones exist varies by participant |
 | cob, iob | Carbs/insulin on board; iob is always NaN (no insulin data) |
