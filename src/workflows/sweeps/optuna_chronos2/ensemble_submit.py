@@ -34,9 +34,10 @@ import numpy as np
 import optuna
 import pandas as pd
 
+from ..engine import load_config
 from .data import MetabonetData
 from .metrics import HORIZON_MINUTES, HORIZON_STEPS, evaluate_horizons
-from .study import load_config
+from .study import SPEC
 
 logger = logging.getLogger(__name__)
 
@@ -184,7 +185,7 @@ def main() -> int:
     parser.add_argument("--out", default=None, help="Optional CSV summary path stem.")
     args = parser.parse_args()
 
-    config = load_config(args.config)
+    config = load_config(SPEC, args.config)
     if args.patient_limit is not None:
         config["data"]["patient_limit"] = args.patient_limit
     data = MetabonetData(config["processed_path"], **config["data"]).load()
