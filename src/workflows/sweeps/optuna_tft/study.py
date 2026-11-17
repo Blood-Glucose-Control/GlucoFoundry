@@ -129,7 +129,7 @@ SPEC = StudySpec(
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
-    return run_main(SPEC, argv)
+    return run_main(SPEC, argv, description=__doc__)
 
 
 if __name__ == "__main__":

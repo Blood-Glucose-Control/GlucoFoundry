@@ -109,7 +109,7 @@ def _build_storage(config: Dict[str, Any]):
     Without a heartbeat, Optuna cannot tell a dead worker's trial from a slow
     one, so killed-worker trials linger forever as RUNNING. Heartbeat lets any
     live worker mark stale trials FAILED (grace_period after the last beat) and
-    RetryFailedTrialCallback re-enqueues them.
+    RetryHeartbeatStaleTrialCallback re-enqueues them.
     """
     from optuna.storages import RDBStorage, RetryHeartbeatStaleTrialCallback
 
@@ -343,8 +343,11 @@ def cmd_run(
     return 0
 
 
-def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser()
+def build_parser(description: Optional[str] = None) -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description=description,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     parser.add_argument("command", choices=["create", "run"], help="Action to run.")
     parser.add_argument("--config", type=str, default=None, help="YAML config path.")
     parser.add_argument("--n-trials", type=int, default=10)
@@ -360,10 +363,18 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def run_main(spec: StudySpec, argv: Optional[Sequence[str]] = None) -> int:
-    """Generic worker entry point: parse args, apply CLI overrides, dispatch."""
+def run_main(
+    spec: StudySpec,
+    argv: Optional[Sequence[str]] = None,
+    description: Optional[str] = None,
+) -> int:
+    """Generic worker entry point: parse args, apply CLI overrides, dispatch.
+
+    Pass the calling family module's ``__doc__`` as ``description`` so ``--help``
+    shows that family's usage text (with its formatting preserved).
+    """
     logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
-    args = build_parser().parse_args(argv)
+    args = build_parser(description).parse_args(argv)
     config = load_config(spec, args.config, smoke=args.smoke)
 
     # CLI overrides take precedence over config/defaults.
