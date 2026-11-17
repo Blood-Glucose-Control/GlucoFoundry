@@ -39,17 +39,18 @@ import os
 # effect; harmless when torch is already initialized.
 os.environ.setdefault("TORCH_DISABLE_NATIVE_JIT", "1")
 
-import time  # noqa: E402
-from pathlib import Path  # noqa: E402
-from typing import Any, Dict, List, Optional, Sequence, Tuple, Union  # noqa: E402
+import time
+from collections.abc import Sequence
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
 
-import numpy as np  # noqa: E402
-import optuna  # noqa: E402
+import numpy as np
+import optuna
 
-from ..optuna_chronos2.data import MetabonetData  # noqa: E402
-from ..optuna_chronos2.features import TARGET_COL  # noqa: E402
-from ..optuna_chronos2.metrics import HORIZON_STEPS, evaluate_horizons  # noqa: E402
-from .search_space import (  # noqa: E402
+from ..optuna_chronos2.data import MetabonetData
+from ..optuna_chronos2.features import TARGET_COL
+from ..optuna_chronos2.metrics import HORIZON_STEPS, evaluate_horizons
+from .search_space import (
     TimesFM3SearchPoint,
     TimesFM3SearchSpaceBounds,
     suggest_timesfm3_point,

@@ -8,7 +8,7 @@ import pytest
 pytest.importorskip("optuna")
 pytest.importorskip("yaml")
 
-from src.workflows.sweeps.optuna_chronos2.study import (  # noqa: E402
+from src.workflows.sweeps.engine import (  # noqa: E402
     _parse_objectives,
 )
 

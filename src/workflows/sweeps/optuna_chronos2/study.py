@@ -1,38 +1,31 @@
 # Copyright (c) 2025 Blood-Glucose-Control
 # SPDX-License-Identifier: Apache-2.0
 
-"""Shared-study Optuna worker entrypoint for the Chronos-2 MetaboNet PoC.
+"""Chronos-2 x Optuna sweep worker.
 
-A worker loads the MetaboNet dataset once, connects to a shared SQLite-backed
-Optuna study, and contributes ``--n-trials`` trials. Multiple workers — each
-pinned to a GPU via ``CUDA_VISIBLE_DEVICES`` and launched in its own tmux pane —
-point at the same ``--storage`` and cooperatively explore one search space.
+Supplies the Chronos-2 search space, objective, and dashboard metadata to the
+shared sweep engine (:mod:`src.workflows.sweeps.engine`).
 
-Usage (single worker)::
-
-    CUDA_VISIBLE_DEVICES=0 python -m src.workflows.sweeps.optuna_chronos2.study \\
-        run --config experiments/nocturnal/configs/chronos2_optuna_poc.yaml \\
+Usage:
+    python -m src.workflows.sweeps.optuna_chronos2.study create --config <yaml>
+    python -m src.workflows.sweeps.optuna_chronos2.study run --config <yaml> \\
         --n-trials 20 --gpu-label 0
 
-Use the ``create`` subcommand once to initialise the study, then launch workers
-(see ``experiments/nocturnal/scripts/sweeps/optuna/launch_optuna_tmux.sh``).
+Launch cooperative workers with
+``experiments/nocturnal/scripts/sweeps/optuna/launch_optuna_tmux.sh``.
 """
 
 from __future__ import annotations
 
-import argparse
-import copy
 import logging
-import os
-from pathlib import Path
-from typing import Any, Dict, Optional, Sequence
+from collections.abc import Sequence
+from typing import Any, Dict, Optional
 
 import optuna
-import yaml
 
-from .data import MetabonetData
+from ..engine import StudySpec, _parse_objectives, run_main
+from .data import build_data
 from .objective import Chronos2Objective
-from .pruning import build_pruner
 from .search_space import SearchSpaceBounds
 
 logger = logging.getLogger(__name__)
@@ -92,50 +85,8 @@ DEFAULT_CONFIG: Dict[str, Any] = {
 }
 
 
-def _deep_merge(base: Dict[str, Any], override: Dict[str, Any]) -> Dict[str, Any]:
-    result = dict(base)
-    for key, value in override.items():
-        if isinstance(value, dict) and isinstance(result.get(key), dict):
-            result[key] = _deep_merge(result[key], value)
-        else:
-            result[key] = value
-    return result
-
-
-def load_config(path: Optional[str], smoke: bool = False) -> Dict[str, Any]:
-    """Load the PoC config, layering YAML overrides and smoke settings."""
-    config = copy.deepcopy(DEFAULT_CONFIG)
-    if path is not None:
-        with open(path, "r", encoding="utf-8") as fh:
-            config = _deep_merge(config, yaml.safe_load(fh) or {})
-    if smoke:
-        config = _deep_merge(config, config.get("smoke", {}))
-    return config
-
-
-def build_data(config: Dict[str, Any]) -> MetabonetData:
-    data_cfg = dict(config["data"])
-    return MetabonetData(config["processed_path"], **data_cfg).load()
-
-
 def build_bounds(config: Dict[str, Any]) -> SearchSpaceBounds:
     return SearchSpaceBounds(**config.get("search_space", {}))
-
-
-def _parse_objectives(config: Dict[str, Any]):
-    """Return (metric_names, directions). Multi-objective iff len > 1.
-
-    Uses the ``objectives`` list (each: {metric, direction}) when present,
-    otherwise falls back to the single ``primary_metric`` + ``direction``.
-    """
-    objectives = config.get("objectives")
-    if objectives:
-        metrics = [str(o["metric"]) for o in objectives]
-        directions = [str(o.get("direction", "minimize")) for o in objectives]
-        return metrics, directions
-    return [config.get("primary_metric", "rmse_120")], [
-        config.get("direction", "minimize")
-    ]
 
 
 def _apply_dashboard_metadata(study: optuna.Study, config: Dict[str, Any]) -> None:
@@ -257,224 +208,40 @@ def _apply_dashboard_metadata(study: optuna.Study, config: Dict[str, Any]) -> No
         pass
 
 
-def _ensure_storage_dir(storage: str) -> None:
-    """Create the parent directory for a sqlite:/// storage path if needed."""
-    prefix = "sqlite:///"
-    if storage.startswith(prefix):
-        db_path = Path(storage[len(prefix) :])
-        db_path.parent.mkdir(parents=True, exist_ok=True)
-
-
-def _build_storage(config: Dict[str, Any]):
-    """Build an RDB storage with heartbeat so crashed trials auto-fail/retry.
-
-    Without a heartbeat, Optuna cannot tell a dead worker's trial from a slow
-    one, so killed-worker trials linger forever as RUNNING. Heartbeat lets any
-    live worker mark stale trials FAILED (grace_period after the last beat) and
-    RetryFailedTrialCallback re-enqueues them.
-    """
-    from optuna.storages import RDBStorage, RetryHeartbeatStaleTrialCallback
-
-    url = config["storage"]
-    _ensure_storage_dir(url)
-    heartbeat_interval = int(config.get("heartbeat_interval", 60))
-    grace_period = int(config.get("grace_period", 300))
-    max_retry = config.get("max_retry", 2)
-    return RDBStorage(
-        url=url,
-        heartbeat_interval=heartbeat_interval,
-        grace_period=grace_period,
-        heartbeat_stale_trial_callback=RetryHeartbeatStaleTrialCallback(
-            max_retry=max_retry
-        ),
-    )
-
-
-def _build_sampler(config: Dict[str, Any]):
-    """Build the Optuna sampler from config (default multivariate TPE).
-
-    Options: "tpe" (default), "nsga2" (genetic/population-based; usable for
-    single-objective and the natural choice if we go multi-objective), "random",
-    or "cmaes". TPE is the strong default for our large mixed/conditional space.
-    """
-    spec = config.get("sampler", {}) or {}
-    kind = str(spec.get("type", "tpe")).lower()
-    seed = spec.get("seed")
-    if seed is not None:
-        # CRITICAL for distributed runs: workers must NOT share a seed, or they
-        # sample identical initial trials (and stay synchronized for several
-        # generations), wasting compute. Offset by a per-process value so each
-        # worker's sampler diverges while a base seed still aids debuggability.
-        seed = int(seed) + (os.getpid() % 100_000)
-    if kind == "nsga2":
-        return optuna.samplers.NSGAIISampler(
-            population_size=spec.get("population_size", 50), seed=seed
-        )
-    if kind == "random":
-        return optuna.samplers.RandomSampler(seed=seed)
-    if kind == "cmaes":
-        return optuna.samplers.CmaEsSampler(seed=seed)
-    return optuna.samplers.TPESampler(multivariate=True, group=True, seed=seed)
-
-
-def _create_study(config: Dict[str, Any]) -> optuna.Study:
-    metric_names, directions = _parse_objectives(config)
-    is_multi = len(metric_names) > 1
-    create_kwargs: Dict[str, Any] = dict(
-        study_name=config["study_name"],
-        storage=_build_storage(config),
-        load_if_exists=True,
-        sampler=_build_sampler(config),
-    )
-    if is_multi:
-        # Optuna cannot prune multi-objective studies; ignore any pruner config.
-        create_kwargs["directions"] = directions
-    else:
-        create_kwargs["direction"] = directions[0]
-        create_kwargs["pruner"] = build_pruner(config)
-    study = optuna.create_study(**create_kwargs)
-    # Label objectives so the dashboard shows metric names (e.g. "mard_120")
-    # instead of "Objective 0/1". Idempotent and safe to re-apply on resume.
-    try:
-        study.set_metric_names(list(metric_names))
-    except Exception:  # noqa: BLE001 - older storages may not support it
-        pass
-    _apply_dashboard_metadata(study, config)
-    return study
-
-
-def cmd_create(config: Dict[str, Any]) -> int:
-    study = _create_study(config)
-    print(f"Study '{study.study_name}' ready at {config['storage']}")
-    print(f"Existing trials: {len(study.trials)}")
-    return 0
-
-
-def _make_early_stopping_callback(patience: int):
-    """Callback that stops the worker if best value stalls for `patience` trials."""
-    state = {"best": None, "since_improve": 0}
-
-    def _callback(study: optuna.Study, _trial: optuna.trial.FrozenTrial) -> None:
-        try:
-            current = study.best_value
-        except ValueError:
-            return
-        if state["best"] is None or current < state["best"] - 1e-9:
-            state["best"] = current
-            state["since_improve"] = 0
-        else:
-            state["since_improve"] += 1
-            if state["since_improve"] >= patience:
-                logger.info(
-                    "Early stopping: no improvement in %d trials (best=%.4f).",
-                    patience,
-                    state["best"],
-                )
-                study.stop()
-
-    return _callback
-
-
-def cmd_run(config: Dict[str, Any], n_trials: int, gpu_label: str) -> int:
-    data = build_data(config)
-    bounds = build_bounds(config)
-    metric_names, _ = _parse_objectives(config)
-    is_multi = len(metric_names) > 1
-    objective = Chronos2Objective(
+def build_objective(
+    config: Dict[str, Any],
+    data: Any,
+    bounds: SearchSpaceBounds,
+    gpu_label: str,
+    metric_names: Sequence[str],
+    is_multi: bool,
+) -> Chronos2Objective:
+    return Chronos2Objective(
         data,
         config["output_root"],
         bounds=bounds,
         time_limit=config.get("time_limit"),
         keep_models=bool(config.get("keep_models", False)),
-        gpu_label=gpu_label or os.environ.get("CUDA_VISIBLE_DEVICES", ""),
+        gpu_label=gpu_label,
         primary_metric=metric_names[0],
-        objective_metrics=metric_names if is_multi else None,
+        objective_metrics=list(metric_names) if is_multi else None,
         enable_pruning=bool(config.get("enable_pruning", False)),
         report_intermediate=bool(config.get("report_intermediate", True)),
         early_stopping_patience=config.get("fine_tune_early_stopping_patience"),
     )
-    study = _create_study(config)
-
-    timeout = config.get("timeout")
-    # n_trials <= 0 means "unlimited until timeout" (requires a timeout).
-    effective_n_trials: Optional[int] = n_trials if n_trials and n_trials > 0 else None
-    if effective_n_trials is None and timeout is None:
-        raise ValueError(
-            "Set a positive --n-trials or a config 'timeout' so the worker terminates."
-        )
-
-    callbacks = []
-    patience = config.get("early_stopping_patience")
-    if patience and not is_multi:
-        # study.best_value is undefined for multi-objective; skip the callback.
-        callbacks.append(_make_early_stopping_callback(int(patience)))
-
-    study.optimize(
-        objective,
-        n_trials=effective_n_trials,
-        timeout=timeout,
-        gc_after_trial=True,
-        callbacks=callbacks,
-        # Resilience: a single failing trial (e.g. an unlucky hyperparameter
-        # combo that errors during fit) should mark that trial FAILED and let
-        # the worker keep going, not tear down the whole worker. Optuna still
-        # logs each failure at WARNING level, so failures stay visible.
-        catch=(Exception,),
-    )
-
-    print(f"Worker finished. Study now has {len(study.trials)} trials.")
-    if is_multi:
-        front = study.best_trials
-        print(f"Pareto front ({', '.join(metric_names)}): {len(front)} trials")
-        for t in front[:5]:
-            vals = ", ".join(f"{m}={v:.3f}" for m, v in zip(metric_names, t.values))
-            print(f"  trial {t.number}: {vals}")
-    else:
-        try:
-            best = study.best_trial
-            print(f"Best {metric_names[0]}: {best.value:.3f} (trial {best.number})")
-        except ValueError:
-            print("No completed trials yet.")
-    return 0
 
 
-def _build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=["create", "run"], help="Action to run.")
-    parser.add_argument("--config", type=str, default=None, help="YAML config path.")
-    parser.add_argument("--n-trials", type=int, default=10)
-    parser.add_argument("--gpu-label", type=str, default="")
-    parser.add_argument("--study-name", type=str, default=None)
-    parser.add_argument("--storage", type=str, default=None)
-    parser.add_argument("--patient-limit", type=int, default=None)
-    parser.add_argument("--output-root", type=str, default=None)
-    parser.add_argument("--keep-models", action="store_true")
-    parser.add_argument(
-        "--smoke", action="store_true", help="Use tiny smoke-test settings."
-    )
-    return parser
+SPEC = StudySpec(
+    default_config=DEFAULT_CONFIG,
+    build_bounds=build_bounds,
+    build_objective=build_objective,
+    build_data=build_data,
+    apply_dashboard_metadata=_apply_dashboard_metadata,
+)
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
-    logging.basicConfig(level=logging.INFO)
-    args = _build_parser().parse_args(argv)
-    config = load_config(args.config, smoke=args.smoke)
-
-    # CLI overrides take precedence over config/defaults.
-    if args.study_name:
-        config["study_name"] = args.study_name
-    if args.storage:
-        config["storage"] = args.storage
-    if args.output_root:
-        config["output_root"] = args.output_root
-    if args.keep_models:
-        config["keep_models"] = True
-    if args.patient_limit is not None:
-        config["data"]["patient_limit"] = args.patient_limit
-
-    if args.command == "create":
-        return cmd_create(config)
-    return cmd_run(config, n_trials=args.n_trials, gpu_label=args.gpu_label)
+    return run_main(SPEC, argv, description=__doc__)
 
 
 if __name__ == "__main__":

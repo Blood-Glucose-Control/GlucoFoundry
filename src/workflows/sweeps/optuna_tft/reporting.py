@@ -41,7 +41,7 @@ def _make_callback():
         def __init__(self) -> None:
             self._step = 0
 
-        def on_validation_end(self, trainer, pl_module) -> None:  # noqa: ANN001
+        def on_validation_end(self, trainer, pl_module) -> None:
             if getattr(trainer, "sanity_checking", False):
                 return
             trial = _CURRENT_REPORT_TRIAL
@@ -67,7 +67,7 @@ class ReportingTFTModel(TemporalFusionTransformerModel):
     pickling is unaffected.
     """
 
-    def _get_callbacks(self, time_limit, early_stopping_patience=None):  # noqa: ANN001
+    def _get_callbacks(self, time_limit, early_stopping_patience=None):
         callbacks = super()._get_callbacks(time_limit, early_stopping_patience)
         if _CURRENT_REPORT_TRIAL is not None:
             callbacks.append(_make_callback())

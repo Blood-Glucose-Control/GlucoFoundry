@@ -24,9 +24,10 @@ from __future__ import annotations
 import logging
 import os
 import random
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence
+from typing import Dict, List, Optional
 
 import numpy as np
 import pandas as pd
@@ -382,7 +383,7 @@ class MetabonetData:
             logger.warning("Feature cache write failed for %s: %s", patient_id, exc)
         return frame
 
-    def load(self) -> "MetabonetData":
+    def load(self) -> MetabonetData:
         """Load, engineer, and temporally split every selected patient."""
         self._load_static_lookup()
         min_rows = self.min_context + self.forecast_length
@@ -792,3 +793,9 @@ class MetabonetData:
             true_matrix=self._val_base["true_matrix"],  # type: ignore[arg-type]
             item_ids=item_ids,
         )
+
+
+def build_data(config: dict) -> MetabonetData:
+    """Build and load the MetaboNet sweep dataset from a run config."""
+    data_cfg = dict(config["data"])
+    return MetabonetData(config["processed_path"], **data_cfg).load()

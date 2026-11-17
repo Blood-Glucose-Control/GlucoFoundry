@@ -34,8 +34,9 @@ import gc
 import logging
 import shutil
 import time
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import numpy as np
 import optuna
@@ -281,7 +282,7 @@ class MoiraiObjective:
         forecaster = None
         try:
             train_frame = self._build_train_frame(point.past_cols, point.known_cols)
-            trial.set_user_attr("n_train_rows", int(len(train_frame)))
+            trial.set_user_attr("n_train_rows", len(train_frame))
 
             config = MoiraiConfig(**point.config_kwargs)
             forecaster = MoiraiForecaster(config)

@@ -1,41 +1,26 @@
 # Copyright (c) 2025 Blood-Glucose-Control
 # SPDX-License-Identifier: Apache-2.0
 
-"""Worker entrypoint for the GBM (gradient-boosted tree) x Optuna sweep.
+"""gbm x Optuna sweep worker.
 
-Reuses the Chronos-2 sweep's generic study infrastructure (storage with
-heartbeat, sampler selection, objective parsing, worker-level early stopping)
-and the shared MetaboNet data pipeline; only the search space + objective are
-GBM-specific. The tabular GBM backends are CPU-only, so this sweep is designed
-to run concurrently with GPU-bound sweeps.
+Supplies the gbm search space, objective, and dashboard metadata to the shared
+sweep engine (:mod:`src.workflows.sweeps.engine`).
 
 Usage:
     python -m src.workflows.sweeps.optuna_gbm.study create --config <yaml>
-    python -m src.workflows.sweeps.optuna_gbm.study run --config <yaml> \
-        --n-trials 200 --gpu-label cpu0
+    python -m src.workflows.sweeps.optuna_gbm.study run --config <yaml> \\
+        --n-trials 200 --gpu-label 0
 """
 
 from __future__ import annotations
 
-import argparse
-import copy
 import logging
-import os
 from typing import Any, Dict, Optional, Sequence
 
-import numpy as np
 import optuna
-import yaml
 
-from ..optuna_chronos2.pruning import build_pruner
-from ..optuna_chronos2.study import (
-    _build_sampler,
-    _build_storage,
-    _deep_merge,
-    _make_early_stopping_callback,
-    _parse_objectives,
-    build_data,
-)
+from ..engine import StudySpec, _parse_objectives, run_main
+from ..optuna_chronos2.data import build_data
 from .objective import GBMObjective
 from .search_space import GBMSearchSpaceBounds
 
@@ -84,16 +69,6 @@ DEFAULT_CONFIG: Dict[str, Any] = {
         },
     },
 }
-
-
-def load_config(path: Optional[str], smoke: bool = False) -> Dict[str, Any]:
-    config = copy.deepcopy(DEFAULT_CONFIG)
-    if path is not None:
-        with open(path, "r", encoding="utf-8") as fh:
-            config = _deep_merge(config, yaml.safe_load(fh) or {})
-    if smoke:
-        config = _deep_merge(config, config.get("smoke", {}))
-    return config
 
 
 def build_bounds(config: Dict[str, Any]) -> GBMSearchSpaceBounds:
@@ -176,152 +151,38 @@ def _apply_dashboard_metadata(study: optuna.Study, config: Dict[str, Any]) -> No
     study.set_user_attr("space__static_covariates", str(bounds.static_candidates))
 
 
-def _create_study(config: Dict[str, Any]) -> optuna.Study:
-    metric_names, directions = _parse_objectives(config)
-    is_multi = len(metric_names) > 1
-    create_kwargs: Dict[str, Any] = dict(
-        study_name=config["study_name"],
-        storage=_build_storage(config),
-        load_if_exists=True,
-        sampler=_build_sampler(config),
-    )
-    if is_multi:
-        create_kwargs["directions"] = directions
-    else:
-        create_kwargs["direction"] = directions[0]
-        create_kwargs["pruner"] = build_pruner(config)
-    study = optuna.create_study(**create_kwargs)
-    try:
-        study.set_metric_names(list(metric_names))
-    except Exception:  # noqa: BLE001 - older storages may not support it
-        pass
-    _apply_dashboard_metadata(study, config)
-    return study
-
-
-def _warm_start(study: optuna.Study, config: Dict[str, Any]) -> None:
-    """Seed a fresh single-objective study with a prior study's trials."""
-    source = config.get("warm_start_from")
-    if not source or len(study.trials) > 0:
-        return
-    primary = _parse_objectives(config)[0][0]
-    src = optuna.load_study(study_name=str(source), storage=_build_storage(config))
-    added = 0
-    for t in src.trials:
-        if t.state != optuna.trial.TrialState.COMPLETE:
-            continue
-        value = t.user_attrs.get(primary)
-        if value is None or not np.isfinite(value):
-            continue
-        study.add_trial(
-            optuna.trial.create_trial(
-                state=optuna.trial.TrialState.COMPLETE,
-                params=t.params,
-                distributions=t.distributions,
-                value=float(value),
-            )
-        )
-        added += 1
-    print(f"Warm-started {added} trials from '{source}' (metric={primary}).")
-
-
-def cmd_create(config: Dict[str, Any]) -> int:
-    study = _create_study(config)
-    _warm_start(study, config)
-    print(f"Study '{study.study_name}' ready at {config['storage']}")
-    print(f"Existing trials: {len(study.trials)}")
-    return 0
-
-
-def cmd_run(config: Dict[str, Any], n_trials: int, gpu_label: str) -> int:
-    data = build_data(config)
-    bounds = build_bounds(config)
-    metric_names, _ = _parse_objectives(config)
-    is_multi = len(metric_names) > 1
-    objective = GBMObjective(
+def build_objective(
+    config: Dict[str, Any],
+    data: Any,
+    bounds: Any,
+    gpu_label: str,
+    metric_names: Sequence[str],
+    is_multi: bool,
+) -> Any:
+    return GBMObjective(
         data,
         config["output_root"],
         bounds=bounds,
         time_limit=config.get("time_limit"),
         keep_models=bool(config.get("keep_models", False)),
-        gpu_label=gpu_label or os.environ.get("CUDA_VISIBLE_DEVICES", ""),
+        gpu_label=gpu_label,
         num_cpus=config.get("num_cpus"),
         primary_metric=metric_names[0],
-        objective_metrics=metric_names if is_multi else None,
-    )
-    study = _create_study(config)
-
-    timeout = config.get("timeout")
-    effective_n_trials: Optional[int] = n_trials if n_trials and n_trials > 0 else None
-    if effective_n_trials is None and timeout is None:
-        raise ValueError(
-            "Set a positive --n-trials or a config 'timeout' so the worker terminates."
-        )
-
-    callbacks = []
-    patience = config.get("early_stopping_patience")
-    if patience and not is_multi:
-        callbacks.append(_make_early_stopping_callback(int(patience)))
-
-    study.optimize(
-        objective,
-        n_trials=effective_n_trials,
-        timeout=timeout,
-        gc_after_trial=True,
-        callbacks=callbacks,
+        objective_metrics=list(metric_names) if is_multi else None,
     )
 
-    print(f"Worker finished. Study now has {len(study.trials)} trials.")
-    if is_multi:
-        front = study.best_trials
-        print(f"Pareto front ({', '.join(metric_names)}): {len(front)} trials")
-        for t in front[:5]:
-            vals = ", ".join(f"{m}={v:.3f}" for m, v in zip(metric_names, t.values))
-            print(f"  trial {t.number}: {vals}")
-    else:
-        try:
-            best = study.best_trial
-            print(f"Best {metric_names[0]}: {best.value:.3f} (trial {best.number})")
-        except ValueError:
-            pass
-    return 0
 
-
-def _build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=["create", "run"], help="Action to run.")
-    parser.add_argument("--config", type=str, default=None, help="YAML config path.")
-    parser.add_argument("--n-trials", type=int, default=10)
-    parser.add_argument("--gpu-label", type=str, default="")
-    parser.add_argument("--study-name", type=str, default=None)
-    parser.add_argument("--storage", type=str, default=None)
-    parser.add_argument("--patient-limit", type=int, default=None)
-    parser.add_argument("--output-root", type=str, default=None)
-    parser.add_argument("--keep-models", action="store_true")
-    parser.add_argument(
-        "--smoke", action="store_true", help="Use tiny smoke-test settings."
-    )
-    return parser
+SPEC = StudySpec(
+    default_config=DEFAULT_CONFIG,
+    build_bounds=build_bounds,
+    build_objective=build_objective,
+    build_data=build_data,
+    apply_dashboard_metadata=_apply_dashboard_metadata,
+)
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
-    args = _build_parser().parse_args(argv)
-    config = load_config(args.config, smoke=args.smoke)
-    if args.study_name:
-        config["study_name"] = args.study_name
-    if args.storage:
-        config["storage"] = args.storage
-    if args.output_root:
-        config["output_root"] = args.output_root
-    if args.patient_limit is not None:
-        config["data"]["patient_limit"] = args.patient_limit
-    if args.keep_models:
-        config["keep_models"] = True
-
-    if args.command == "create":
-        return cmd_create(config)
-    return cmd_run(config, n_trials=args.n_trials, gpu_label=args.gpu_label)
+    return run_main(SPEC, argv, description=__doc__)
 
 
 if __name__ == "__main__":

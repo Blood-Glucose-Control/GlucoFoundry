@@ -7,7 +7,7 @@ import pytest
 
 optuna = pytest.importorskip("optuna")
 
-from src.workflows.sweeps.optuna_chronos2.pruning import build_pruner  # noqa: E402
+from src.workflows.sweeps.engine import build_pruner  # noqa: E402
 
 
 def test_build_pruner_disabled_returns_none():
