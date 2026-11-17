@@ -75,9 +75,9 @@ def main() -> int:
 
     import optuna
 
-    from src.workflows.hpo.chronos2.data import MetabonetData
-    from src.workflows.hpo.chronos2.objective import Chronos2Objective
-    from src.workflows.hpo.chronos2.search_space import SearchSpaceBounds
+    from experiments.metabonet_2026.hpo._shared.data import MetabonetData
+    from experiments.metabonet_2026.hpo.chronos2.objective import Chronos2Objective
+    from experiments.metabonet_2026.hpo.chronos2.search_space import SearchSpaceBounds
 
     data = MetabonetData(
         args.processed_path,

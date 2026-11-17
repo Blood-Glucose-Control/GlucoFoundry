@@ -3,7 +3,7 @@
 
 """Render the Optuna sweep workflow diagram.
 
-How src/workflows/hpo/optuna_<family>/ works: a shared study on RDB storage,
+How experiments/metabonet_2026/hpo/<family>/ works: a shared study on RDB storage,
 cooperative GPU workers each running study.optimize(objective), and result export.
 
     python agent_notes/diagrams/render_optuna_sweep_workflow.py

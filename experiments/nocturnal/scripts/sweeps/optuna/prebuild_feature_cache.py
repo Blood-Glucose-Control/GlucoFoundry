@@ -27,7 +27,7 @@ import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
-from src.workflows.hpo.chronos2.data import (
+from experiments.metabonet_2026.hpo._shared.data import (
     PATIENT_PARQUET_DIR,
     PATIENT_PARTITION_PREFIX,
     MetabonetData,
