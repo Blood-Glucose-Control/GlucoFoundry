@@ -109,7 +109,7 @@ umbrella **#76**; do **R1–R5 before revisiting the scaffolder CLI (R6)**.
 
 | Task | Status | Ref |
 |------|--------|-----|
-| R1 extract a neutral shared Optuna runner (out of `optuna_chronos2/`) | ⬜ | #77 |
+| R1 extract a neutral shared Optuna runner (out of `chronos2/`) | ⬜ | #77 |
 | R2 fix anti-patterns (SQLite→`JournalStorage`; monkey-patch pruning→`trial.report`) | ⬜ | #78 |
 | R3 move experiment-specific objective/data out of `src/` core | ⬜ | #79 |
 | R4 clean house on `experiments/nocturnal/` (archive rebuttal/grand-summary/viz cruft) | ⬜ | #80 |

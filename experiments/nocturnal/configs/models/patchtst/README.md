@@ -30,4 +30,4 @@ datasets = `aleppo_2017 brown_2019 lynch_2022 tamborlane_2008`.
 The earlier hand-rolled per-model sweep shells were removed. Run individual
 configs through the generic forecasting workflow in
 `scripts/workflows/forecasting/`. Hyperparameter search for tuned deep-model
-families runs through the per-family Optuna studies in `src/workflows/sweeps/`.
+families runs through the per-family Optuna studies in `src/workflows/hpo/`.

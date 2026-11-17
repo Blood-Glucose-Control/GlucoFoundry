@@ -29,7 +29,7 @@ All configs use `forecast_length=96`, `batch_size=128`,
 ## Run
 
 Hyperparameter search for this family runs through its Optuna study in
-`src/workflows/sweeps/optuna_deepar/` (see the module docstring for the
+`src/workflows/hpo/deepar/` (see the module docstring for the
 `create` / `run` CLI). The earlier hand-rolled per-model sweep shells were
 removed. To run a single config end to end, use the generic forecasting
 workflow in `scripts/workflows/forecasting/`.
