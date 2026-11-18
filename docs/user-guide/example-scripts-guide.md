@@ -39,9 +39,12 @@ toolkit surface. Reproduce model-specific workflows via the canonical entrypoint
 
 ## Sweep orchestration (Optuna)
 
-Hyperparameter sweeps run through per-model-family **Optuna** studies in
-[`src/workflows/hpo/`](/src/workflows/hpo) (for example
-`src/workflows/hpo/chronos2/study.py`). The earlier hand-rolled shell
+Hyperparameter sweeps run through per-model-family **Optuna** studies built on
+the reusable, experiment-agnostic engine in
+[`src/workflows/hpo/`](/src/workflows/hpo). Each experiment supplies its own
+sweep tree; the MetaboNet-2026 tree lives in
+[`experiments/metabonet_2026/hpo/`](/experiments/metabonet_2026/hpo) (for example
+`experiments/metabonet_2026/hpo/chronos2/study.py`). The earlier hand-rolled shell
 sweep harness was removed in favor of this Optuna-based orchestration.
 
 The nocturnal experiment drives its Optuna runs from

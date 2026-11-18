@@ -203,7 +203,8 @@ Minimum bar for script and workflow changes:
 
 ### 11.2 Remaining open items
 
-1. Extend the task/experiment sweep dispatcher pattern (`src/workflows/hpo/`)
+1. Extend the reusable HPO engine (`src/workflows/hpo/engine.py`) and the
+   per-experiment sweep-tree pattern (for example `experiments/metabonet_2026/hpo/`)
    with production adapters beyond the currently scaffolded set
    (`forecasting/nocturnal_forecast`, `event_detection/nocturnal_events`).
 2. Continue extending the initial `src/workflows/forecasting/` placement pattern

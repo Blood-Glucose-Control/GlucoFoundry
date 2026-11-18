@@ -55,8 +55,8 @@ CONFIG="${CONFIG:-experiments/nocturnal/configs/chronos2_optuna_poc.yaml}"
 SESSION="${SESSION:-chronos2}"
 PYTHON="${PYTHON:-.venvs/autogluon/bin/python}"
 # Sweep worker module: default is the Chronos-2 sweep; set to
-# src.workflows.hpo.tft.study for the TFT sweep.
-MODULE="${MODULE:-src.workflows.hpo.chronos2.study}"
+# experiments.metabonet_2026.hpo.tft.study for the TFT sweep.
+MODULE="${MODULE:-experiments.metabonet_2026.hpo.chronos2.study}"
 SMOKE="${SMOKE:-0}"
 # Per-worker CPU thread cap (unset = no cap). Exported into each worker command
 # so OpenMP/MKL/BLAS/NumExpr and torch intra-op all honor it, preventing the
