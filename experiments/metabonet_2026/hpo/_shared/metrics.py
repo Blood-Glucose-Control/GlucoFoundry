@@ -105,6 +105,11 @@ def evaluate_horizons(
             f"Expected forecast matrices with >= {max(HORIZON_STEPS.values())} "
             f"columns; got shape {pred_matrix.shape}."
         )
+    if true_matrix.shape != pred_matrix.shape:
+        raise ValueError(
+            "pred_matrix and true_matrix must have the same shape; got "
+            f"{pred_matrix.shape} and {true_matrix.shape}."
+        )
 
     results: Dict[str, float] = {}
     for minutes, step in HORIZON_STEPS.items():

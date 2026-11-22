@@ -86,6 +86,16 @@ def test_evaluate_horizons_rejects_short_matrix():
         evaluate_horizons(np.zeros((3, 12)), np.zeros((3, 12)))
 
 
+def test_evaluate_horizons_rejects_mismatched_true_matrix():
+    # A valid pred_matrix with a true_matrix of a different shape must raise a
+    # clear ValueError rather than an index/broadcast error or misaligned metric.
+    pred = np.zeros((4, 24))
+    with pytest.raises(ValueError, match="same shape"):
+        evaluate_horizons(pred, np.zeros((3, 24)))  # fewer windows
+    with pytest.raises(ValueError, match="same shape"):
+        evaluate_horizons(pred, np.zeros((4, 24))[:, :20])  # fewer columns
+
+
 def test_evaluate_horizons_averages_match_manual_mean():
     rng = np.random.default_rng(0)
     true = rng.uniform(70.0, 180.0, size=(40, 24))
