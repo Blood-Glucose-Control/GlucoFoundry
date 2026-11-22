@@ -3,12 +3,13 @@
 
 """Neutral, model-agnostic Optuna sweep engine.
 
-Shared study infrastructure for the per-model-family sweeps under
-``src/workflows/hpo/optuna_<family>/``: RDB storage with a heartbeat, sampler
-and pruner selection, objective parsing, the ``create``/``run`` command loop, and
-the worker CLI. A family (or experiment) supplies only a :class:`StudySpec` —
-its default config, search-space bounds builder, objective factory, data builder,
-and an optional dashboard-metadata hook — and calls :func:`run_main`.
+Shared study infrastructure for per-model-family sweeps (which live with their
+experiment, e.g. ``experiments/metabonet_2026/hpo/<family>/``): parallel-safe
+storage selection, sampler and pruner selection, objective parsing, the
+``create``/``run`` command loop, and the worker CLI. A family (or experiment)
+supplies only a :class:`StudySpec` — its default config, search-space bounds
+builder, objective factory, data builder, and an optional dashboard-metadata
+hook — and calls :func:`run_main`.
 
 Previously this engine lived inside the ``chronos2`` family package and
 every other family imported from it; it now stands alone so no family is the
@@ -103,13 +104,47 @@ def _ensure_storage_dir(storage: str) -> None:
         db_path.parent.mkdir(parents=True, exist_ok=True)
 
 
-def _build_storage(config: Dict[str, Any]):
+def _resolve_journal_path(storage: str) -> Path:
+    """Map the configured ``storage`` location to a JournalStorage log file path.
+
+    Accepts a plain filesystem path, a ``journal:///`` URL, or a legacy
+    ``sqlite:///foo.db`` URL (mapped to a sibling ``foo.journal`` so existing
+    configs keep working under the journal default).
+    """
+    if storage.startswith("sqlite:///"):
+        return Path(storage[len("sqlite:///") :]).with_suffix(".journal")
+    if storage.startswith("journal:///"):
+        return Path(storage[len("journal:///") :])
+    return Path(storage)
+
+
+def _build_journal_storage(storage: str):
+    """Parallel-safe, file-locked ``JournalStorage`` (the default backend).
+
+    Optuna recommends journal file storage over SQLite for many cooperative
+    workers because SQLite's write lock serializes concurrent trial writes.
+    Trade-off: ``JournalStorage`` has no heartbeat/stale-trial retry, so a
+    crashed worker's trial stays RUNNING until manually cleaned — use the
+    ``rdb`` backend when crashed-worker auto-retry matters more than write
+    concurrency.
+    """
+    from optuna.storages import JournalStorage
+    from optuna.storages.journal import JournalFileBackend
+
+    path = _resolve_journal_path(storage)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    return JournalStorage(JournalFileBackend(str(path)))
+
+
+def _build_rdb_storage(config: Dict[str, Any]):
     """Build an RDB storage with heartbeat so crashed trials auto-fail/retry.
 
     Without a heartbeat, Optuna cannot tell a dead worker's trial from a slow
     one, so killed-worker trials linger forever as RUNNING. Heartbeat lets any
     live worker mark stale trials FAILED (grace_period after the last beat) and
-    RetryHeartbeatStaleTrialCallback re-enqueues them.
+    RetryHeartbeatStaleTrialCallback re-enqueues them. Heartbeat is an RDB-only
+    feature; against many parallel workers prefer a real RDB server (Postgres/
+    MySQL) over SQLite to avoid write-lock contention.
     """
     from optuna.storages import RDBStorage, RetryHeartbeatStaleTrialCallback
 
@@ -125,6 +160,26 @@ def _build_storage(config: Dict[str, Any]):
         heartbeat_stale_trial_callback=RetryHeartbeatStaleTrialCallback(
             max_retry=max_retry
         ),
+    )
+
+
+def _build_storage(config: Dict[str, Any]):
+    """Select the Optuna storage backend from config.
+
+    ``storage_backend`` is ``"journal"`` by default (parallel-safe file lock);
+    set it to ``"rdb"`` for the heartbeat/auto-retry RDB backend. ``storage``
+    is the location: an RDB URL for ``rdb`` (e.g. ``sqlite:///x.db``), or a
+    journal log path for ``journal`` (a ``sqlite:///x.db`` URL maps to
+    ``x.journal``).
+    """
+    backend = str(config.get("storage_backend", "journal")).lower()
+    if backend in ("journal", "file"):
+        return _build_journal_storage(config["storage"])
+    if backend in ("rdb", "sqlite", "relational"):
+        return _build_rdb_storage(config)
+    raise ValueError(
+        f"Unknown storage_backend {config.get('storage_backend')!r}; use "
+        "'journal' (parallel-safe, default) or 'rdb' (heartbeat/auto-retry)."
     )
 
 
@@ -279,7 +334,13 @@ def create_study(spec: StudySpec, config: Dict[str, Any]) -> optuna.Study:
 def cmd_create(spec: StudySpec, config: Dict[str, Any]) -> int:
     study = create_study(spec, config)
     _warm_start(study, config)
-    print(f"Study '{study.study_name}' ready at {config['storage']}")
+    backend = str(config.get("storage_backend", "journal")).lower()
+    location = (
+        _resolve_journal_path(config["storage"])
+        if backend in ("journal", "file")
+        else config["storage"]
+    )
+    print(f"Study '{study.study_name}' ready ({backend} storage at {location})")
     print(f"Existing trials: {len(study.trials)}")
     return 0
 
@@ -354,6 +415,13 @@ def build_parser(description: Optional[str] = None) -> argparse.ArgumentParser:
     parser.add_argument("--gpu-label", type=str, default="")
     parser.add_argument("--study-name", type=str, default=None)
     parser.add_argument("--storage", type=str, default=None)
+    parser.add_argument(
+        "--storage-backend",
+        type=str,
+        choices=["journal", "rdb"],
+        default=None,
+        help="Optuna storage backend (default: journal, parallel-safe).",
+    )
     parser.add_argument("--patient-limit", type=int, default=None)
     parser.add_argument("--output-root", type=str, default=None)
     parser.add_argument("--keep-models", action="store_true")
@@ -382,6 +450,8 @@ def run_main(
         config["study_name"] = args.study_name
     if args.storage:
         config["storage"] = args.storage
+    if args.storage_backend:
+        config["storage_backend"] = args.storage_backend
     if args.output_root:
         config["output_root"] = args.output_root
     if args.keep_models:

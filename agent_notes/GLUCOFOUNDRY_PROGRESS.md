@@ -11,7 +11,7 @@
 > Note: `project_tracking.csv` was removed from GlucoFoundry (#42) as old-project
 > cruft and is **not** used here; GitHub issues (umbrella #12) are the canonical tracker.
 
-**Last updated:** 2026-11-10 · **Totals:** 44 done · 2 in progress · 19 pending
+**Last updated:** 2026-11-22 · **Totals:** 50 done · 3 in progress · 15 pending
 
 Status key: ✅ done · 🔄 in progress · ⬜ pending
 
@@ -86,6 +86,7 @@ umbrella **#64** (artifacts live inside `experiments/<name>/`; 5 decisions resol
 | Task | Status | Ref |
 |------|--------|-----|
 | RFC-001 ratified (5 decisions resolved) | ✅ | PR #63 |
+| RFC-001 status → Accepted (all 5 decisions since shipped via #66/#68/#74/#75) | ✅ | PR #86 |
 | RFC quick wins (remove dead `configs/models/timegpt/`, progress mirror) | ✅ | PR #65 |
 | Phase 2: `ExperimentPaths` resolver + workflow path resolution | ✅ | PR #66 |
 | Scrub internal planning refs from `src/` docstrings | ✅ | PR #67 |
@@ -96,7 +97,8 @@ umbrella **#64** (artifacts live inside `experiments/<name>/`; 5 decisions resol
 | Prune forecasting workflow shells; fix stale `scripts/experiments` refs | ✅ | PR #72 |
 | Phase 4a: `templates/experiment/` skeleton + interview manifest | ✅ | PR #73 |
 | Phase 4b: `glucofoundry new-experiment` CLI (full §5 interview + `--from-file`) | ✅ | PR #74 |
-| Phase 4c: `configs/models/` templates split (baseline→templates, tuned→experiment) | 🔄 | PR #75 |
+| Phase 4c: `configs/models/` templates split (baseline→templates, tuned→experiment) | ✅ | PR #75 |
+| Refresh workflow diagrams (de-MLflow main diagram + render 3 new workflow SVGs) | ✅ | PR #85 |
 | Phase 5: docs/governance update | ⬜ | #64 |
 
 ### Phase 4 review finding → Optuna-first redesign (umbrella #76)
@@ -109,13 +111,20 @@ umbrella **#76**; do **R1–R5 before revisiting the scaffolder CLI (R6)**.
 
 | Task | Status | Ref |
 |------|--------|-----|
-| R1 extract a neutral shared Optuna runner (out of `chronos2/`) | ⬜ | #77 |
-| R2 fix anti-patterns (SQLite→`JournalStorage`; monkey-patch pruning→`trial.report`) | ⬜ | #78 |
-| R3 move experiment-specific objective/data out of `src/` core | ⬜ | #79 |
-| R4 clean house on `experiments/nocturnal/` (archive rebuttal/grand-summary/viz cruft) | ⬜ | #80 |
+| R1 extract a neutral shared Optuna engine (out of `chronos2/`) | ✅ | PR #90 (#77) |
+| R2 unify pruning/reporting + parallel-safe storage | 🔄 | #78 — (c) metrics guard ✅ PR #93; (a) storage ✅ PR #94; (b) chronos2 `fit()` monkey-patch deferred (needs model env) |
+| R3 reorganize HPO: engine-only core vs MetaboNet-2026 experiment sweep tree | ✅ | PR #91 (rename) + #92 (honest move); #79 closed |
+| R4 clean house on `experiments/nocturnal/` (archive rebuttal/grand-summary/viz cruft) | ✅ | PR #87 (#80) |
 | R5 stand up nocturnal's Optuna on the reported core metrics | ⬜ | #81 |
 | R6 Optuna-first scaffold + de-forecasting the stubs (revises #64) | ⬜ | #82 |
 | R7 Optuna/scaffolder/single-model workflow docs | ⬜ | #83 |
+
+> **R3 deviation (shipped):** the original plan decoupled per-model
+> `objective`/`search_space` into experiment-agnostic skeletons kept in core. The
+> code proved fully MetaboNet-specific (not thin skeletons), so with maintainer
+> sign-off R3 took the **honest move**: only `engine.py` stays in core and the
+> entire family tree moved to `experiments/metabonet_2026/hpo/`. This obviated the
+> originally-planned R3c (decouple + move specs). See #79.
 
 ### Other open items (for pickup once this phase settles)
 
