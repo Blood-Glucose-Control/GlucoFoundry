@@ -113,6 +113,25 @@ Recommended practice:
    its own environment.
 3. Treat pre-commit/CI as the source of truth for cross-family checks.
 
+Creating / activating a model-family environment:
+
+Model-family venvs live under `.venvs/<family>/` and are built from the matching
+`pyproject.toml` extras. Use the helper script — it creates the venv and installs
+the right dependency group on first run, or just activates it if it already
+exists (`source` it so the activation sticks in your shell):
+
+```bash
+# creates/activates .venvs/autogluon and installs ".[autogluon]"
+source scripts/setup_model_env.sh chronos2
+# other families resolve to their own venv, e.g. .venvs/moirai, .venvs/timesfm
+source scripts/setup_model_env.sh moirai
+```
+
+AutoGluon-backed families (`chronos2`, `tide`, `deepar`, `patchtst`, `tft`,
+`naive_baseline`, `statistical`) share `.venvs/autogluon`; Darts-backed families
+(`tsmixer`) share `.venvs/darts`; every other family resolves to
+`.venvs/<family>`. Run `make test-<family>` to exercise a family against its venv.
+
 Switching interpreter in VS Code:
 
 1. Open a file in the model family you are editing.
