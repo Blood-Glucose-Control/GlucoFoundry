@@ -35,14 +35,10 @@ _METRIC_KEYS: Dict[str, str] = {
     "mace": "overall_mace",
 }
 
-# Extra result keys worth logging per trial when present.
-_LOGGED_RESULT_KEYS = (
-    "overall_rmse",
-    "overall_wql",
-    "overall_brier",
-    "overall_mace",
-    "mean_discontinuity",
-    "total_episodes",
+# Non-scalar result keys (arrays / per-patient records) that must not be logged
+# as Optuna user attrs.
+_NON_SCALAR_RESULT_KEYS = frozenset(
+    {"per_patient", "per_episode", "quantile_levels"}
 )
 
 
@@ -110,9 +106,15 @@ class NocturnalObjective:
             if not self.keep_models and trial_dir.exists():
                 shutil.rmtree(trial_dir, ignore_errors=True)
 
-        for key in _LOGGED_RESULT_KEYS:
-            if key in results and results[key] is not None:
-                trial.set_user_attr(key, float(results[key]))
+        # Log every scalar summary metric the evaluator produced (overall_* plus
+        # coverage/sharpness/DILATE/episode counts) so stored trial metadata
+        # matches evaluate_nocturnal_forecasting's output. Non-scalar records
+        # (per-patient/per-episode frames, quantile_levels) are skipped.
+        for key, value in results.items():
+            if key in _NON_SCALAR_RESULT_KEYS:
+                continue
+            if isinstance(value, (int, float)) and not isinstance(value, bool):
+                trial.set_user_attr(key, float(value))
 
         primary_key = self._result_key(self.primary_metric)
         if primary_key not in results or results[primary_key] is None:

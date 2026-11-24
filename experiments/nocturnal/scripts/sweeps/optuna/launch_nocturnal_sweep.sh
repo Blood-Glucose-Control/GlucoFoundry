@@ -35,7 +35,7 @@ esac
 PYTHON="${REPO_ROOT}/.venvs/${VENV}/bin/python"
 if [ ! -x "${PYTHON}" ]; then
     echo "Error: ${PYTHON} not found. Create it with:"
-    echo "  source scripts/setup_model_env.sh ${FAMILY}"
+    echo "  source scripts/setup_model_env.sh ${VENV}"
     exit 1
 fi
 

@@ -13,7 +13,7 @@ frames at once and OOM-killed workers).
 
 Usage:
     .venvs/autogluon/bin/python \
-        scripts/orchestration/sweeps/optuna/prebuild_feature_cache.py \
+        experiments/metabonet_2026/scripts/sweeps/optuna/prebuild_feature_cache.py \
         --processed-path cache/data/metabonet/processed \
         --cache-dir experiments/metabonet_2026/results/optuna/feature_cache \
         --workers 8
