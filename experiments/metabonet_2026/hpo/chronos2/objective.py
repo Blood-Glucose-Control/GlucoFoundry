@@ -119,7 +119,8 @@ class Chronos2Objective:
         reporting_available = _reporting_available() if wants_reporting else False
         # Report the HF validation loss to Optuna during fine-tuning and prune
         # weak trials. Disabled for multi-objective studies (Optuna cannot prune
-        # them) and if the guarded patch can't install.
+        # them) and when the reporting subclass (ReportingChronos2Model) can't
+        # be imported.
         self.enable_pruning = (
             enable_pruning and not self.is_multi and reporting_available
         )
@@ -232,15 +233,30 @@ class Chronos2Objective:
             callbacks.append(recorder)
         try:
             fit_start = time.time()
+            reporting_cls = None
             if callbacks:
+                # Load the reporting subclass lazily and guard the import: on
+                # version drift (AutoGluon core importable but the chronos2
+                # internals not) degrade to a plain fit instead of crashing the
+                # trial, matching the old install-time patch fallback.
+                try:
+                    from .reporting import ReportingChronos2Model
+
+                    reporting_cls = ReportingChronos2Model
+                except Exception as exc:  # pragma: no cover - version-drift guard
+                    logger.warning(
+                        "Chronos-2 reporting subclass unavailable; running a "
+                        "plain fit without pruning/telemetry callbacks: %s",
+                        exc,
+                    )
+            if reporting_cls is not None:
                 # Route fine-tuning through the reporting subclass, which forwards
                 # the active callbacks to the Trainer (replaces the global
                 # Chronos2Pipeline.fit monkey-patch).
                 from .pruning import active_report_callbacks
-                from .reporting import ReportingChronos2Model
 
                 hp = dict(fit_kwargs["hyperparameters"])
-                hp[ReportingChronos2Model] = hp.pop("Chronos2")
+                hp[reporting_cls] = hp.pop("Chronos2")
                 fit_kwargs["hyperparameters"] = hp
                 with active_report_callbacks(callbacks):
                     predictor.fit(**fit_kwargs)
