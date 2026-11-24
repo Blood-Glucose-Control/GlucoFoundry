@@ -40,8 +40,11 @@ def test_build_pruner_unknown_type_raises():
         build_pruner({"enable_pruning": True, "pruner": {"type": "definitely-typo"}})
 
 
-def test_patch_appends_active_callback_and_calls_original():
-    from experiments.metabonet_2026.hpo.chronos2 import pruning
+def test_append_active_callbacks_within_context_appends_and_calls_original():
+    from experiments.metabonet_2026.hpo.chronos2.pruning import (
+        active_report_callbacks,
+        append_active_callbacks,
+    )
 
     calls = {}
 
@@ -50,27 +53,92 @@ def test_patch_appends_active_callback_and_calls_original():
             calls["callbacks"] = callbacks
             return "fitted"
 
-    assert pruning._patch_pipeline_fit(FakePipeline) is True
-
     sentinel = object()
-    with pruning.pruning_context(sentinel):
-        result = FakePipeline().fit(inputs=1)
+    pipeline = FakePipeline()
+    with active_report_callbacks(sentinel):
+        append_active_callbacks(pipeline)
+        result = pipeline.fit(inputs=1)
     assert result == "fitted"
     assert calls["callbacks"] == [sentinel]
 
-    # Outside the context no callback is injected.
-    calls.clear()
-    FakePipeline().fit(inputs=2)
-    assert sentinel not in (calls["callbacks"] or [])
+
+def test_append_active_callbacks_noop_outside_context():
+    from experiments.metabonet_2026.hpo.chronos2.pruning import append_active_callbacks
+
+    calls = {}
+
+    class FakePipeline:
+        def fit(self, *args, callbacks=None, **kwargs):
+            calls["callbacks"] = callbacks
+            return "fitted"
+
+    pipeline = FakePipeline()
+    append_active_callbacks(pipeline)  # no active callbacks bound -> no-op
+    pipeline.fit(inputs=2)
+    assert calls["callbacks"] is None
 
 
-def test_patch_skips_when_fit_rejects_callbacks():
-    from experiments.metabonet_2026.hpo.chronos2 import pruning
+def test_append_active_callbacks_no_injection_after_context_exit():
+    from experiments.metabonet_2026.hpo.chronos2.pruning import (
+        active_report_callbacks,
+        append_active_callbacks,
+    )
 
-    class NoCallbacks:
-        def fit(self, inputs):  # no callbacks param, no **kwargs
-            return inputs
+    calls = {}
 
-    assert pruning._patch_pipeline_fit(NoCallbacks) is False
-    # Original method is left untouched.
-    assert NoCallbacks().fit(5) == 5
+    class FakePipeline:
+        def fit(self, *args, callbacks=None, **kwargs):
+            calls["callbacks"] = callbacks
+            return "fitted"
+
+    sentinel = object()
+    pipeline = FakePipeline()
+    with active_report_callbacks(sentinel):
+        append_active_callbacks(pipeline)
+    # The wrapper reads the ContextVar at call time, so a fit started after the
+    # context exits must not inject the (now-unbound) callbacks.
+    pipeline.fit(inputs=1)
+    assert calls["callbacks"] is None
+
+
+def test_append_active_callbacks_is_idempotent():
+    from experiments.metabonet_2026.hpo.chronos2.pruning import (
+        active_report_callbacks,
+        append_active_callbacks,
+    )
+
+    calls = {}
+
+    class FakePipeline:
+        def fit(self, *args, callbacks=None, **kwargs):
+            calls["callbacks"] = callbacks
+            return "fitted"
+
+    sentinel = object()
+    pipeline = FakePipeline()
+    with active_report_callbacks(sentinel):
+        append_active_callbacks(pipeline)
+        append_active_callbacks(pipeline)  # re-wrap must not stack a 2nd append
+        pipeline.fit()
+    assert calls["callbacks"] == [sentinel]
+
+
+def test_append_active_callbacks_merges_with_passed_callbacks():
+    from experiments.metabonet_2026.hpo.chronos2.pruning import (
+        active_report_callbacks,
+        append_active_callbacks,
+    )
+
+    calls = {}
+
+    class FakePipeline:
+        def fit(self, *args, callbacks=None, **kwargs):
+            calls["callbacks"] = callbacks
+            return "fitted"
+
+    existing, injected = object(), object()
+    pipeline = FakePipeline()
+    with active_report_callbacks([injected]):
+        append_active_callbacks(pipeline)
+        pipeline.fit(callbacks=[existing])
+    assert calls["callbacks"] == [existing, injected]
