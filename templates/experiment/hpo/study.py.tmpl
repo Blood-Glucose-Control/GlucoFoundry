@@ -1,0 +1,97 @@
+# Copyright (c) 2025 Blood-Glucose-Control
+# SPDX-License-Identifier: {{ license }}
+
+"""{{ experiment_name }} x Optuna sweep worker (the experiment's default workflow).
+
+Wires the {{ experiment_name }} search space + objective to the shared HPO engine
+(:mod:`src.workflows.hpo.engine`). Optimizes the primary metric
+({{ primary_metric }}) for the {{ task_family }} task.
+
+Usage:
+    python -m experiments.{{ experiment_name }}.hpo.study create --config <yaml>
+    python -m experiments.{{ experiment_name }}.hpo.study run --n-trials 50
+"""
+
+from __future__ import annotations
+
+from typing import Any, Dict, Optional, Sequence
+
+from src.experiments.registry import get_experiment_paths
+from src.workflows.hpo.engine import StudySpec, run_main
+
+from .objective import build_objective as _build_objective
+from .search_space import SearchSpaceBounds
+
+EXPERIMENT = "{{ experiment_name }}"
+
+
+def _paths():
+    # Run artifacts live inside experiments/<name>/ (redirectable via
+    # GLUCOFOUNDRY_ARTIFACTS_ROOT), per the experiment-centric structure.
+    return get_experiment_paths(EXPERIMENT)
+
+
+DEFAULT_CONFIG: Dict[str, Any] = {
+    "study_name": EXPERIMENT,
+    # One shared journal DB for the experiment (study_name distinguishes studies).
+    "storage": str(_paths().results / "optuna" / f"{EXPERIMENT}_hpo.journal"),
+    "storage_backend": "journal",
+    "output_root": str(_paths().trained_models / f"{EXPERIMENT}_hpo_models"),
+    "primary_metric": "{{ primary_metric }}",
+    "direction": "minimize",
+    "timeout": None,
+    "keep_models": False,
+    "data": {
+        # TODO: declare this experiment's data inputs.
+        "datasets": [],
+        "target_col": "{{ target_col }}",
+        "context_length": {{ context_length }},
+        "forecast_length": {{ forecast_length }},
+    },
+    "search_space": {},
+    "smoke": {"data": {}, "search_space": {}},
+}
+
+
+def build_bounds(config: Dict[str, Any]) -> SearchSpaceBounds:
+    return SearchSpaceBounds(**config.get("search_space", {}))
+
+
+def build_data(config: Dict[str, Any]) -> Any:
+    """Load this experiment's train/holdout data for the sweep.
+
+    TODO: load and return the data the objective needs (e.g. via the core
+    ``DatasetRegistry``). The engine passes the result to ``build_objective``.
+    """
+    raise NotImplementedError(
+        "Implement build_data for the {{ experiment_name }} sweep."
+    )
+
+
+def build_objective(
+    config: Dict[str, Any],
+    data: Any,
+    bounds: Any,
+    gpu_label: str,
+    metric_names: Sequence[str],
+    is_multi: bool,
+) -> Any:
+    return _build_objective(
+        config, data, bounds, gpu_label, metric_names, is_multi
+    )
+
+
+SPEC = StudySpec(
+    default_config=DEFAULT_CONFIG,
+    build_bounds=build_bounds,
+    build_objective=build_objective,
+    build_data=build_data,
+)
+
+
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    return run_main(SPEC, argv, description=__doc__)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -155,9 +155,11 @@ def derive_tokens(answers: dict[str, Any]) -> dict[str, Any]:
     """Compute tokens not asked directly (summarizer_class, experiment_type)."""
     name = answers["experiment_name"]
     summarizer = "".join(part.capitalize() for part in name.split("_")) + "Summarizer"
+    metrics = answers.get("metrics") or ["rmse"]
     return {
         "summarizer_class": summarizer,
         "experiment_type": f"{name}_{answers['task_family']}",
+        "primary_metric": metrics[0],
     }
 
 

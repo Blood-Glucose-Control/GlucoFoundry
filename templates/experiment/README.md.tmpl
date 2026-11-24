@@ -26,6 +26,7 @@ and can be dropped (or carved into its own fork) without touching the toolkit co
 ```
 {{ experiment_name }}/
   register.py        # registers this recipe with the core
+  hpo/               # Optuna sweep (DEFAULT workflow): study/objective/search_space
   episodes.py        # build_episodes — {{ anchoring_strategy }} anchoring
   eval.py            # evaluate — model -> metrics
   summarize.py       # {{ summarizer_class }} — runs -> leaderboard CSV
@@ -37,11 +38,18 @@ and can be dropped (or carved into its own fork) without touching the toolkit co
 
 ## Getting started
 
-1. Implement the three `NotImplementedError` stubs: `build_episodes`
-   (`episodes.py`), `evaluate` (`eval.py`), and `_parse_run_dir` (`summarize.py`).
-2. Add data/model configs under `configs/`.
-3. Run the forecasting workflow with `--experiment {{ experiment_name }}`; run
-   outputs resolve under this experiment's `results/` and `trained_models/`.
+The **Optuna sweep is the default workflow**. To stand it up:
+
+1. Implement the sweep stubs in `hpo/`: `build_data` + the search space
+   (`study.py` / `search_space.py`) and the per-trial `objective.py` (build/train
+   a model from the suggested config and return its `{{ primary_metric }}`).
+2. Implement the recipe stubs: `build_episodes` (`episodes.py`), `evaluate`
+   (`eval.py`), and `_parse_run_dir` (`summarize.py`).
+3. Add data/model configs under `configs/`.
+4. Run the sweep:
+   `scripts/sweeps/optuna/launch_sweep.sh` (or
+   `python -m experiments.{{ experiment_name }}.hpo.study run --n-trials 50`).
+   Run outputs resolve under this experiment's `results/` and `trained_models/`.
 
 ## Citation
 

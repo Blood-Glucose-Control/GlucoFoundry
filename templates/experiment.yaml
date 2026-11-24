@@ -110,7 +110,7 @@ questions:
   - key: include_sweeps
     prompt: "Include Optuna sweep config stubs?"
     type: bool
-    default: false
+    default: true
   - key: include_notebooks
     prompt: "Include an example notebooks/ directory?"
     type: bool
@@ -128,3 +128,4 @@ questions:
 derived:
   summarizer_class: "PascalCase(experiment_name) + 'Summarizer'"
   experiment_type: "'<experiment_name>_<task_family>'"
+  primary_metric: "metrics[0] (first selected metric)"
