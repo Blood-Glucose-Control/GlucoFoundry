@@ -42,15 +42,21 @@ toolkit surface. Reproduce model-specific workflows via the canonical entrypoint
 Hyperparameter sweeps run through per-model-family **Optuna** studies built on
 the reusable, experiment-agnostic engine in
 [`src/workflows/hpo/`](/src/workflows/hpo). Each experiment supplies its own
-sweep tree; the MetaboNet-2026 tree lives in
-[`experiments/metabonet_2026/hpo/`](/experiments/metabonet_2026/hpo) (for example
-`experiments/metabonet_2026/hpo/chronos2/study.py`). The earlier hand-rolled shell
-sweep harness was removed in favor of this Optuna-based orchestration.
+sweep tree:
 
-The nocturnal experiment drives its Optuna runs from
-[`experiments/nocturnal/scripts/sweeps/optuna/`](/experiments/nocturnal/scripts/sweeps/optuna)
-(launcher + feature-cache prebuild), seeded by
-`experiments/nocturnal/configs/chronos2_optuna_poc.yaml`.
+- **MetaboNet-2026** lives in
+  [`experiments/metabonet_2026/hpo/`](/experiments/metabonet_2026/hpo) (for example
+  `experiments/metabonet_2026/hpo/chronos2/study.py`), with its tmux launcher and
+  feature-cache prebuild under
+  [`experiments/metabonet_2026/scripts/sweeps/optuna/`](/experiments/metabonet_2026/scripts/sweeps/optuna).
+- **Nocturnal** lives in
+  [`experiments/nocturnal/hpo/`](/experiments/nocturnal/hpo): per-family studies
+  that optimize WQL on the midnight-anchored holdout episodes (RMSE/Brier@3.9/MACE
+  logged per trial), launched via
+  `experiments/nocturnal/scripts/sweeps/optuna/launch_nocturnal_sweep.sh <family>`.
+
+The earlier hand-rolled shell sweep harness was removed in favor of this
+Optuna-based orchestration.
 
 ## Canonical workflow example
 

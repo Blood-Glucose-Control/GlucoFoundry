@@ -16,11 +16,11 @@
 #
 # Usage:
 #   GPUS="0 1" TRIALS_PER_GPU=1 N_TRIALS=40 \
-#     bash experiments/nocturnal/scripts/sweeps/optuna/launch_optuna_tmux.sh
+#     bash experiments/metabonet_2026/scripts/sweeps/optuna/launch_optuna_tmux.sh
 #
 #   # smoke run (tiny data + tiny steps, single worker):
 #   SMOKE=1 GPUS="0" N_TRIALS=1 \
-#     bash experiments/nocturnal/scripts/sweeps/optuna/launch_optuna_tmux.sh
+#     bash experiments/metabonet_2026/scripts/sweeps/optuna/launch_optuna_tmux.sh
 #
 # Environment:
 #   GPUS            Space-separated GPU ids            (default: auto-detect)
@@ -51,7 +51,7 @@ cd "$PROJECT_ROOT"
 
 TRIALS_PER_GPU="${TRIALS_PER_GPU:-2}"
 N_TRIALS="${N_TRIALS:-20}"
-CONFIG="${CONFIG:-experiments/nocturnal/configs/chronos2_optuna_poc.yaml}"
+CONFIG="${CONFIG:-experiments/metabonet_2026/configs/chronos2_optuna_poc.yaml}"
 SESSION="${SESSION:-chronos2}"
 PYTHON="${PYTHON:-.venvs/autogluon/bin/python}"
 # Sweep worker module: default is the Chronos-2 sweep; set to

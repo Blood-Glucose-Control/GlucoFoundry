@@ -12,7 +12,7 @@ Usage:
         --n-trials 20 --gpu-label 0
 
 Launch cooperative workers with
-``experiments/nocturnal/scripts/sweeps/optuna/launch_optuna_tmux.sh``.
+``experiments/metabonet_2026/scripts/sweeps/optuna/launch_optuna_tmux.sh``.
 """
 
 from __future__ import annotations

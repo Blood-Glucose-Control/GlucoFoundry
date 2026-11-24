@@ -15,7 +15,7 @@ Usage:
     .venvs/autogluon/bin/python \
         scripts/orchestration/sweeps/optuna/prebuild_feature_cache.py \
         --processed-path cache/data/metabonet/processed \
-        --cache-dir experiments/nocturnal/results/optuna/feature_cache \
+        --cache-dir experiments/metabonet_2026/results/optuna/feature_cache \
         --workers 8
 """
 
@@ -63,7 +63,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--processed-path", default="cache/data/metabonet/processed")
     parser.add_argument(
-        "--cache-dir", default="experiments/nocturnal/results/optuna/feature_cache"
+        "--cache-dir", default="experiments/metabonet_2026/results/optuna/feature_cache"
     )
     parser.add_argument("--interval-mins", type=int, default=5)
     parser.add_argument("--workers", type=int, default=8)
