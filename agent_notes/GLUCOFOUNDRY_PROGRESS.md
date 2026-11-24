@@ -11,7 +11,7 @@
 > Note: `project_tracking.csv` was removed from GlucoFoundry (#42) as old-project
 > cruft and is **not** used here; GitHub issues (umbrella #12) are the canonical tracker.
 
-**Last updated:** 2026-11-22 · **Totals:** 50 done · 3 in progress · 15 pending
+**Last updated:** 2026-11-24 · **Totals:** 50 done · 3 in progress · 15 pending
 
 Status key: ✅ done · 🔄 in progress · ⬜ pending
 
@@ -115,7 +115,7 @@ umbrella **#76**; do **R1–R5 before revisiting the scaffolder CLI (R6)**.
 | R2 unify pruning/reporting + parallel-safe storage | 🔄 | #78 — (c) metrics guard ✅ PR #93; (a) storage ✅ PR #94; (b) chronos2 `fit()` monkey-patch deferred (needs model env) |
 | R3 reorganize HPO: engine-only core vs MetaboNet-2026 experiment sweep tree | ✅ | PR #91 (rename) + #92 (honest move); #79 closed |
 | R4 clean house on `experiments/nocturnal/` (archive rebuttal/grand-summary/viz cruft) | ✅ | PR #87 (#80) |
-| R5 stand up nocturnal's Optuna on the reported core metrics | ⬜ | #81 |
+| R5 stand up nocturnal's Optuna on the reported core metrics | ✅ | PR #96 — `experiments/nocturnal/hpo/`, 10 families on the shared engine; naive+statistical real-run validated |
 | R6 Optuna-first scaffold + de-forecasting the stubs (revises #64) | ⬜ | #82 |
 | R7 Optuna/scaffolder/single-model workflow docs | ⬜ | #83 |
 

@@ -9,7 +9,7 @@
 # RMSE / MARD / DTS at +30/+60/+90/+120 are also recorded per trial.
 #
 # A shared SQLite study lets multiple GPU-pinned tmux workers cooperate.
-# Launch with experiments/nocturnal/scripts/sweeps/optuna/launch_optuna_tmux.sh
+# Launch with experiments/metabonet_2026/scripts/sweeps/optuna/launch_optuna_tmux.sh
 # =============================================================================
 
 study_name: "chronos2_metabonet_poc"
@@ -17,7 +17,7 @@ storage: "sqlite:///chronos2_poc.db"
 direction: "minimize"
 
 processed_path: "cache/data/metabonet/processed"
-output_root: "experiments/nocturnal/trained_models/chronos2_poc"
+output_root: "experiments/metabonet_2026/trained_models/chronos2_poc"
 
 # Per-trial AutoGluon fit time cap (seconds); null = no cap.
 time_limit: null
