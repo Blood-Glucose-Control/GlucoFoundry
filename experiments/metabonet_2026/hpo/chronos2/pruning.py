@@ -1,35 +1,79 @@
 # Copyright (c) 2025 Blood-Glucose-Control
 # SPDX-License-Identifier: Apache-2.0
 
-"""Optuna pruning for Chronos-2 fine-tuning (guarded AutoGluon integration).
+"""Optuna pruning/reporting callbacks for Chronos-2 fine-tuning.
 
-AutoGluon's ``Chronos2Model._fine_tune`` builds the HuggingFace Trainer callback
-list internally and exposes no public hook, so we inject an Optuna pruning
-callback by patching ``chronos.chronos2.pipeline.Chronos2Pipeline.fit`` to append
-a callback pulled from a context variable. When ``eval_during_fine_tune`` is on,
-the Trainer evaluates every 100 steps; on each evaluation we report the
-validation loss to Optuna and stop training early if the trial should be pruned.
+Builds the HuggingFace ``TrainerCallback``s used during Chronos-2 fine-tuning
+(an Optuna pruning/reporting callback, early stopping, a step recorder) and the
+plumbing that forwards them to the Trainer **without** globally patching
+``Chronos2Pipeline.fit``:
 
-Everything is guarded: if the AutoGluon/chronos internals differ (e.g. a version
-bump), :func:`install_pruning_patch` logs a warning and returns False, and the
-objective simply runs without pruning.
+- :class:`active_report_callbacks` binds the callbacks for the current fit.
+- :func:`append_active_callbacks` wraps a pipeline's (instance) ``fit`` to append
+  them, used by
+  :class:`experiments.metabonet_2026.hpo.chronos2.reporting.ReportingChronos2Model`
+  (a scoped ``Chronos2Model`` subclass).
+
+The callback builders import ``transformers`` lazily, so this module stays
+importable without the model dependencies installed.
 """
 
 from __future__ import annotations
 
 import contextvars
-import logging
-from typing import Optional
+from typing import List, Optional
 
-logger = logging.getLogger(__name__)
-
-# Holds the list of extra Trainer callbacks (pruning/reporting, early stopping,
-# step telemetry) for the trial currently being fine-tuned in this process. The
-# patched pipeline.fit reads it and appends them all to the Trainer.
-_ACTIVE_CALLBACKS: contextvars.ContextVar[Optional[list]] = contextvars.ContextVar(
-    "active_trainer_callbacks", default=None
+# Extra HF Trainer callbacks bound for the fine-tune currently running in this
+# worker process (pruning/reporting, early stopping, step telemetry).
+_ACTIVE_CALLBACKS: contextvars.ContextVar[Optional[List[object]]] = (
+    contextvars.ContextVar("chronos2_active_callbacks", default=None)
 )
-_PATCH_INSTALLED = False
+
+
+class active_report_callbacks:
+    """Context manager binding extra Trainer callbacks for the wrapped fit.
+
+    Accepts a single callback or a list; :func:`append_active_callbacks` appends
+    them to fits started inside the ``with`` block.
+    """
+
+    def __init__(self, callbacks) -> None:
+        if callbacks is None:
+            self.callbacks: List[object] = []
+        elif isinstance(callbacks, (list, tuple)):
+            self.callbacks = list(callbacks)
+        else:
+            self.callbacks = [callbacks]
+        self._token = None
+
+    def __enter__(self) -> List[object]:
+        self._token = _ACTIVE_CALLBACKS.set(self.callbacks)
+        return self.callbacks
+
+    def __exit__(self, *exc) -> bool:
+        if self._token is not None:
+            _ACTIVE_CALLBACKS.reset(self._token)
+        return False
+
+
+def append_active_callbacks(pipeline) -> None:
+    """Wrap ``pipeline.fit`` (in place) to append the active callbacks, if any.
+
+    No-op when no callbacks are bound. ``Chronos2Pipeline.fit`` returns a fresh
+    fine-tuned pipeline, so the instance-level wrap never reaches the saved model.
+    """
+    active = _ACTIVE_CALLBACKS.get()
+    if not active:
+        return
+    original_fit = pipeline.fit
+
+    def _wrapped_fit(*args, **kwargs):
+        callbacks = list(kwargs.get("callbacks") or [])
+        callbacks.extend(active)
+        kwargs["callbacks"] = callbacks
+        return original_fit(*args, **kwargs)
+
+    pipeline.fit = _wrapped_fit
 
 
 def make_early_stopping_callback(patience: int):
@@ -111,93 +155,3 @@ def make_pruning_callback(
 
     _ = optuna  # ensure optuna import is required at call time
     return OptunaPruningCallback()
-
-
-def install_pruning_patch() -> bool:
-    """Patch ``Chronos2Pipeline.fit`` to inject the active pruning callback.
-
-    Idempotent and guarded; returns True if pruning is available, else False.
-    """
-    global _PATCH_INSTALLED
-    if _PATCH_INSTALLED:
-        return True
-    try:
-        from chronos.chronos2.pipeline import (  # pyright: ignore[reportMissingImports]
-            Chronos2Pipeline,
-        )
-    except Exception as exc:  # pragma: no cover - version/import guard
-        logger.warning("Pruning unavailable (chronos import failed): %s", exc)
-        return False
-
-    _PATCH_INSTALLED = _patch_pipeline_fit(Chronos2Pipeline)
-    return _PATCH_INSTALLED
-
-
-def _accepts_callbacks(func) -> bool:
-    """True if ``func`` accepts a ``callbacks`` keyword (named or via **kwargs)."""
-    import inspect
-
-    try:
-        params = inspect.signature(func).parameters
-    except (TypeError, ValueError):  # pragma: no cover - unintrospectable
-        return True
-    if "callbacks" in params:
-        return True
-    return any(p.kind == p.VAR_KEYWORD for p in params.values())
-
-
-def _patch_pipeline_fit(pipeline_cls) -> bool:
-    """Wrap ``pipeline_cls.fit`` to append the active pruning callback.
-
-    Returns False (and does not patch) if ``fit`` cannot accept ``callbacks`` or
-    is already patched-idempotent. Separated from :func:`install_pruning_patch`
-    so it can be unit-tested against a stub pipeline class.
-    """
-    original_fit = pipeline_cls.fit
-    if getattr(original_fit, "_optuna_pruning_patch", False):
-        return True
-    if not _accepts_callbacks(original_fit):
-        logger.warning(
-            "%s.fit does not accept 'callbacks'; pruning disabled.",
-            pipeline_cls.__name__,
-        )
-        return False
-
-    def patched_fit(self, *args, **kwargs):
-        active = _ACTIVE_CALLBACKS.get()
-        if active:
-            callbacks = list(kwargs.get("callbacks") or [])
-            callbacks.extend(active)
-            kwargs["callbacks"] = callbacks
-        return original_fit(self, *args, **kwargs)
-
-    patched_fit._optuna_pruning_patch = True  # type: ignore[attr-defined]
-    pipeline_cls.fit = patched_fit
-    logger.info("Installed Optuna pruning patch on %s.fit", pipeline_cls.__name__)
-    return True
-
-
-class pruning_context:
-    """Context manager binding extra Trainer callbacks for the wrapped fit call.
-
-    Accepts a single callback or a list; they are appended to the Trainer's
-    callbacks by the patched ``pipeline.fit``.
-    """
-
-    def __init__(self, callbacks) -> None:
-        if callbacks is None:
-            self.callbacks: list = []
-        elif isinstance(callbacks, (list, tuple)):
-            self.callbacks = list(callbacks)
-        else:
-            self.callbacks = [callbacks]
-        self._token = None
-
-    def __enter__(self):
-        self._token = _ACTIVE_CALLBACKS.set(self.callbacks)
-        return self.callbacks
-
-    def __exit__(self, *exc) -> bool:
-        if self._token is not None:
-            _ACTIVE_CALLBACKS.reset(self._token)
-        return False

@@ -34,15 +34,25 @@ import optuna
 from .._shared.data import MetabonetData
 from .._shared.metrics import HORIZON_STEPS, evaluate_horizons
 from .pruning import (
-    install_pruning_patch,
     make_early_stopping_callback,
     make_pruning_callback,
     make_step_recorder_callback,
-    pruning_context,
 )
 from .search_space import SearchPoint, SearchSpaceBounds, suggest_search_point
 
 logger = logging.getLogger(__name__)
+
+
+def _reporting_available() -> bool:
+    """True if the Chronos-2 reporting subclass imports (AutoGluon/chronos present)."""
+    try:
+        from .reporting import ReportingChronos2Model  # noqa: F401
+
+        return True
+    except Exception as exc:  # pragma: no cover - import/version guard
+        logger.warning("Chronos-2 pruning/reporting unavailable: %s", exc)
+        return False
+
 
 PRIMARY_METRIC = "rmse_120"
 
@@ -105,7 +115,7 @@ class Chronos2Objective:
         # weak trials. Disabled for multi-objective studies (Optuna cannot prune
         # them) and if the guarded patch can't install.
         self.enable_pruning = (
-            enable_pruning and not self.is_multi and install_pruning_patch()
+            enable_pruning and not self.is_multi and _reporting_available()
         )
         # Log intermediate values (training curves) even when not pruning.
         # NOTE: Optuna does NOT support trial.report() for MULTI-objective
@@ -114,7 +124,7 @@ class Chronos2Objective:
         # run for best-checkpoint selection, so it adds no extra eval cost.
         self.report_intermediate = report_intermediate
         self._can_report = self.enable_pruning or (
-            report_intermediate and not self.is_multi and install_pruning_patch()
+            report_intermediate and not self.is_multi and _reporting_available()
         )
         # HF early stopping: stop fine-tuning once eval_loss plateaus for this
         # many evals (independent of Optuna pruning; works for multi-objective).
@@ -214,13 +224,19 @@ class Chronos2Objective:
                 )
             recorder, step_holder = make_step_recorder_callback()
             callbacks.append(recorder)
-        # The callbacks are injected via the guarded pipeline.fit patch.
-        if callbacks and not install_pruning_patch():
-            callbacks = []  # patch unavailable -> run without extra callbacks
         try:
             fit_start = time.time()
             if callbacks:
-                with pruning_context(callbacks):
+                # Route fine-tuning through the reporting subclass, which forwards
+                # the active callbacks to the Trainer (replaces the global
+                # Chronos2Pipeline.fit monkey-patch).
+                from .pruning import active_report_callbacks
+                from .reporting import ReportingChronos2Model
+
+                hp = dict(fit_kwargs["hyperparameters"])
+                hp[ReportingChronos2Model] = hp.pop("Chronos2")
+                fit_kwargs["hyperparameters"] = hp
+                with active_report_callbacks(callbacks):
                     predictor.fit(**fit_kwargs)
             else:
                 predictor.fit(**fit_kwargs)
