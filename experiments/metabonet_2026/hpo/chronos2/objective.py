@@ -111,11 +111,17 @@ class Chronos2Objective:
         # (directions are configured on the study). None -> single objective.
         self.objective_metrics = list(objective_metrics) if objective_metrics else None
         self.is_multi = bool(self.objective_metrics and len(self.objective_metrics) > 1)
+        # Resolve the import-guarded reporting-subclass availability once. Both
+        # pruning and intermediate reporting consult it, and the guarded import
+        # emits a warning on failure we don't want to duplicate; only probe it
+        # when a single-objective run actually wants reporting.
+        wants_reporting = (enable_pruning or report_intermediate) and not self.is_multi
+        reporting_available = _reporting_available() if wants_reporting else False
         # Report the HF validation loss to Optuna during fine-tuning and prune
         # weak trials. Disabled for multi-objective studies (Optuna cannot prune
         # them) and if the guarded patch can't install.
         self.enable_pruning = (
-            enable_pruning and not self.is_multi and _reporting_available()
+            enable_pruning and not self.is_multi and reporting_available
         )
         # Log intermediate values (training curves) even when not pruning.
         # NOTE: Optuna does NOT support trial.report() for MULTI-objective
@@ -124,7 +130,7 @@ class Chronos2Objective:
         # run for best-checkpoint selection, so it adds no extra eval cost.
         self.report_intermediate = report_intermediate
         self._can_report = self.enable_pruning or (
-            report_intermediate and not self.is_multi and _reporting_available()
+            report_intermediate and not self.is_multi and reporting_available
         )
         # HF early stopping: stop fine-tuning once eval_loss plateaus for this
         # many evals (independent of Optuna pruning; works for multi-objective).

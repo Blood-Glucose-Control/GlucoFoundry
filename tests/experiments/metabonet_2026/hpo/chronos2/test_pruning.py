@@ -78,6 +78,51 @@ def test_append_active_callbacks_noop_outside_context():
     assert calls["callbacks"] is None
 
 
+def test_append_active_callbacks_no_injection_after_context_exit():
+    from experiments.metabonet_2026.hpo.chronos2.pruning import (
+        active_report_callbacks,
+        append_active_callbacks,
+    )
+
+    calls = {}
+
+    class FakePipeline:
+        def fit(self, *args, callbacks=None, **kwargs):
+            calls["callbacks"] = callbacks
+            return "fitted"
+
+    sentinel = object()
+    pipeline = FakePipeline()
+    with active_report_callbacks(sentinel):
+        append_active_callbacks(pipeline)
+    # The wrapper reads the ContextVar at call time, so a fit started after the
+    # context exits must not inject the (now-unbound) callbacks.
+    pipeline.fit(inputs=1)
+    assert calls["callbacks"] is None
+
+
+def test_append_active_callbacks_is_idempotent():
+    from experiments.metabonet_2026.hpo.chronos2.pruning import (
+        active_report_callbacks,
+        append_active_callbacks,
+    )
+
+    calls = {}
+
+    class FakePipeline:
+        def fit(self, *args, callbacks=None, **kwargs):
+            calls["callbacks"] = callbacks
+            return "fitted"
+
+    sentinel = object()
+    pipeline = FakePipeline()
+    with active_report_callbacks(sentinel):
+        append_active_callbacks(pipeline)
+        append_active_callbacks(pipeline)  # re-wrap must not stack a 2nd append
+        pipeline.fit()
+    assert calls["callbacks"] == [sentinel]
+
+
 def test_append_active_callbacks_merges_with_passed_callbacks():
     from experiments.metabonet_2026.hpo.chronos2.pruning import (
         active_report_callbacks,

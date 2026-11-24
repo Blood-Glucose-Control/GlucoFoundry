@@ -57,22 +57,29 @@ class active_report_callbacks:
 
 
 def append_active_callbacks(pipeline) -> None:
-    """Wrap ``pipeline.fit`` (in place) to append the active callbacks, if any.
+    """Wrap ``pipeline.fit`` (in place, idempotently) to append whatever
+    callbacks are bound via :class:`active_report_callbacks` **at fit time**.
 
-    No-op when no callbacks are bound. ``Chronos2Pipeline.fit`` returns a fresh
-    fine-tuned pipeline, so the instance-level wrap never reaches the saved model.
+    The wrapper consults the ContextVar on each call, so a fit started after the
+    ``active_report_callbacks`` block exits receives no extra callbacks. Wrapping
+    is idempotent -- an already-wrapped ``fit`` is left untouched -- so repeated
+    ``load_model_pipeline()`` calls can't stack duplicate appends.
+    ``Chronos2Pipeline.fit`` returns a fresh fine-tuned pipeline, so the
+    instance-level wrap never reaches the saved model.
     """
-    active = _ACTIVE_CALLBACKS.get()
-    if not active:
-        return
     original_fit = pipeline.fit
+    if getattr(original_fit, "_appends_active_callbacks", False):
+        return
 
     def _wrapped_fit(*args, **kwargs):
-        callbacks = list(kwargs.get("callbacks") or [])
-        callbacks.extend(active)
-        kwargs["callbacks"] = callbacks
+        active = _ACTIVE_CALLBACKS.get()
+        if active:
+            callbacks = list(kwargs.get("callbacks") or [])
+            callbacks.extend(active)
+            kwargs["callbacks"] = callbacks
         return original_fit(*args, **kwargs)
 
+    _wrapped_fit._appends_active_callbacks = True  # type: ignore[attr-defined]
     pipeline.fit = _wrapped_fit
 
 
