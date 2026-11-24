@@ -28,7 +28,6 @@ MODEL_TYPE = "statistical"
 
 DEFAULT_CONFIG = base_default_config(
     study_name="statistical",
-    output_root="results/optuna/nocturnal_statistical_models",
 )
 
 SPEC = make_study(

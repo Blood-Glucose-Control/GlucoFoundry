@@ -28,7 +28,6 @@ MODEL_TYPE = "chronos2"
 
 DEFAULT_CONFIG = base_default_config(
     study_name="chronos2",
-    output_root="results/optuna/nocturnal_chronos2_models",
 )
 
 SPEC = make_study(MODEL_TYPE, DEFAULT_CONFIG, Chronos2SearchSpaceBounds, "Chronos-2")

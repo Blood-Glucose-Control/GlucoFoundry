@@ -28,7 +28,6 @@ MODEL_TYPE = "patchtst"
 
 DEFAULT_CONFIG = base_default_config(
     study_name="patchtst",
-    output_root="results/optuna/nocturnal_patchtst_models",
 )
 
 SPEC = make_study(MODEL_TYPE, DEFAULT_CONFIG, PatchTSTSearchSpaceBounds, "PatchTST")

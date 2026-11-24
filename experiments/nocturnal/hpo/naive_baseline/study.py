@@ -29,7 +29,6 @@ MODEL_TYPE = "naive_baseline"
 
 DEFAULT_CONFIG = base_default_config(
     study_name="naive_baseline",
-    output_root="results/optuna/nocturnal_naive_baseline_models",
     smoke_search_space={"context_min": 128, "context_max": 256, "context_step": 128},
 )
 

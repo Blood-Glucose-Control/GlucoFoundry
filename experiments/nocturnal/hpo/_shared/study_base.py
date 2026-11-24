@@ -20,16 +20,24 @@ from experiments.nocturnal.hpo._shared.data import build_data as _build_data
 from experiments.nocturnal.hpo._shared.objective import (
     build_objective as _build_objective,
 )
+from src.experiments.registry import get_experiment_paths
 from src.workflows.hpo.engine import StudySpec, _parse_objectives
 
-# One shared journal DB for the whole nocturnal experiment; study_name (the
-# family) distinguishes studies within it (the idiomatic Optuna multi-study
-# layout). Each family worker runs under its own .venvs/<family> interpreter but
-# writes to this one DB.
-NOCTURNAL_STORAGE = "results/optuna/nocturnal_hpo.journal"
+EXPERIMENT = "nocturnal"
+
+
+def _experiment_storage() -> str:
+    """Shared nocturnal journal DB under the experiment's own results/ dir.
+
+    Per RFC-001, run artifacts live inside ``experiments/<name>/`` (redirectable
+    to scratch via ``GLUCOFOUNDRY_ARTIFACTS_ROOT``), not the shared repo-root
+    ``results/`` — so experiments stay self-contained and never collide.
+    """
+    results = get_experiment_paths(EXPERIMENT).results
+    return str(results / "optuna" / "nocturnal_hpo.journal")
+
 
 _BASE_CONFIG: Dict[str, Any] = {
-    "storage": NOCTURNAL_STORAGE,
     "storage_backend": "journal",
     "primary_metric": "wql",
     "direction": "minimize",
@@ -53,15 +61,23 @@ _BASE_CONFIG: Dict[str, Any] = {
 
 def base_default_config(
     study_name: str,
-    output_root: str,
     *,
+    output_root: Optional[str] = None,
     search_space: Optional[Dict[str, Any]] = None,
     smoke_search_space: Optional[Dict[str, Any]] = None,
     overrides: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
-    """Build a family DEFAULT_CONFIG from the shared base + family specifics."""
+    """Build a family DEFAULT_CONFIG from the shared base + family specifics.
+
+    Storage and per-trial model output both resolve under the nocturnal
+    experiment's own artifact dirs (``experiments/nocturnal/{results,trained_models}/``).
+    """
     config = copy.deepcopy(_BASE_CONFIG)
     config["study_name"] = study_name
+    config["storage"] = _experiment_storage()
+    if output_root is None:
+        trained_models = get_experiment_paths(EXPERIMENT).trained_models
+        output_root = str(trained_models / f"nocturnal_{study_name}_models")
     config["output_root"] = output_root
     if search_space:
         config["search_space"] = search_space

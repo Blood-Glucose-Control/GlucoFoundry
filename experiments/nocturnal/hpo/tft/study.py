@@ -28,7 +28,6 @@ MODEL_TYPE = "tft"
 
 DEFAULT_CONFIG = base_default_config(
     study_name="tft",
-    output_root="results/optuna/nocturnal_tft_models",
 )
 
 SPEC = make_study(MODEL_TYPE, DEFAULT_CONFIG, TFTSearchSpaceBounds, "TFT")

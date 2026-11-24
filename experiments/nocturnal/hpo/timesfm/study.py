@@ -28,7 +28,6 @@ MODEL_TYPE = "timesfm"
 
 DEFAULT_CONFIG = base_default_config(
     study_name="timesfm",
-    output_root="results/optuna/nocturnal_timesfm_models",
 )
 
 SPEC = make_study(MODEL_TYPE, DEFAULT_CONFIG, TimesFMSearchSpaceBounds, "TimesFM")

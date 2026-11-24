@@ -28,7 +28,6 @@ MODEL_TYPE = "tide"
 
 DEFAULT_CONFIG = base_default_config(
     study_name="tide",
-    output_root="results/optuna/nocturnal_tide_models",
 )
 
 SPEC = make_study(MODEL_TYPE, DEFAULT_CONFIG, TiDESearchSpaceBounds, "TiDE")

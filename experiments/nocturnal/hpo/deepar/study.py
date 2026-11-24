@@ -28,7 +28,6 @@ MODEL_TYPE = "deepar"
 
 DEFAULT_CONFIG = base_default_config(
     study_name="deepar",
-    output_root="results/optuna/nocturnal_deepar_models",
 )
 
 SPEC = make_study(MODEL_TYPE, DEFAULT_CONFIG, DeepARSearchSpaceBounds, "DeepAR")

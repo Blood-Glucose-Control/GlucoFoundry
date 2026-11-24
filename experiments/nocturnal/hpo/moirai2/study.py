@@ -28,7 +28,6 @@ MODEL_TYPE = "moirai2"
 
 DEFAULT_CONFIG = base_default_config(
     study_name="moirai2",
-    output_root="results/optuna/nocturnal_moirai2_models",
 )
 
 SPEC = make_study(MODEL_TYPE, DEFAULT_CONFIG, Moirai2SearchSpaceBounds, "Moirai-2")
