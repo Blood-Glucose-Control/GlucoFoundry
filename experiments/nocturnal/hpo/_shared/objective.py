@@ -37,9 +37,7 @@ _METRIC_KEYS: Dict[str, str] = {
 
 # Non-scalar result keys (arrays / per-patient records) that must not be logged
 # as Optuna user attrs.
-_NON_SCALAR_RESULT_KEYS = frozenset(
-    {"per_patient", "per_episode", "quantile_levels"}
-)
+_NON_SCALAR_RESULT_KEYS = frozenset({"per_patient", "per_episode", "quantile_levels"})
 
 
 class NocturnalObjective:
