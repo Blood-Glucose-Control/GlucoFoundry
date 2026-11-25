@@ -47,7 +47,7 @@ The **Optuna sweep is the default workflow**. To stand it up:
    (`eval.py`), and `_parse_run_dir` (`summarize.py`).
 3. Add data/model configs under `configs/`.
 4. Run the sweep:
-   `scripts/sweeps/optuna/launch_sweep.sh` (or
+   `bash scripts/sweeps/optuna/launch_sweep.sh` (or
    `python -m experiments.{{ experiment_name }}.hpo.study run --n-trials 50`).
    Run outputs resolve under this experiment's `results/` and `trained_models/`.
 

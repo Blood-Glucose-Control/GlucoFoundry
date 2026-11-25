@@ -25,21 +25,21 @@ def build_objective(
     is_multi: bool,
 ):
     """Construct the trial objective (engine ``ObjectiveFactory`` signature)."""
-    primary_metric = metric_names[0]
+    _primary_metric = metric_names[0]  # drop the leading _ once the TODO uses it
 
     def objective(trial: optuna.Trial) -> float:
-        point = bounds.suggest(trial)
+        _point = bounds.suggest(trial)  # drop the leading _ once the TODO uses it
 
-        # TODO: build + train a model from `point`, evaluate it on `data`, and
+        # TODO: build + train a model from `_point`, evaluate it on `data`, and
         # return its primary metric. For example:
         #
         #   from experiments.{{ experiment_name }}.eval import evaluate
-        #   model = build_model(point)                    # experiment-specific
-        #   results = evaluate(model, data, **point)
+        #   model = build_model(_point)                   # experiment-specific
+        #   results = evaluate(model, data, **_point)
         #   for name, value in results.items():
         #       if isinstance(value, (int, float)):
         #           trial.set_user_attr(name, float(value))
-        #   return float(results[primary_metric])
+        #   return float(results[_primary_metric])
         raise NotImplementedError(
             "Implement the {{ experiment_name }} objective: build/train a model "
             "from the suggested config and return its {{ primary_metric }}."

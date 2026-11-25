@@ -108,7 +108,7 @@ questions:
 
   # ── Extras ────────────────────────────────────────────────────────────────
   - key: include_sweeps
-    prompt: "Include Optuna sweep config stubs?"
+    prompt: "Include optional configs/sweeps/ YAML stubs? (the hpo/ sweep workflow is always scaffolded)"
     type: bool
     default: true
   - key: include_notebooks

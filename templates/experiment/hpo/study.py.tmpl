@@ -38,6 +38,8 @@ DEFAULT_CONFIG: Dict[str, Any] = {
     "storage_backend": "journal",
     "output_root": str(_paths().trained_models / f"{EXPERIMENT}_hpo_models"),
     "primary_metric": "{{ primary_metric }}",
+    # "minimize" fits error metrics (rmse/mae/crps); flip to "maximize" for
+    # score-style metrics where higher is better (e.g. hypo_recall).
     "direction": "minimize",
     "timeout": None,
     "keep_models": False,

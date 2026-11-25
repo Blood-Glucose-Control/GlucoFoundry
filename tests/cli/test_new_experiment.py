@@ -101,11 +101,11 @@ def test_derive_tokens_primary_metric_from_metrics() -> None:
     derived = ne.derive_tokens(
         {
             "experiment_name": "x",
-            "task_family": "classification",
-            "metrics": ["auroc", "f1"],
+            "task_family": "forecasting",
+            "metrics": ["mae", "rmse"],
         }
     )
-    assert derived["primary_metric"] == "auroc"
+    assert derived["primary_metric"] == "mae"
 
 
 def test_render_text_unknown_token_raises() -> None:
