@@ -101,6 +101,13 @@ MODEL_FAMILY_CLASS_CONTRACT: dict[str, dict[str, object]] = {
 }
 
 SCHEMA_ROUTED_FAMILIES = set(get_registered_model_config_types())
+# moirai2 is a LoRA variant of moirai: it is factory- and config-schema-routed
+# (users can select it), but it reuses the moirai model module and config
+# (``Moirai2Config(MoiraiConfig)`` / ``Moirai2LoraForecaster(MoiraiForecaster)``)
+# instead of being a standalone ``_MODEL_MODULES`` family, so it has no separate
+# MODEL_FAMILY_CLASS_CONTRACT entry and is exempt from the model-module contract
+# checks below.
+VARIANT_SCHEMA_ROUTED_FAMILIES = {"moirai2"}
 # These families predate the canonical method ordering convention; keep them
 # exempt until their implementation-order cleanup pass lands.
 SCHEMA_ROUTED_METHOD_ORDER_EXEMPT_FAMILIES = {"moment", "timegrad", "timesfm", "toto"}
@@ -254,7 +261,9 @@ def test_contract_map_matches_registry_models() -> None:
 def test_factory_supported_models_only_add_explicit_unimplemented_families() -> None:
     factory_supported = _factory_supported_model_types()
     expected_supported = (
-        set(MODEL_FAMILY_CLASS_CONTRACT) | FACTORY_NOT_IMPLEMENTED_FAMILIES
+        set(MODEL_FAMILY_CLASS_CONTRACT)
+        | FACTORY_NOT_IMPLEMENTED_FAMILIES
+        | VARIANT_SCHEMA_ROUTED_FAMILIES
     )
     assert factory_supported == expected_supported
 
@@ -306,6 +315,10 @@ def test_model_family_modules_define_expected_classes_and_docstrings() -> None:
 
 def test_schema_routed_models_bind_config_class_and_keep_core_method_order() -> None:
     for model_type in sorted(SCHEMA_ROUTED_FAMILIES):
+        if model_type in VARIANT_SCHEMA_ROUTED_FAMILIES:
+            # Variant subclass families reuse their base family's module/config
+            # binding (no standalone contract entry); covered via the base family.
+            continue
         contract = MODEL_FAMILY_CLASS_CONTRACT[model_type]
         model_class_name = str(contract["model_class"])
         config_class_name = str(contract["config_class"])
