@@ -113,10 +113,11 @@ moirai = [
     "gluonts>=0.14.0",
     "lightning>=2.0",
     "transformers>=4.56.0",
-    # uni2ts pins numpy~=1.26, but pyarrow>=18 requires numpy>=2.0, so an
-    # uncapped pyarrow resolves to a wheel that fails to import here. Cap it to
-    # the last numpy-1.26-compatible line (datasets only needs pyarrow>=12).
-    "pyarrow>=14.0.0,<18",
+    # uni2ts pins numpy~=1.26, but pyarrow>=24 requires numpy>=2.0, so an
+    # uncapped pyarrow resolves to a wheel that fails to import here. Cap it
+    # below that boundary (the publication venv runs pyarrow 23.0.1 with numpy
+    # 1.26; datasets only needs pyarrow>=12).
+    "pyarrow>=14.0.0,<24",
 ]
 toto = [
     "toto-ts",

@@ -231,3 +231,34 @@ def test_predict_impl_returns_expected_quantile_and_mean_shapes(monkeypatch):
     assert quantiles.shape == (1, 2)
     assert means.shape == (2,)
     np.testing.assert_allclose(means, np.array([2.5, 3.5], dtype=np.float32))
+
+
+def test_predict_impl_handles_quantile_native_forecasts(monkeypatch):
+    """Moirai-2 emits GluonTS ``QuantileForecast`` (no ``.samples``); quantile
+    extraction must fall back to ``.quantile(q)`` instead of raw samples."""
+    model = _build_forecaster(monkeypatch)
+
+    class _QuantileForecast:
+        # No `.samples`; quantiles are queried via `.quantile(q)`.
+        mean = np.array([0.5, 1.5], dtype=np.float32)
+
+        @staticmethod
+        def quantile(q):
+            return np.array([q, q + 1.0], dtype=np.float32)
+
+    class _Predictor:
+        @staticmethod
+        def predict(_dataset):
+            return [_QuantileForecast()]
+
+    monkeypatch.setattr(model, "_get_or_create_predictor", lambda **_: _Predictor())
+    monkeypatch.setattr(
+        model, "_normalize_predict_input", lambda _data: ("dataset", True)
+    )
+
+    levels = [0.1, 0.5, 0.9]
+    quantiles = model._predict_impl(data=object(), quantile_levels=levels, batch_size=2)
+
+    assert quantiles.shape == (len(levels), 2)
+    # Each requested level q maps to that forecast's .quantile(q) row.
+    np.testing.assert_allclose(quantiles[:, 0], np.array(levels, dtype=np.float32))

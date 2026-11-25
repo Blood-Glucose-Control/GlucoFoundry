@@ -86,6 +86,17 @@ install_model_dependencies() {
 
     echo "Installing project with [${DEP_GROUP}] dependencies..."
     pip install -e ".[${DEP_GROUP}]" || return 1
+
+    if [ "${DEP_GROUP}" = "moirai" ]; then
+        # uni2ts pins torch<2.5, but those wheels lack kernels for newer GPU
+        # architectures (e.g. Blackwell / sm_120 -> "CUDA error: no kernel image
+        # is available for execution on the device"). Override with a current
+        # CUDA 12.8 torch build; uni2ts/moirai run fine against it, and cu128
+        # wheels still cover older archs (sm_70+), so this is safe everywhere.
+        echo "Installing a Blackwell-capable CUDA 12.8 torch for the moirai venv..."
+        pip install --upgrade torch --index-url https://download.pytorch.org/whl/cu128 \
+            || return 1
+    fi
 }
 
 # Validate model name exists in pyproject.toml [project.optional-dependencies]
