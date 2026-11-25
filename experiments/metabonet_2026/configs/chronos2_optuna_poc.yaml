@@ -8,16 +8,18 @@
 # temporal validation split (last `val_days` days per patient held out).
 # RMSE / MARD / DTS at +30/+60/+90/+120 are also recorded per trial.
 #
-# A shared SQLite study lets multiple GPU-pinned tmux workers cooperate.
+# A shared journal study lets multiple GPU-pinned tmux workers cooperate.
 # Launch with experiments/metabonet_2026/scripts/sweeps/optuna/launch_optuna_tmux.sh
 # =============================================================================
 
 study_name: "chronos2_metabonet_poc"
-storage: "sqlite:///chronos2_poc.db"
+# storage + output_root are intentionally omitted here: they are inherited from
+# the study module's DEFAULT_CONFIG, which resolves them under
+# experiments/metabonet_2026/ via get_experiment_paths() (honoring
+# GLUCOFOUNDRY_ARTIFACTS_ROOT). Hardcoding them here would bypass that resolver.
 direction: "minimize"
 
 processed_path: "cache/data/metabonet/processed"
-output_root: "experiments/metabonet_2026/trained_models/chronos2_poc"
 
 # Per-trial AutoGluon fit time cap (seconds); null = no cap.
 time_limit: null

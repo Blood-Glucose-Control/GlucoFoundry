@@ -26,6 +26,7 @@ import optuna
 from src.workflows.hpo.engine import StudySpec, _parse_objectives, run_main
 
 from .._shared.data import build_data
+from .._shared.paths import family_output_root, family_storage
 from .objective import Chronos2Objective
 from .search_space import SearchSpaceBounds
 
@@ -33,10 +34,10 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_CONFIG: Dict[str, Any] = {
     "study_name": "chronos2_metabonet_poc",
-    "storage": "sqlite:///chronos2_poc.db",
+    "storage": family_storage("chronos2"),
     "direction": "minimize",
     "processed_path": "cache/data/metabonet/processed",
-    "output_root": "trained_models/chronos2_poc",
+    "output_root": family_output_root("chronos2"),
     "time_limit": None,
     "keep_models": False,
     # Which logged metric Optuna minimizes ("rmse_120" default, or "mard_120").

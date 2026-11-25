@@ -3,7 +3,7 @@
 #
 # Launch cooperative Chronos-2 x Optuna workers across GPUs in tmux.
 #
-# Each worker connects to the SAME shared SQLite study (config `storage`) and
+# Each worker connects to the SAME shared journal study (config `storage`) and
 # contributes trials. Workers are pinned to a GPU via CUDA_VISIBLE_DEVICES.
 # TRIALS_PER_GPU workers are started per GPU (cap: 4). Chronos-2 LoRA at the
 # challenge shape (context <= 288, 24-step forecast) is memory-light — measured
