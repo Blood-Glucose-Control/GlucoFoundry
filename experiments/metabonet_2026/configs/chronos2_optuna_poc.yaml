@@ -13,11 +13,13 @@
 # =============================================================================
 
 study_name: "chronos2_metabonet_poc"
-storage: "experiments/metabonet_2026/results/optuna/chronos2_metabonet_poc.journal"
+# storage + output_root are intentionally omitted here: they are inherited from
+# the study module's DEFAULT_CONFIG, which resolves them under
+# experiments/metabonet_2026/ via get_experiment_paths() (honoring
+# GLUCOFOUNDRY_ARTIFACTS_ROOT). Hardcoding them here would bypass that resolver.
 direction: "minimize"
 
 processed_path: "cache/data/metabonet/processed"
-output_root: "experiments/metabonet_2026/trained_models/chronos2_poc"
 
 # Per-trial AutoGluon fit time cap (seconds); null = no cap.
 time_limit: null
