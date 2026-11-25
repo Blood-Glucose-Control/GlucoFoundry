@@ -11,7 +11,7 @@
 > Note: `project_tracking.csv` was removed from GlucoFoundry (#42) as old-project
 > cruft and is **not** used here; GitHub issues (umbrella #12) are the canonical tracker.
 
-**Last updated:** 2026-11-24 · **Totals:** 52 done · 2 in progress · 14 pending
+**Last updated:** 2026-11-25 · **Totals:** 54 done · 2 in progress · 12 pending
 
 Status key: ✅ done · 🔄 in progress · ⬜ pending
 
@@ -128,9 +128,14 @@ Optuna-first scaffolder); **R7 (docs) remains**.
 > entire family tree moved to `experiments/metabonet_2026/hpo/`. This obviated the
 > originally-planned R3c (decouple + move specs). See #79.
 
-> **R5 follow-ups (open):** #97 tamborlane_2008 processing bug · #98 remove manual
-> ablation YAML grids (after sweeps proven) · #99 validate deep/foundation family
-> real runs on GPU · #100 MetaboNet-2026 HPO storage under the experiment dir.
+> **R5 follow-ups:** #97 tamborlane_2008 processing bug (✅ done, PR #106) · #98
+> remove manual ablation YAML grids (after sweeps proven; blocked on #99) · #99
+> validate deep/foundation family real runs on GPU (next up) · #100 MetaboNet-2026
+> HPO storage under the experiment dir (✅ done, PR #105).
+>
+> **Issue housekeeping (2026-11-25):** closed the R2 (#78) and R5 (#81) umbrella
+> sub-issues now that all their PRs merged (R2: #93/#94/#101; R5: #96). R6 (#82)
+> and the #97/#100 follow-ups auto-closed on their PR merges (#103/#106/#105).
 
 ### Other open items (for pickup once this phase settles)
 
