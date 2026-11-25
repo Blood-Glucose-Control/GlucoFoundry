@@ -228,10 +228,25 @@ class MoiraiForecaster(BaseTimeSeriesFoundationModel):
         forecasts: list[Any],
         quantile_levels: list[float],
     ) -> np.ndarray:
-        return np.stack(
-            [np.quantile(f.samples, quantile_levels, axis=0) for f in forecasts],
-            axis=0,
-        )
+        """Stack per-episode quantile forecasts into ``(N, n_quantiles, horizon)``.
+
+        Handles both GluonTS forecast flavors the Moirai backends emit:
+        ``SampleForecast`` (Moirai-1, sample-based) exposes ``.samples`` to take
+        empirical quantiles from, while ``QuantileForecast`` (Moirai-2) carries
+        precomputed quantiles queried via ``.quantile(q)`` (interpolated between
+        stored levels when needed).
+        """
+        rows = []
+        for f in forecasts:
+            if hasattr(f, "samples"):
+                rows.append(np.quantile(f.samples, quantile_levels, axis=0))
+            else:
+                rows.append(
+                    np.stack(
+                        [np.asarray(f.quantile(q)) for q in quantile_levels], axis=0
+                    )
+                )
+        return np.stack(rows, axis=0)
 
     @staticmethod
     def _extract_mean_forecasts(forecasts: list[Any]) -> np.ndarray:
