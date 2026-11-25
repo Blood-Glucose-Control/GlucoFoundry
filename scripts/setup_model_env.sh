@@ -23,7 +23,7 @@ VENVS_DIR="${REPO_ROOT}/.venvs"
 
 is_autogluon_alias() {
     case "${1}" in
-        autogluon|chronos2|tide|deepar|patchtst|tft|naive_baseline|statistical) return 0 ;;
+        autogluon|chronos2|tide|deepar|patchtst|tft|naive_baseline|statistical|gbm) return 0 ;;
         *) return 1 ;;
     esac
 }

@@ -26,9 +26,10 @@ cd "${REPO_ROOT}"
 
 # Family -> shared venv (AutoGluon-backed families share .venvs/autogluon).
 case "${FAMILY}" in
-    chronos2|tide|deepar|patchtst|tft|naive_baseline|statistical) VENV="autogluon" ;;
+    chronos2|tide|deepar|patchtst|tft|naive_baseline|statistical|gbm) VENV="autogluon" ;;
     moirai|moirai2) VENV="moirai" ;;
     timesfm) VENV="timesfm" ;;
+    tsmixer) VENV="darts" ;;
     *) VENV="${FAMILY}" ;;
 esac
 
