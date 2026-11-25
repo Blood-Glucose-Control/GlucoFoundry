@@ -22,8 +22,9 @@ class TiDESearchSpaceBounds:
     context_min: int = 128
     context_max: int = 512
     context_step: int = 128
-    encoder_hidden_choices: Tuple[int, ...] = (128, 256)
-    decoder_hidden_choices: Tuple[int, ...] = (128, 256)
+    # TiDE's schema requires encoder_hidden_dim == decoder_hidden_dim, so a single
+    # hidden-dim choice drives both (sampling them independently fails validation).
+    hidden_choices: Tuple[int, ...] = (128, 256)
     temporal_hidden_choices: Tuple[int, ...] = (64, 128, 256)
     num_layers_min: int = 1
     num_layers_max: int = 3
@@ -35,6 +36,12 @@ class TiDESearchSpaceBounds:
 
     def suggest(self, trial: optuna.Trial) -> Dict[str, Any]:
         """Suggest one TiDE configuration for a trial."""
+        # TiDE requires encoder_hidden_dim == decoder_hidden_dim. Search it under
+        # its config-key name (matching the convention used across the nocturnal
+        # spaces) and mirror the value onto decoder_hidden_dim.
+        encoder_hidden_dim = trial.suggest_categorical(
+            "encoder_hidden_dim", list(self.hidden_choices)
+        )
         point = {
             "context_length": trial.suggest_int(
                 "context_length",
@@ -42,12 +49,8 @@ class TiDESearchSpaceBounds:
                 self.context_max,
                 step=self.context_step,
             ),
-            "encoder_hidden_dim": trial.suggest_categorical(
-                "encoder_hidden_dim", list(self.encoder_hidden_choices)
-            ),
-            "decoder_hidden_dim": trial.suggest_categorical(
-                "decoder_hidden_dim", list(self.decoder_hidden_choices)
-            ),
+            "encoder_hidden_dim": encoder_hidden_dim,
+            "decoder_hidden_dim": encoder_hidden_dim,
             "temporal_hidden_dim": trial.suggest_categorical(
                 "temporal_hidden_dim", list(self.temporal_hidden_choices)
             ),

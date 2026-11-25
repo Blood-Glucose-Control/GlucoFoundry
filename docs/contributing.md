@@ -132,6 +132,14 @@ AutoGluon-backed families (`chronos2`, `tide`, `deepar`, `patchtst`, `tft`,
 (`tsmixer`) share `.venvs/darts`; every other family resolves to
 `.venvs/<family>`. Run `make test-<family>` to exercise a family against its venv.
 
+> **Moirai on newer GPUs.** `uni2ts` pins `torch<2.5`, but those wheels have no
+> kernels for recent GPU architectures (e.g. Blackwell / `sm_120`, which fails
+> with `CUDA error: no kernel image is available`). On Linux x86_64,
+> `setup_model_env.sh` therefore installs a pinned CUDA 12.8 torch into
+> `.venvs/moirai` after the extra; moirai/moirai2 run fine against it and the
+> cu128 wheels still cover older archs. On platforms without cu128 wheels (e.g.
+> macOS) the override is skipped and the `[moirai]` extra's torch is kept.
+
 Switching interpreter in VS Code:
 
 1. Open a file in the model family you are editing.
