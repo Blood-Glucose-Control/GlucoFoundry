@@ -11,7 +11,7 @@
 > Note: `project_tracking.csv` was removed from GlucoFoundry (#42) as old-project
 > cruft and is **not** used here; GitHub issues (umbrella #12) are the canonical tracker.
 
-**Last updated:** 2026-11-24 · **Totals:** 51 done · 2 in progress · 15 pending
+**Last updated:** 2026-11-25 · **Totals:** 54 done · 2 in progress · 12 pending
 
 Status key: ✅ done · 🔄 in progress · ⬜ pending
 
@@ -107,18 +107,18 @@ Reviewing Phase 4 surfaced that the scaffold template is **forecasting-rigid +
 single-model-centric**, and the Optuna infra has anti-patterns + a core/experiment
 boundary violation (the "nocturnal" Optuna config actually runs on MetaboNet data).
 Workflow diagrams are in [`agent_notes/diagrams/`](./diagrams). Tracked under
-umbrella **#76**. **R1–R5 are complete** (the engine, anti-pattern fixes, the
-core-vs-experiment reorg, nocturnal cleanup, and nocturnal's own sweep); **R6–R7
-(scaffolder + docs) remain**.
+umbrella **#76**. **R1–R6 are complete** (the engine, anti-pattern fixes, the
+core-vs-experiment reorg, nocturnal cleanup, nocturnal's own sweep, and the
+Optuna-first scaffolder); **R7 (docs) remains**.
 
 | Task | Status | Ref |
 |------|--------|-----|
 | R1 extract a neutral shared Optuna engine (out of `chronos2/`) | ✅ | PR #90 (#77) |
-| R2 unify pruning/reporting + parallel-safe storage | ✅ | #78 — (c) metrics guard PR #93 + (a) parallel-safe storage PR #94 + (b) chronos2 `fit()` monkey-patch→`ReportingChronos2Model` subclass PR #101 |
+| R2 unify pruning/reporting + parallel-safe storage | ✅ | #78 — (c) metrics guard PR #93 + (a) parallel-safe storage PR #94 + (b) chronos2 `fit()` monkey-patch→`ReportingChronos2Model` subclass PR #101 (review addressed) |
 | R3 reorganize HPO: engine-only core vs MetaboNet-2026 experiment sweep tree | ✅ | PR #91 (rename) + #92 (honest move); #79 closed |
 | R4 clean house on `experiments/nocturnal/` (archive rebuttal/grand-summary/viz cruft) | ✅ | PR #87 (#80) |
 | R5 stand up nocturnal's Optuna on the reported core metrics | ✅ | PR #96 — `experiments/nocturnal/hpo/`, 10 families on the shared engine; naive+statistical real-run validated |
-| R6 Optuna-first scaffold + de-forecasting the stubs (revises #64) | ⬜ | #82 |
+| R6 Optuna-first scaffold + de-forecasting the stubs (revises #64) | ✅ | PR #103 (#82) — sweep is the default generated workflow; task-general episodes/eval stubs |
 | R7 Optuna/scaffolder/single-model workflow docs | ⬜ | #83 |
 
 > **R3 deviation (shipped):** the original plan decoupled per-model
@@ -128,9 +128,14 @@ core-vs-experiment reorg, nocturnal cleanup, and nocturnal's own sweep); **R6–
 > entire family tree moved to `experiments/metabonet_2026/hpo/`. This obviated the
 > originally-planned R3c (decouple + move specs). See #79.
 
-> **R5 follow-ups (open):** #97 tamborlane_2008 processing bug · #98 remove manual
-> ablation YAML grids (after sweeps proven) · #99 validate deep/foundation family
-> real runs on GPU · #100 MetaboNet-2026 HPO storage under the experiment dir.
+> **R5 follow-ups:** #97 tamborlane_2008 processing bug (✅ done, PR #106) · #98
+> remove manual ablation YAML grids (after sweeps proven; blocked on #99) · #99
+> validate deep/foundation family real runs on GPU (next up) · #100 MetaboNet-2026
+> HPO storage under the experiment dir (✅ done, PR #105).
+>
+> **Issue housekeeping (2026-11-25):** closed the R2 (#78) and R5 (#81) umbrella
+> sub-issues now that all their PRs merged (R2: #93/#94/#101; R5: #96). R6 (#82)
+> and the #97/#100 follow-ups auto-closed on their PR merges (#103/#106/#105).
 
 ### Other open items (for pickup once this phase settles)
 
