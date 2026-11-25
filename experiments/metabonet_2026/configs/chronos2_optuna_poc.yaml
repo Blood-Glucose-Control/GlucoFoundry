@@ -8,12 +8,12 @@
 # temporal validation split (last `val_days` days per patient held out).
 # RMSE / MARD / DTS at +30/+60/+90/+120 are also recorded per trial.
 #
-# A shared SQLite study lets multiple GPU-pinned tmux workers cooperate.
+# A shared journal study lets multiple GPU-pinned tmux workers cooperate.
 # Launch with experiments/metabonet_2026/scripts/sweeps/optuna/launch_optuna_tmux.sh
 # =============================================================================
 
 study_name: "chronos2_metabonet_poc"
-storage: "sqlite:///chronos2_poc.db"
+storage: "experiments/metabonet_2026/results/optuna/chronos2_metabonet_poc.journal"
 direction: "minimize"
 
 processed_path: "cache/data/metabonet/processed"
