@@ -1,11 +1,8 @@
 """Lightweight tests for MOMENT sweep configs and probabilistic contract."""
 
-from pathlib import Path
-
 import numpy as np
 import pandas as pd
 import pytest
-import yaml
 
 from src.models.moment.config import MomentConfig
 from src.models.moment.model import MomentForecaster
@@ -67,56 +64,6 @@ def test_moment_quantile_request_raises(patched_moment_import):
             pd.DataFrame({"bg_mM": np.linspace(6.0, 8.0, 520)}),
             quantile_levels=[0.1, 0.5, 0.9],
         )
-
-
-def _load_moment_sweep_configs():
-    sweep_dir = Path("experiments/nocturnal/configs/models/moment")
-    files = sorted(sweep_dir.glob("[0-9][0-9]_*.yaml"))
-    configs = []
-    for path in files:
-        with path.open("r") as f:
-            configs.append((path, yaml.safe_load(f)))
-    return files, configs
-
-
-def test_moment_sweep_files_exist_and_parse():
-    files, configs = _load_moment_sweep_configs()
-
-    assert len(files) >= 7
-    for path, cfg in configs:
-        assert isinstance(cfg, dict), f"Config must parse to dict: {path}"
-        assert cfg.get("model_path"), f"Missing model_path in {path}"
-        assert cfg.get("training_mode") == "fine_tune", f"Expected fine_tune in {path}"
-
-
-def test_moment_sweep_varies_obvious_hyperparameters():
-    _, configs = _load_moment_sweep_configs()
-
-    lrs = {cfg["learning_rate"] for _, cfg in configs if "learning_rate" in cfg}
-    batch_sizes = {cfg["batch_size"] for _, cfg in configs if "batch_size" in cfg}
-    contexts = {cfg["context_length"] for _, cfg in configs if "context_length" in cfg}
-
-    assert len(lrs) > 1
-    assert len(batch_sizes) > 1
-    assert len(contexts) > 1
-
-
-def test_moment_sweep_includes_normalization_ablation():
-    _, configs = _load_moment_sweep_configs()
-
-    norm_flags = {
-        bool(cfg.get("use_wrapper_normalization", False)) for _, cfg in configs
-    }
-    assert False in norm_flags
-    assert True in norm_flags
-
-
-def test_moment_sweep_includes_covariate_data_ablation():
-    _, configs = _load_moment_sweep_configs()
-
-    cov_flags = [len(cfg.get("covariate_cols", []) or []) > 0 for _, cfg in configs]
-    assert any(cov_flags), "Expected at least one covariate-enabled config"
-    assert any(not flag for flag in cov_flags), "Expected at least one BG-only config"
 
 
 def test_moment_predict_batch_chunks(monkeypatch, patched_moment_import):

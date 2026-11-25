@@ -94,7 +94,7 @@ TOTO_SMOKE_CONFIG_PATH = (
     / "configs"
     / "models"
     / "toto"
-    / "bg_only_smoke_test.yaml"
+    / "00_bg_only.yaml"
 )
 TIMESFM_SMOKE_CONFIG_PATH = _template_baseline("timesfm")
 AUTOGLUON_SCHEMA_SMOKE_CONFIGS = {
@@ -378,7 +378,7 @@ def test_toto_model_config_validates_via_schema_loader() -> None:
     assert loaded["model_type"] == "toto"
     assert loaded["training_mode"] == "fine_tune"
     assert loaded["lr"] == pytest.approx(1.0e-4)
-    assert loaded["max_steps"] == 100
+    assert loaded["max_steps"] == 10000
 
 
 def test_timesfm_model_config_validates_via_schema_loader() -> None:
@@ -1644,7 +1644,7 @@ def test_toto_factory_path_supports_real_smoke_profile(
     assert isinstance(model.config, fake_config_class)
     assert model.config.model_type == "toto"
     assert model.config.training_mode == "fine_tune"
-    assert model.config.max_steps == 100
+    assert model.config.max_steps == 10000
     assert model.config.lr == pytest.approx(1.0e-4)
 
 
