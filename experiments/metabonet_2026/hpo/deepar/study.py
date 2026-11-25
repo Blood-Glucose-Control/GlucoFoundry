@@ -22,6 +22,7 @@ import optuna
 from src.workflows.hpo.engine import StudySpec, _parse_objectives, run_main
 
 from .._shared.data import build_data
+from .._shared.paths import family_output_root, family_storage
 from .objective import DeepARObjective
 from .search_space import DeepARSearchSpaceBounds
 
@@ -29,9 +30,9 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_CONFIG: Dict[str, Any] = {
     "study_name": "deepar_metabonet_poc",
-    "storage": "sqlite:///results/optuna/deepar_metabonet_poc.db",
+    "storage": family_storage("deepar"),
     "processed_path": "cache/data/metabonet/processed",
-    "output_root": "results/optuna/deepar_metabonet_poc_models",
+    "output_root": family_output_root("deepar"),
     "primary_metric": "mard_avg",
     "direction": "minimize",
     "time_limit": None,
