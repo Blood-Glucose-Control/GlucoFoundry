@@ -1,0 +1,39 @@
+# Copyright (c) 2025 Blood-Glucose-Control
+# SPDX-License-Identifier: {{ license }}
+
+"""Search space for the {{ experiment_name }} sweep.
+
+TODO: declare the hyperparameters this {{ task_family }} experiment sweeps over
+(model size/depth, learning rate, covariate sets, context window, ...).
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Any, Dict
+
+import optuna
+
+
+@dataclass
+class SearchSpaceBounds:
+    """Tunable bounds for the {{ experiment_name }} search space."""
+
+    context_min: int = 64
+    context_max: int = {{ context_length }}
+    context_step: int = 64
+
+    def suggest(self, trial: optuna.Trial) -> Dict[str, Any]:
+        """Suggest one configuration for a trial.
+
+        Returns a dict of model/experiment keyword arguments. TODO: add the
+        hyperparameters to search for this experiment.
+        """
+        return {
+            "context_length": trial.suggest_int(
+                "context_length",
+                self.context_min,
+                self.context_max,
+                step=self.context_step,
+            ),
+        }

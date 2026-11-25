@@ -1,0 +1,48 @@
+# Copyright (c) 2025 Blood-Glucose-Control
+# SPDX-License-Identifier: {{ license }}
+
+"""Per-trial objective for the {{ experiment_name }} sweep.
+
+Builds a model from the suggested config, trains/evaluates it via this
+experiment's :func:`~experiments.{{ experiment_name }}.eval.evaluate`, and returns
+the primary metric ({{ primary_metric }}) to Optuna. Other metrics are logged as
+trial user attributes.
+"""
+
+from __future__ import annotations
+
+from typing import Any, Sequence
+
+import optuna
+
+
+def build_objective(
+    config: dict[str, Any],
+    data: Any,
+    bounds: Any,
+    gpu_label: str,
+    metric_names: Sequence[str],
+    is_multi: bool,
+):
+    """Construct the trial objective (engine ``ObjectiveFactory`` signature)."""
+    _primary_metric = metric_names[0]  # drop the leading _ once the TODO uses it
+
+    def objective(trial: optuna.Trial) -> float:
+        _point = bounds.suggest(trial)  # drop the leading _ once the TODO uses it
+
+        # TODO: build + train a model from `_point`, evaluate it on `data`, and
+        # return its primary metric. For example:
+        #
+        #   from experiments.{{ experiment_name }}.eval import evaluate
+        #   model = build_model(_point)                   # experiment-specific
+        #   results = evaluate(model, data, **_point)
+        #   for name, value in results.items():
+        #       if isinstance(value, (int, float)):
+        #           trial.set_user_attr(name, float(value))
+        #   return float(results[_primary_metric])
+        raise NotImplementedError(
+            "Implement the {{ experiment_name }} objective: build/train a model "
+            "from the suggested config and return its {{ primary_metric }}."
+        )
+
+    return objective
