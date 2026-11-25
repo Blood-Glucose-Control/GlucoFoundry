@@ -11,7 +11,7 @@
 > Note: `project_tracking.csv` was removed from GlucoFoundry (#42) as old-project
 > cruft and is **not** used here; GitHub issues (umbrella #12) are the canonical tracker.
 
-**Last updated:** 2026-11-24 · **Totals:** 50 done · 3 in progress · 15 pending
+**Last updated:** 2026-11-24 · **Totals:** 51 done · 2 in progress · 15 pending
 
 Status key: ✅ done · 🔄 in progress · ⬜ pending
 
@@ -107,12 +107,14 @@ Reviewing Phase 4 surfaced that the scaffold template is **forecasting-rigid +
 single-model-centric**, and the Optuna infra has anti-patterns + a core/experiment
 boundary violation (the "nocturnal" Optuna config actually runs on MetaboNet data).
 Workflow diagrams are in [`agent_notes/diagrams/`](./diagrams). Tracked under
-umbrella **#76**; do **R1–R5 before revisiting the scaffolder CLI (R6)**.
+umbrella **#76**. **R1–R5 are complete** (the engine, anti-pattern fixes, the
+core-vs-experiment reorg, nocturnal cleanup, and nocturnal's own sweep); **R6–R7
+(scaffolder + docs) remain**.
 
 | Task | Status | Ref |
 |------|--------|-----|
 | R1 extract a neutral shared Optuna engine (out of `chronos2/`) | ✅ | PR #90 (#77) |
-| R2 unify pruning/reporting + parallel-safe storage | 🔄 | #78 — (c) metrics guard ✅ PR #93; (a) storage ✅ PR #94; (b) chronos2 `fit()` monkey-patch deferred (needs model env) |
+| R2 unify pruning/reporting + parallel-safe storage | ✅ | #78 — (c) metrics guard PR #93 + (a) parallel-safe storage PR #94 + (b) chronos2 `fit()` monkey-patch→`ReportingChronos2Model` subclass PR #101 |
 | R3 reorganize HPO: engine-only core vs MetaboNet-2026 experiment sweep tree | ✅ | PR #91 (rename) + #92 (honest move); #79 closed |
 | R4 clean house on `experiments/nocturnal/` (archive rebuttal/grand-summary/viz cruft) | ✅ | PR #87 (#80) |
 | R5 stand up nocturnal's Optuna on the reported core metrics | ✅ | PR #96 — `experiments/nocturnal/hpo/`, 10 families on the shared engine; naive+statistical real-run validated |
@@ -125,6 +127,10 @@ umbrella **#76**; do **R1–R5 before revisiting the scaffolder CLI (R6)**.
 > sign-off R3 took the **honest move**: only `engine.py` stays in core and the
 > entire family tree moved to `experiments/metabonet_2026/hpo/`. This obviated the
 > originally-planned R3c (decouple + move specs). See #79.
+
+> **R5 follow-ups (open):** #97 tamborlane_2008 processing bug · #98 remove manual
+> ablation YAML grids (after sweeps proven) · #99 validate deep/foundation family
+> real runs on GPU · #100 MetaboNet-2026 HPO storage under the experiment dir.
 
 ### Other open items (for pickup once this phase settles)
 
