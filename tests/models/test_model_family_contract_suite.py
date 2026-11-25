@@ -102,12 +102,16 @@ MODEL_FAMILY_CLASS_CONTRACT: dict[str, dict[str, object]] = {
 
 SCHEMA_ROUTED_FAMILIES = set(get_registered_model_config_types())
 # moirai2 is a LoRA variant of moirai: it is factory- and config-schema-routed
-# (users can select it), but it reuses the moirai model module and config
-# (``Moirai2Config(MoiraiConfig)`` / ``Moirai2LoraForecaster(MoiraiForecaster)``)
-# instead of being a standalone ``_MODEL_MODULES`` family, so it has no separate
+# (users can select it), but it ships its own module (`src/models/moirai2/model.py`)
+# that subclasses moirai's base config/model (``Moirai2Config(MoiraiConfig)`` /
+# ``Moirai2LoraForecaster(MoiraiForecaster)``) rather than being a standalone
+# ``_MODEL_MODULES`` auto-discovered family, so it has no separate
 # MODEL_FAMILY_CLASS_CONTRACT entry and is exempt from the model-module contract
 # checks below.
 VARIANT_SCHEMA_ROUTED_FAMILIES = {"moirai2"}
+# Forecaster class each variant family's module must still define (the factory
+# imports it), so the suite keeps verifying the variant ships a usable module.
+VARIANT_FAMILY_MODEL_CLASS = {"moirai2": "Moirai2LoraForecaster"}
 # These families predate the canonical method ordering convention; keep them
 # exempt until their implementation-order cleanup pass lands.
 SCHEMA_ROUTED_METHOD_ORDER_EXEMPT_FAMILIES = {"moment", "timegrad", "timesfm", "toto"}
@@ -316,8 +320,18 @@ def test_model_family_modules_define_expected_classes_and_docstrings() -> None:
 def test_schema_routed_models_bind_config_class_and_keep_core_method_order() -> None:
     for model_type in sorted(SCHEMA_ROUTED_FAMILIES):
         if model_type in VARIANT_SCHEMA_ROUTED_FAMILIES:
-            # Variant subclass families reuse their base family's module/config
-            # binding (no standalone contract entry); covered via the base family.
+            # Variant subclass family: no standalone contract entry, but it must
+            # still ship a parseable module defining its forecaster (the factory
+            # imports it). Verify that, then skip the standard config-binding /
+            # method-order checks that assume the base-family structure.
+            variant_model_path = MODELS_ROOT / model_type / "model.py"
+            assert variant_model_path.exists(), (
+                f"{model_type}: missing {variant_model_path}"
+            )
+            _class_by_name(
+                _parse_python(variant_model_path),
+                VARIANT_FAMILY_MODEL_CLASS[model_type],
+            )
             continue
         contract = MODEL_FAMILY_CLASS_CONTRACT[model_type]
         model_class_name = str(contract["model_class"])
