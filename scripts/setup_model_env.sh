@@ -90,12 +90,21 @@ install_model_dependencies() {
     if [ "${DEP_GROUP}" = "moirai" ]; then
         # uni2ts pins torch<2.5, but those wheels lack kernels for newer GPU
         # architectures (e.g. Blackwell / sm_120 -> "CUDA error: no kernel image
-        # is available for execution on the device"). Override with a current
-        # CUDA 12.8 torch build; uni2ts/moirai run fine against it, and cu128
-        # wheels still cover older archs (sm_70+), so this is safe everywhere.
-        echo "Installing a Blackwell-capable CUDA 12.8 torch for the moirai venv..."
-        pip install --upgrade torch --index-url https://download.pytorch.org/whl/cu128 \
-            || return 1
+        # is available for execution on the device"). On Linux x86_64, override
+        # with a *pinned* CUDA 12.8 torch (the version validated against the
+        # nocturnal sweeps) so the venv stays reproducible; uni2ts/moirai run
+        # fine against it and cu128 wheels still cover older archs (sm_70+).
+        # Bump MOIRAI_CU128_TORCH when a newer validated build is needed.
+        # Other platforms (e.g. macOS) have no cu128 wheels, so keep the torch
+        # the [moirai] extra already installed there.
+        MOIRAI_CU128_TORCH="torch==2.11.0"
+        if [ "$(uname -s)" = "Linux" ] && [ "$(uname -m)" = "x86_64" ]; then
+            echo "Installing pinned Blackwell-capable CUDA 12.8 ${MOIRAI_CU128_TORCH} for the moirai venv..."
+            pip install "${MOIRAI_CU128_TORCH}" \
+                --index-url https://download.pytorch.org/whl/cu128 || return 1
+        else
+            echo "Skipping cu128 torch override on $(uname -s)/$(uname -m) (no cu128 wheels); keeping the [moirai] extra's torch."
+        fi
     fi
 }
 

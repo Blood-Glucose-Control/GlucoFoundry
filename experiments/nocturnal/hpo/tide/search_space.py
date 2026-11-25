@@ -36,9 +36,12 @@ class TiDESearchSpaceBounds:
 
     def suggest(self, trial: optuna.Trial) -> Dict[str, Any]:
         """Suggest one TiDE configuration for a trial."""
-        # TiDE requires encoder_hidden_dim == decoder_hidden_dim, so sample a
-        # single hidden dim and apply it to both.
-        hidden_dim = trial.suggest_categorical("hidden_dim", list(self.hidden_choices))
+        # TiDE requires encoder_hidden_dim == decoder_hidden_dim. Search it under
+        # its config-key name (matching the convention used across the nocturnal
+        # spaces) and mirror the value onto decoder_hidden_dim.
+        encoder_hidden_dim = trial.suggest_categorical(
+            "encoder_hidden_dim", list(self.hidden_choices)
+        )
         point = {
             "context_length": trial.suggest_int(
                 "context_length",
@@ -46,8 +49,8 @@ class TiDESearchSpaceBounds:
                 self.context_max,
                 step=self.context_step,
             ),
-            "encoder_hidden_dim": hidden_dim,
-            "decoder_hidden_dim": hidden_dim,
+            "encoder_hidden_dim": encoder_hidden_dim,
+            "decoder_hidden_dim": encoder_hidden_dim,
             "temporal_hidden_dim": trial.suggest_categorical(
                 "temporal_hidden_dim", list(self.temporal_hidden_choices)
             ),
