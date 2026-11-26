@@ -132,3 +132,53 @@ def test_save_load_roundtrip(tmp_path):
     loaded = CgmJepaForecaster.load(str(tmp_path))
     assert loaded.is_fitted
     np.testing.assert_allclose(loaded.predict_arrays(list(x[:4])), expected, atol=1e-5)
+
+
+def test_untrained_head_predicts_last_value():
+    model = CgmJepaForecaster(_cfg(quantile_levels=[0.1, 0.5, 0.9]))
+    x, _ = _synthetic(4)
+    out = model.predict_arrays(list(x), [0.1, 0.5, 0.9])
+    expected = np.broadcast_to(x[:, -1, None, None], out.shape)
+    np.testing.assert_allclose(out, expected, atol=1e-4)
+
+
+def test_predicted_quantiles_never_cross(tmp_path):
+    model = CgmJepaForecaster(_cfg(quantile_levels=[0.1, 0.5, 0.9]))
+    x, y = _synthetic(64)
+    model.fit((x, y), output_dir=str(tmp_path))
+    qs = model.predict_arrays(list(x), [0.1, 0.5, 0.9])
+    assert (np.diff(qs, axis=1) >= 0).all()
+
+
+def test_validation_split_and_early_stopping(tmp_path):
+    model = CgmJepaForecaster(
+        _cfg(num_epochs=30, early_stopping_patience=1, learning_rate=1.0)
+    )
+    x, y = _synthetic(64)
+    metrics = model.fit((x, y), output_dir=str(tmp_path))
+    hist = metrics["training_history"]
+    assert len(hist["val_loss"]) == len(hist["train_loss"]) < 30  # stopped early
+    assert metrics["best_val_loss"] == pytest.approx(min(hist["val_loss"]))
+
+
+def test_dataframe_validation_holds_out_whole_episodes():
+    model = CgmJepaForecaster(_cfg(val_fraction=0.25, window_stride=12))
+    x, y = _synthetic(4)
+    series = np.concatenate([x, y], axis=1) / 18.018
+    frame = pd.DataFrame(
+        {
+            "bg_mM": np.tile(series.ravel(), 3),
+            "episode_id": np.repeat(np.arange(4), series.shape[1] * 3),
+        }
+    )
+    train, val, _ = model._prepare_training_data(frame)
+    assert val is not None
+    assert len(val.dataset) * 3 == len(train.dataset)  # 1 of 4 episodes held out
+
+
+def test_no_validation_when_fraction_zero(tmp_path):
+    model = CgmJepaForecaster(_cfg(val_fraction=0.0))
+    x, y = _synthetic(64)
+    metrics = model.fit((x, y), output_dir=str(tmp_path))
+    assert "val_loss" not in metrics["training_history"]
+    assert metrics["best_val_loss"] is None

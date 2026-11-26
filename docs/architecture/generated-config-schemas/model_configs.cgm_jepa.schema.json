@@ -14,6 +14,12 @@
       "title": "Context Length",
       "type": "integer"
     },
+    "early_stopping_patience": {
+      "default": 10,
+      "minimum": 0,
+      "title": "Early Stopping Patience",
+      "type": "integer"
+    },
     "encoder_lr_mult": {
       "default": 0.1,
       "minimum": 0.0,
@@ -194,6 +200,13 @@
       "default": false,
       "title": "Use Cpu",
       "type": "boolean"
+    },
+    "val_fraction": {
+      "default": 0.2,
+      "exclusiveMaximum": 1.0,
+      "minimum": 0.0,
+      "title": "Val Fraction",
+      "type": "number"
     },
     "weight_decay": {
       "default": 0.01,

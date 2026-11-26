@@ -93,6 +93,10 @@ class CgmJepaForecastNet(nn.Module):
                 nn.Dropout(head_dropout),
                 nn.Linear(head_hidden, out),
             )
+        # Zero the output layer so an untrained head predicts the last value
+        last_layer = self.head if isinstance(self.head, nn.Linear) else self.head[-1]
+        nn.init.zeros_(last_layer.weight)
+        nn.init.zeros_(last_layer.bias)
 
     def _pool(self, tokens: torch.Tensor) -> torch.Tensor:
         if self.token_pool == "mean":
@@ -266,33 +270,64 @@ class CgmJepaForecaster(BaseTimeSeriesFoundationModel):
     def _prepare_training_data(
         self, train_data: Any
     ) -> Tuple[Any, Optional[Any], Optional[Any]]:
-        """Return ``(train_loader, None, None)``.
+        """Return ``(train_loader, val_loader, None)``.
 
         ``train_data`` is either an ``(X, Y)`` tuple of mg/dL arrays or a
-        DataFrame with ``bg_mM`` (and optional ``episode_id``).
+        DataFrame with ``bg_mM`` (and optional ``episode_id``). A
+        ``val_fraction`` share is held out for early stopping: whole episodes
+        for DataFrames (overlapping windows would leak), random windows for
+        arrays. ``val_loader`` is ``None`` when ``val_fraction`` is 0.
         """
         cfg: CgmJepaConfig = self.config  # type: ignore[assignment]
+        rng = np.random.default_rng(int(cfg.seed))
+        val_fraction = float(cfg.val_fraction or 0.0)
+        x_val = y_val = None
         if isinstance(train_data, tuple) and len(train_data) == 2:
             x, y = (np.asarray(a, dtype=np.float32) for a in train_data)
             x = prepare_contexts(list(x), cfg.context_length)
+            if val_fraction > 0.0 and len(x) >= 4:
+                order = rng.permutation(len(x))
+                n_val = min(max(1, round(len(x) * val_fraction)), len(x) - 1)
+                x_val, y_val = x[order[:n_val]], y[order[:n_val]]
+                x, y = x[order[n_val:]], y[order[n_val:]]
         elif isinstance(train_data, pd.DataFrame):
+            series = self._frame_to_series(train_data)
+            val_series: List[np.ndarray] = []
+            if val_fraction > 0.0 and len(series) >= 2:
+                order = rng.permutation(len(series))
+                n_val = min(max(1, round(len(series) * val_fraction)), len(series) - 1)
+                val_series = [series[i] for i in order[:n_val]]
+                series = [series[i] for i in order[n_val:]]
             x, y = make_windows(
-                self._frame_to_series(train_data),
+                series,
                 cfg.context_length,
                 cfg.forecast_length,
                 cfg.window_stride,
                 cfg.max_train_windows,
                 int(cfg.seed),
             )
+            if val_series:
+                x_val, y_val = make_windows(
+                    val_series,
+                    cfg.context_length,
+                    cfg.forecast_length,
+                    cfg.window_stride,
+                )
         else:
             raise TypeError("train_data must be a (X, Y) tuple or a DataFrame")
         if len(x) == 0:
             raise ValueError("No training windows could be built from train_data")
-        ds = TensorDataset(torch.from_numpy(x), torch.from_numpy(y.astype(np.float32)))
-        loader = DataLoader(
-            ds, batch_size=cfg.batch_size, shuffle=True, drop_last=False
-        )
-        return loader, None, None
+
+        def _loader(xa: np.ndarray, ya: np.ndarray, shuffle: bool) -> DataLoader:
+            ds = TensorDataset(
+                torch.from_numpy(xa), torch.from_numpy(ya.astype(np.float32))
+            )
+            return DataLoader(ds, batch_size=cfg.batch_size, shuffle=shuffle)
+
+        val_loader = None
+        if x_val is not None and y_val is not None and len(x_val) > 0:
+            val_loader = _loader(x_val, y_val, shuffle=False)
+        return _loader(x, y, shuffle=True), val_loader, None
 
     # -- training ----------------------------------------------------------
     def _compute_loss(self, pred: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
@@ -315,7 +350,7 @@ class CgmJepaForecaster(BaseTimeSeriesFoundationModel):
         del kwargs
         cfg: CgmJepaConfig = self.config  # type: ignore[assignment]
         assert self.net is not None
-        loader, _, _ = self._prepare_training_data(train_data)
+        loader, val_loader, _ = self._prepare_training_data(train_data)
         net, device = self.net, self._device
         freeze = bool(cfg.freeze_encoder)
         for p in net.encoder.parameters():
@@ -336,13 +371,24 @@ class CgmJepaForecaster(BaseTimeSeriesFoundationModel):
         n_train = sum(p.numel() for g in groups for p in g["params"])
         info_print(
             f"CGM-JEPA trainable params: {n_train / 1e3:.1f}k / {n_total / 1e3:.1f}k"
+            f"; {len(loader.dataset)} train windows"  # type: ignore[arg-type]
+            + (
+                f", {len(val_loader.dataset)} val windows"  # type: ignore[arg-type]
+                if val_loader is not None
+                else ""
+            )
         )
 
-        net.train()
-        if freeze:
-            net.encoder.eval()  # deterministic tokens (dropout is 0 anyway)
+        patience = int(cfg.early_stopping_patience or 0)
+        best_monitor = float("inf")
+        best_state: Optional[Dict[str, torch.Tensor]] = None
+        epochs_without_improve = 0
         losses: List[float] = []
+        val_losses: List[float] = []
         for epoch in range(cfg.num_epochs):
+            net.train()
+            if freeze:
+                net.encoder.eval()  # deterministic tokens
             tot, nb = 0.0, 0
             for xb, yb in loader:
                 xb, yb = xb.to(device), yb.to(device)
@@ -357,18 +403,55 @@ class CgmJepaForecaster(BaseTimeSeriesFoundationModel):
                 nb += 1
             avg = tot / max(nb, 1)
             losses.append(avg)
-            info_print(f"   Epoch {epoch + 1}/{cfg.num_epochs}: loss={avg:.4f}")
+
+            val_loss: Optional[float] = None
+            if val_loader is not None:
+                net.eval()
+                vtot, vnb = 0.0, 0
+                with torch.no_grad():
+                    for xb, yb in val_loader:
+                        xb, yb = xb.to(device), yb.to(device)
+                        vtot += float(self._compute_loss(net(xb, True), yb).item())
+                        vnb += 1
+                val_loss = vtot / max(vnb, 1)
+                val_losses.append(val_loss)
+            info_print(
+                f"   Epoch {epoch + 1}/{cfg.num_epochs}: loss={avg:.4f}"
+                + (f", val_loss={val_loss:.4f}" if val_loss is not None else "")
+            )
             if epoch_callback is not None:
                 epoch_callback(epoch, avg)
 
+            monitor = val_loss if val_loss is not None else avg
+            if np.isfinite(monitor) and monitor < best_monitor - 1e-6:
+                best_monitor = monitor
+                best_state = {
+                    k: v.detach().cpu().clone() for k, v in net.state_dict().items()
+                }
+                epochs_without_improve = 0
+            else:
+                epochs_without_improve += 1
+                if patience and epochs_without_improve >= patience:
+                    info_print(
+                        f"   Early stopping at epoch {epoch + 1} "
+                        f"(best monitor={best_monitor:.4f})"
+                    )
+                    break
+
+        if best_state is not None:
+            net.load_state_dict(best_state)
         net.eval()
         self.is_fitted = True
+        history: Dict[str, List[float]] = {"train_loss": losses}
+        if val_losses:
+            history["val_loss"] = val_losses
         return {
             "status": "success",
             "samples": len(loader.dataset),  # type: ignore[arg-type]
-            "epochs": cfg.num_epochs,
+            "epochs": len(losses),
             "final_loss": losses[-1] if losses else float("nan"),
-            "training_history": {"train_loss": losses},
+            "best_val_loss": best_monitor if val_losses else None,
+            "training_history": history,
         }
 
     # -- inference ---------------------------------------------------------
@@ -399,7 +482,9 @@ class CgmJepaForecaster(BaseTimeSeriesFoundationModel):
         outs: List[np.ndarray] = []
         for i in range(0, len(x), batch_size):
             xb = torch.from_numpy(x[i : i + batch_size]).to(self._device)
-            outs.append(self.net(xb, freeze_encoder=True)[:, idx].cpu().numpy())
+            # Sort along the quantile axis so quantiles never cross
+            pred = self.net(xb, freeze_encoder=True).sort(dim=1).values
+            outs.append(pred[:, idx].cpu().numpy())
         return (
             np.concatenate(outs, axis=0)
             if outs

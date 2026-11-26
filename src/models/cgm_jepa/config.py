@@ -36,6 +36,8 @@ class CgmJepaConfig(ModelConfig):
         out_scale_mgdl: Head outputs are residuals around the last observed
             glucose, scaled by this many mg/dL.
         window_stride: Training-window stride (steps) for DataFrame inputs.
+        val_fraction: Share of training data held out for early stopping
+            (whole episodes for DataFrames); 0 disables validation.
     """
 
     # Set from ``_EXTRA`` in ``__init__``; declared here for type checkers
@@ -50,6 +52,7 @@ class CgmJepaConfig(ModelConfig):
     token_pool: str
     out_scale_mgdl: float
     window_stride: int
+    val_fraction: float
     max_train_windows: Optional[int]
     seed: int
 
@@ -65,6 +68,7 @@ class CgmJepaConfig(ModelConfig):
         "token_pool": "mean_last",
         "out_scale_mgdl": 50.0,
         "window_stride": 6,
+        "val_fraction": 0.2,
         "max_train_windows": None,
         "seed": 42,
     }

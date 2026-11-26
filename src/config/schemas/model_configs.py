@@ -860,6 +860,8 @@ class CgmJepaModelConfigSchema(BaseConfigSchema):
     weight_decay: float = Field(default=1e-2, ge=0.0)
     loss_function: Literal["pinball", "mse", "mae"] = Field(default="pinball")
     quantile_levels: Optional[list[float]] = Field(default=None)
+    early_stopping_patience: int = Field(default=10, ge=0)
+    val_fraction: float = Field(default=0.2, ge=0.0, lt=1.0)
 
     pretrained_subfolder: Literal["cgm_jepa", "x_cgm_jepa"] = Field(default="cgm_jepa")
     pretrained_repo_id: Optional[str] = Field(default=None)
