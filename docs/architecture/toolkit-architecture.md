@@ -10,6 +10,10 @@ foundation-model research. Its guiding principle:
 Fork GlucoFoundry to run an experiment; contribute genuinely reusable
 improvements back upstream. The installed library ships **code**, not artifacts.
 
+> See [Research workflows](workflows.md) for diagrams of the three nested
+> workflows — scaffolding a new experiment, single-model training/evaluation, and
+> the Optuna sweep that wraps it.
+
 ## Layout
 
 ```
@@ -79,7 +83,7 @@ docs live in the recipe instead.)
 ## The experiment registry
 
 The core and recipes meet at the registry in
-[`src/experiments/registry.py`](../../src/experiments/registry.py).
+[`src/experiments/registry.py`](/src/experiments/registry.py).
 
 ### Declaring an experiment
 

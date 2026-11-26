@@ -1,4 +1,6 @@
-%% Single-model training/eval — the "one run" that Optuna wraps per trial.
+%% Single-model training/eval — the generic forecasting pipeline (one config → metrics).
+%% This inner loop is what Optuna's objective() runs per trial.
+%% Palette/legend documented in docs/architecture/workflows.md (the published home).
 %% Render: GitHub renders ```mermaid blocks natively; or `mmdc -i single_model_training_workflow.mmd -o single_model_training_workflow.png`.
 flowchart LR
     classDef io fill:#CFF3EE,stroke:#2C7A7B,color:#1D4044,stroke-width:1.5px;
@@ -6,17 +8,19 @@ flowchart LR
     classDef model fill:#D7F5DD,stroke:#2F855A,color:#1C4532,stroke-width:1.5px;
 
     MC[("model config<br/>configs/models/&lt;family&gt;/*.yaml")]:::io
-    DC[("data/holdout config<br/>+ --experiment &lt;name&gt;")]:::io
+    DC[("data / holdout config<br/>+ --experiment &lt;name&gt;")]:::io
     O["forecasting_workflow_orchestrator.py<br/>→ src/workflows/forecasting/pipeline.py"]:::core
-    LD["load + preprocess data"]:::core
-    M["build model via ModelAdapter"]:::model
-    TR["train / fine-tune"]:::core
-    EV["evaluate → metrics"]:::core
+    LD["load + combine + preprocess data<br/>(holdout split + validation)"]:::core
+    M["build model<br/>ModelFactory.create_model<br/>(ModelAdapter protocol)"]:::model
+    TR["fine-tune / train"]:::model
+    EV["evaluate holdout → metrics"]:::core
     R[("experiments/&lt;name&gt;/results/<br/>results_summary.json + run_manifest.json")]:::io
 
     MC --> O
     DC --> O
-    O --> LD --> M --> TR --> EV --> R
+    O --> LD --> M
+    M --> TR --> EV --> R
+    M -. "zero-shot: skip training" .-> EV
 
-    note["Optuna's objective() runs exactly this inner loop per trial,<br/>with hyperparameters sampled from the search space."]:::core
-    EV -. "one Optuna trial" .- note
+    NOTE["An Optuna trial runs this same inner loop,<br/>with hyperparameters sampled from the search space."]:::core
+    EV -. "one Optuna trial" .- NOTE

@@ -51,6 +51,12 @@ Three companion diagrams zoom into the pieces of the pipeline above. Each has a
 scalable vector (`*.svg`), a raster copy (`*.png`), and a Mermaid source
 (`*.mmd`) that renders natively on GitHub.
 
+> These three workflows are published — with a shared colour/shape **legend** —
+> at [`docs/architecture/workflows.md`](../../docs/architecture/workflows.md); the
+> `.mmd` files here are that page's source. The matplotlib `*.png`/`*.svg` are an
+> alternate rendering and may lag the `.mmd` until their `render_*.py` scripts are
+> re-run.
+
 - **Scaffolding a new experiment** —
   [`scaffolder_workflow.svg`](./scaffolder_workflow.svg) ·
   [PNG](./scaffolder_workflow.png) · [Mermaid](./scaffolder_workflow.mmd). How
@@ -59,8 +65,9 @@ scalable vector (`*.svg`), a raster copy (`*.png`), and a Mermaid source
   the registry auto-discovers.
 - **Optuna sweep** — [`optuna_sweep_workflow.svg`](./optuna_sweep_workflow.svg) ·
   [PNG](./optuna_sweep_workflow.png) · [Mermaid](./optuna_sweep_workflow.mmd).
-  The cooperative, shared-study hyperparameter search: a study on RDB storage,
-  GPU workers each running `study.optimize(objective)`, and result export.
+  The cooperative, shared-study hyperparameter search: a study on Optuna
+  JournalStorage, GPU workers each running `study.optimize(objective)`, and
+  result summarization.
 - **Single-model training / evaluation** —
   [`single_model_training_workflow.svg`](./single_model_training_workflow.svg) ·
   [PNG](./single_model_training_workflow.png) ·
