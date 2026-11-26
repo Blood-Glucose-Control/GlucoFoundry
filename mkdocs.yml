@@ -6,6 +6,10 @@ theme:
     - navigation.sections
     - search.highlight
 
+plugins:
+  - search
+  - include-markdown
+
 nav:
   - Home: index.md
   - Architecture:

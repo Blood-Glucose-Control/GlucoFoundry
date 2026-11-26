@@ -109,7 +109,8 @@ experiment cleanly.
 - **Use conventional commits**: `feat:`, `fix:`, `docs:`, `chore:`, etc.
 - **Add tests** for new functionality.
 - **Keep the core experiment-agnostic**: `src/` must never import from
-  `experiments/`.
+  `experiments/`. Verify with `git grep "from experiments" -- src` (should print
+  nothing).
 - **Run formatting/linting**: `ruff format .` and `ruff check .` (repo selection
   is `E4,E7,E9,F,I`). Run `pre-commit run --all-files` before pushing — CI lints
   the whole repo.
@@ -124,6 +125,53 @@ experiment cleanly.
 - ✅ Docstrings for public functions
 - ✅ No merge conflicts with `main`
 
+## Testing
+
+Tests live under `tests/`, mirroring the source layout (`tests/data/`,
+`tests/workflows/`, `tests/evaluation/`, `tests/experiments/`, `tests/cli/`,
+`tests/models/`, …).
+
+```bash
+# Core suite — excludes model-family tests, which need isolated venvs
+pytest --ignore=tests/models
+
+# A single area, file, or test
+pytest tests/workflows -v
+pytest tests/path/to/test_file.py::test_name
+
+# Skip slower / integration-heavy tests
+pytest --ignore=tests/models -m "not slow"
+
+# Model-family tests run in their own environment
+make test-<family>   # e.g. make test-ttm
+```
+
+Add tests for new behaviour, keep them deterministic, and mark slow or
+integration-heavy tests with `@pytest.mark.slow`.
+
+## Docstrings
+
+Public modules, classes, and functions use **Google-style** docstrings:
+
+```python
+def build_episodes(data: pd.DataFrame, horizon: int) -> list[Episode]:
+    """Split a patient frame into forecasting episodes.
+
+    Args:
+        data: Per-patient CGM frame indexed by datetime.
+        horizon: Forecast length in steps.
+
+    Returns:
+        One Episode per anchor point.
+
+    Raises:
+        ValueError: If ``horizon`` is not positive.
+    """
+```
+
+Formatting and import order are enforced by `ruff format` / `ruff check` (repo
+selection `E4,E7,E9,F,I`); run `pre-commit run --all-files` before pushing.
+
 ## Issue reporting
 
 - **Bugs**: open an issue describing the problem and how to reproduce it
@@ -133,8 +181,9 @@ experiment cleanly.
 ## License
 
 By contributing, you agree that your contributions are licensed under the
-project's [Apache License 2.0](LICENSE).
+project's [Apache License 2.0](https://github.com/Blood-Glucose-Control/GlucoFoundry/blob/main/LICENSE).
 
 ---
 
-For a deeper developer guide, see [docs/contributing.md](docs/contributing.md).
+For architecture and design details, see
+[docs/architecture/toolkit-architecture.md](docs/architecture/toolkit-architecture.md).

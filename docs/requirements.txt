@@ -1,4 +1,5 @@
 
 # Documentation
 mkdocs>=1.0.4
+mkdocs-include-markdown-plugin
 mkdocs-material
