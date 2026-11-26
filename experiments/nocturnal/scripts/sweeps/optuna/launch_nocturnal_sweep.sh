@@ -24,7 +24,8 @@ REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || {
 }
 cd "${REPO_ROOT}"
 
-# Family -> shared venv (AutoGluon-backed families share .venvs/autogluon).
+# Family -> its model-family venv (AutoGluon families share .venvs/autogluon;
+# tsmixer -> .venvs/darts; moirai/moirai2 -> .venvs/moirai; timesfm -> .venvs/timesfm).
 case "${FAMILY}" in
     chronos2|tide|deepar|patchtst|tft|naive_baseline|statistical|gbm) VENV="autogluon" ;;
     moirai|moirai2) VENV="moirai" ;;
