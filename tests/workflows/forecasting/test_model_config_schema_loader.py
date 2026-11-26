@@ -19,6 +19,27 @@ from src.workflows.forecasting.modeling import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
+
+
+def _template_baseline(family: str) -> Path:
+    """Canonical per-family baseline config fixture.
+
+    The nocturnal sweep families' manual ablation grids were removed (#98) once
+    their Optuna sweeps became the source of truth, so schema-loader fixtures for
+    those families use the stable ``templates/experiment`` baselines instead of
+    experiment artifacts.
+    """
+    return (
+        REPO_ROOT
+        / "templates"
+        / "experiment"
+        / "configs"
+        / "models"
+        / family
+        / "baseline.yaml"
+    )
+
+
 TSMIXER_SMOKE_CONFIG_PATH = (
     REPO_ROOT
     / "experiments"
@@ -28,15 +49,7 @@ TSMIXER_SMOKE_CONFIG_PATH = (
     / "tsmixer"
     / "00_iob_cob_smoke.yaml"
 )
-TIDE_SMOKE_CONFIG_PATH = (
-    REPO_ROOT
-    / "experiments"
-    / "nocturnal"
-    / "configs"
-    / "models"
-    / "tide"
-    / "00_bg_only.yaml"
-)
+TIDE_SMOKE_CONFIG_PATH = _template_baseline("tide")
 TTM_SMOKE_CONFIG_PATH = (
     REPO_ROOT
     / "experiments"
@@ -55,15 +68,7 @@ SUNDIAL_SMOKE_CONFIG_PATH = (
     / "sundial"
     / "00_baseline.yaml"
 )
-MOIRAI_SMOKE_CONFIG_PATH = (
-    REPO_ROOT
-    / "experiments"
-    / "nocturnal"
-    / "configs"
-    / "models"
-    / "moirai"
-    / "bg_only_smoke_test.yaml"
-)
+MOIRAI_SMOKE_CONFIG_PATH = _template_baseline("moirai")
 MOMENT_SMOKE_CONFIG_PATH = (
     REPO_ROOT
     / "experiments"
@@ -89,32 +94,12 @@ TOTO_SMOKE_CONFIG_PATH = (
     / "configs"
     / "models"
     / "toto"
-    / "bg_only_smoke_test.yaml"
+    / "00_bg_only.yaml"
 )
-TIMESFM_SMOKE_CONFIG_PATH = (
-    REPO_ROOT
-    / "experiments"
-    / "nocturnal"
-    / "configs"
-    / "models"
-    / "timesfm"
-    / "00_long_run.yaml"
-)
+TIMESFM_SMOKE_CONFIG_PATH = _template_baseline("timesfm")
 AUTOGLUON_SCHEMA_SMOKE_CONFIGS = {
-    "chronos2": REPO_ROOT
-    / "experiments"
-    / "nocturnal"
-    / "configs"
-    / "models"
-    / "chronos2"
-    / "00_bg_only.yaml",
-    "deepar": REPO_ROOT
-    / "experiments"
-    / "nocturnal"
-    / "configs"
-    / "models"
-    / "deepar"
-    / "00_baseline.yaml",
+    "chronos2": _template_baseline("chronos2"),
+    "deepar": _template_baseline("deepar"),
     "gbm": REPO_ROOT
     / "experiments"
     / "nocturnal"
@@ -122,34 +107,10 @@ AUTOGLUON_SCHEMA_SMOKE_CONFIGS = {
     / "models"
     / "gbm"
     / "00_baseline.yaml",
-    "naive_baseline": REPO_ROOT
-    / "experiments"
-    / "nocturnal"
-    / "configs"
-    / "models"
-    / "naive_baseline"
-    / "00_naive.yaml",
-    "patchtst": REPO_ROOT
-    / "experiments"
-    / "nocturnal"
-    / "configs"
-    / "models"
-    / "patchtst"
-    / "00_baseline.yaml",
-    "statistical": REPO_ROOT
-    / "experiments"
-    / "nocturnal"
-    / "configs"
-    / "models"
-    / "statistical"
-    / "00_autoarima_bg_only.yaml",
-    "tft": REPO_ROOT
-    / "experiments"
-    / "nocturnal"
-    / "configs"
-    / "models"
-    / "tft"
-    / "00_bg_baseline.yaml",
+    "naive_baseline": _template_baseline("naive_baseline"),
+    "patchtst": _template_baseline("patchtst"),
+    "statistical": _template_baseline("statistical"),
+    "tft": _template_baseline("tft"),
     "tide": TIDE_SMOKE_CONFIG_PATH,
 }
 
@@ -417,7 +378,7 @@ def test_toto_model_config_validates_via_schema_loader() -> None:
     assert loaded["model_type"] == "toto"
     assert loaded["training_mode"] == "fine_tune"
     assert loaded["lr"] == pytest.approx(1.0e-4)
-    assert loaded["max_steps"] == 100
+    assert loaded["max_steps"] == 10000
 
 
 def test_timesfm_model_config_validates_via_schema_loader() -> None:
@@ -1683,7 +1644,7 @@ def test_toto_factory_path_supports_real_smoke_profile(
     assert isinstance(model.config, fake_config_class)
     assert model.config.model_type == "toto"
     assert model.config.training_mode == "fine_tune"
-    assert model.config.max_steps == 100
+    assert model.config.max_steps == 10000
     assert model.config.lr == pytest.approx(1.0e-4)
 
 
