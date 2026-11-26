@@ -11,7 +11,7 @@
 # Available models:
 #   - Optional dependency groups in pyproject.toml (e.g., ttm, sundial, moirai)
 #   - AutoGluon-backed model aliases:
-#       autogluon, chronos2, tide, deepar, patchtst, tft, naive_baseline, statistical
+#       autogluon, chronos2, tide, deepar, patchtst, tft, naive_baseline, statistical, gbm
 #     These all resolve to the shared .venvs/autogluon environment.
 #   - Darts-backed model aliases:
 #       darts, tsmixer
@@ -23,7 +23,7 @@ VENVS_DIR="${REPO_ROOT}/.venvs"
 
 is_autogluon_alias() {
     case "${1}" in
-        autogluon|chronos2|tide|deepar|patchtst|tft|naive_baseline|statistical) return 0 ;;
+        autogluon|chronos2|tide|deepar|patchtst|tft|naive_baseline|statistical|gbm) return 0 ;;
         *) return 1 ;;
     esac
 }
@@ -116,7 +116,7 @@ if ! echo "${OPT_DEPS}" | grep -qF "${DEP_GROUP} = ["; then
     echo "${OPT_DEPS}" | grep -F ' = [' | sed 's/ = \[.*//'
     echo ""
     echo "AutoGluon aliases (all use .venvs/autogluon):"
-    echo "  chronos2 tide deepar patchtst tft naive_baseline statistical"
+    echo "  chronos2 tide deepar patchtst tft naive_baseline statistical gbm"
     echo "Darts aliases (all use .venvs/darts):"
     echo "  tsmixer"
     return 1 2>/dev/null || exit 1
