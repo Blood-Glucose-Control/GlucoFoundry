@@ -1,25 +1,24 @@
-%% glucofoundry new-experiment — scaffolder workflow (Phase 4).
+%% GlucoFoundry new-experiment — scaffolder workflow.
+%% Palette/legend documented in docs/architecture/workflows.md (the published home).
 %% Render: GitHub renders ```mermaid blocks natively; or `mmdc -i scaffolder_workflow.mmd -o scaffolder_workflow.png`.
 flowchart TD
     classDef io fill:#CFF3EE,stroke:#2C7A7B,color:#1D4044,stroke-width:1.5px;
     classDef core fill:#D6E4FF,stroke:#2B6CB0,color:#1A365D,stroke-width:1.5px;
-    classDef tmpl fill:#D7F5DD,stroke:#2F855A,color:#1C4532,stroke-width:1.5px;
-    classDef out fill:#FFF4D6,stroke:#D69E2E,color:#744210,stroke-width:1.5px;
 
     U(["developer runs<br/>glucofoundry new-experiment"]):::io
     Q["Interview<br/>(templates/experiment.yaml)"]:::core
     F[("--from-file answers.yaml")]:::io
-    REG["Registry lookup<br/>datasets + SUPPORTED_MODEL_TYPES"]:::core
-    V["Validate / coerce answers<br/>derive summarizer_class, experiment_type"]:::core
-    R["Render templates/experiment/<br/>replace {{tokens}}, strip .tmpl"]:::core
-    T["templates/experiment/<br/>stubs + baselines"]:::tmpl
+    REG["Resolve choices from registries<br/>datasets · SUPPORTED_MODEL_TYPES"]:::core
+    V["Validate + coerce answers<br/>derive tokens (summarizer_class, experiment_type)"]:::core
+    T[("templates/experiment/<br/>stubs + baseline configs (.tmpl)")]:::io
+    R["Render tree<br/>replace double-brace tokens, strip .tmpl"]:::core
 
-    E[("experiments/&lt;name&gt;/")]:::out
-    E1["register.py → ExperimentSpec"]:::out
-    E2["episodes.py / eval.py / summarize.py stubs"]:::out
-    E3["configs/ (data, models/&lt;selected&gt;, sweeps)"]:::out
-    E4["results/ + trained_models/ (gitignored)"]:::out
-    DISC["Auto-discovered by<br/>src/experiments/registry.py"]:::core
+    E[("experiments/&lt;name&gt;/")]:::io
+    E1["register.py → ExperimentSpec"]:::io
+    E2["episodes.py · eval.py · summarize.py stubs"]:::io
+    E3["configs/ + hpo/<br/>(selected models, optional sweeps)"]:::io
+    E4["results/ + trained_models/<br/>(README-only, gitignored)"]:::io
+    DISC["Auto-discovered at startup<br/>src/experiments/registry.py scans */register.py"]:::core
 
     U --> Q
     F -. non-interactive .-> V
