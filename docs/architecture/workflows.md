@@ -9,9 +9,10 @@ GlucoFoundry's research loop is three **nested** workflows. From the outside in:
 3. **Optuna sweep** — a hyperparameter search that runs the single-model loop
    once per trial and keeps the best configuration.
 
-The diagrams below are the authoritative, rendered source for the `.mmd` files in
-`agent_notes/diagrams/`. They describe the **experiment-agnostic** toolkit flow;
-the shipped `experiments/nocturnal/` recipe is used only as a concrete example.
+The diagrams below are published here from their Mermaid sources in
+`agent_notes/diagrams/` (`*.mmd`), which remain the editable source-of-truth.
+They describe the **experiment-agnostic** toolkit flow; the shipped
+`experiments/nocturnal/` recipe is used only as a concrete example.
 
 ## Legend
 
@@ -37,18 +38,19 @@ flowchart LR
 
 | Encoding | Meaning |
 |---|---|
-| 🟩 Teal | inputs, outputs, and on-disk artifacts |
-| 🟦 Blue | an experiment-agnostic toolkit step (`src/` code) |
-| 🟢 Green | the model-adapter layer — build / train / fine-tune / evaluate a model |
-| 🟨 Amber | persistent shared state (the Optuna study) |
+| Teal fill | inputs, outputs, and on-disk artifacts |
+| Blue fill | an experiment-agnostic toolkit step (`src/` code) |
+| Green fill | the model-adapter layer — build / train / fine-tune / evaluate a model |
+| Amber fill | persistent shared state (the Optuna study) |
 | Stadium `([ ])` | a human action or CLI entrypoint |
 | Rectangle `[ ]` | a process step (code) |
 | Cylinder `[( )]` | data, a config file, or a stored artifact / database |
 | **Solid** arrow → | the primary, always-taken flow |
 | **Dashed** arrow ⇢ | an optional or conditional path |
 
-Not every diagram uses every colour — scaffolding, for example, never builds a
-model, so it has no green nodes.
+The fill colours above are shown live in the mermaid key; not every diagram uses
+every colour — scaffolding, for example, never builds a model, so it has no green
+nodes.
 
 ## 1. Scaffolding a new experiment
 
