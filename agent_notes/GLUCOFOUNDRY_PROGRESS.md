@@ -11,7 +11,7 @@
 > Note: `project_tracking.csv` was removed from GlucoFoundry (#42) as old-project
 > cruft and is **not** used here; GitHub issues (umbrella #12) are the canonical tracker.
 
-**Last updated:** 2026-11-25 · **Totals:** 55 done · 2 in progress · 11 pending
+**Last updated:** 2026-11-26 · **Totals:** 56 done · 2 in progress · 10 pending
 
 Status key: ✅ done · 🔄 in progress · ⬜ pending
 
@@ -129,15 +129,27 @@ Optuna-first scaffolder); **R7 (docs) remains**.
 > originally-planned R3c (decouple + move specs). See #79.
 
 > **R5 follow-ups:** #97 tamborlane_2008 processing bug (✅ done, PR #106) · #98
-> remove manual ablation YAML grids (now unblocked — sweeps proven; still open) ·
-> #99 validate deep/foundation family real runs on GPU (✅ done — all 8 families
+> remove manual ablation YAML grids (✅ done — sweep-family grids removed +
+> zero-shot families trimmed to one baseline, PR #111) · #99 validate
+> deep/foundation family real runs on GPU (✅ done — all 8 families
 > smoke-validated on Blackwell; fixes in PR #107) · #100 MetaboNet-2026 HPO
 > storage under the experiment dir (✅ done, PR #105).
+>
+> **Nocturnal sweep coverage (post-#98):** added Optuna sweeps for the trainable
+> `gbm` + `tsmixer` families (PR #112; WQL 1.404 / 2.029 on Blackwell) and retired
+> their manual configs (PR #113). `timegrad` deferred (needs py3.11, unavailable
+> here; publication-dropped for being too slow) — left config-only. The four
+> zero-shot foundation families (moment/sundial/toto/ttm) keep a single baseline
+> config (no sweep — nothing to tune).
 >
 > **Issue housekeeping (2026-11-25):** closed the R2 (#78) and R5 (#81) umbrella
 > sub-issues now that all their PRs merged (R2: #93/#94/#101; R5: #96). R6 (#82)
 > and the #97/#100/#99 follow-ups auto-/closed on their PR merges
 > (#103/#106/#105/#107); #108 (moirai Blackwell torch) closed via #107.
+>
+> **(2026-11-26):** #98 closed via PR #111/#112 (grids removed/trimmed + gbm/tsmixer
+> sweeps). Also merged PR #109 (contract-suite moirai2-variant fix). PR #113
+> (gbm/tsmixer config retirement) open.
 
 ### Other open items (for pickup once this phase settles)
 
