@@ -40,15 +40,7 @@ def _template_baseline(family: str) -> Path:
     )
 
 
-TSMIXER_SMOKE_CONFIG_PATH = (
-    REPO_ROOT
-    / "experiments"
-    / "nocturnal"
-    / "configs"
-    / "models"
-    / "tsmixer"
-    / "00_iob_cob_smoke.yaml"
-)
+TSMIXER_SMOKE_CONFIG_PATH = _template_baseline("tsmixer")
 TIDE_SMOKE_CONFIG_PATH = _template_baseline("tide")
 TTM_SMOKE_CONFIG_PATH = (
     REPO_ROOT
@@ -100,13 +92,7 @@ TIMESFM_SMOKE_CONFIG_PATH = _template_baseline("timesfm")
 AUTOGLUON_SCHEMA_SMOKE_CONFIGS = {
     "chronos2": _template_baseline("chronos2"),
     "deepar": _template_baseline("deepar"),
-    "gbm": REPO_ROOT
-    / "experiments"
-    / "nocturnal"
-    / "configs"
-    / "models"
-    / "gbm"
-    / "00_baseline.yaml",
+    "gbm": _template_baseline("gbm"),
     "naive_baseline": _template_baseline("naive_baseline"),
     "patchtst": _template_baseline("patchtst"),
     "statistical": _template_baseline("statistical"),
@@ -698,7 +684,7 @@ def test_tsmixer_smoke_profile_validates_via_schema_loader() -> None:
 
     assert loaded["model_type"] == "tsmixer"
     assert loaded["training_mode"] == "from_scratch"
-    assert loaded["covariate_cols"] == ["iob", "cob"]
+    assert loaded["covariate_cols"] == []
     assert loaded["quantile_levels"] == [0.1, 0.5, 0.9]
 
 
@@ -1506,7 +1492,7 @@ def test_tsmixer_factory_path_supports_real_smoke_profile(
     model = ModelFactory.create_model(config)
 
     assert isinstance(model.config, fake_config_class)
-    assert model.config.covariate_cols == ["iob", "cob"]
+    assert model.config.covariate_cols == []
     assert model.config.num_epochs == 1
     assert model.config.batch_size == 32
     assert model.config.learning_rate == pytest.approx(0.001)
