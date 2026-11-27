@@ -70,6 +70,11 @@ class CgmJepaForecastNet(nn.Module):
                 f"context_length ({context_length}) must be a multiple of the "
                 f"encoder patch length ({patch})."
             )
+        if context_length < 24:
+            raise ValueError(
+                f"context_length ({context_length}) must be at least 24: the 1-h "
+                "change feature needs a reading 12 steps before the last one."
+            )
         self.encoder = encoder
         self.patch_len = patch
         self.n_patches = context_length // patch
@@ -522,17 +527,11 @@ class CgmJepaForecaster(BaseTimeSeriesFoundationModel):
     def _save_checkpoint(self, output_dir: str) -> None:
         assert self.net is not None
         os.makedirs(output_dir, exist_ok=True)
-        enc = self.net.encoder
         torch.save(
             {
                 "state_dict": self.net.state_dict(),
                 "quantiles": self._train_quantiles(),
-                "encoder_cfg": {
-                    "dim_in": enc.dim_in,
-                    "embed_dim": enc.embed_dim,
-                    "nhead": enc.predictor_blocks[0].attn.num_heads,
-                    "num_layers": len(enc.predictor_blocks),
-                },
+                "encoder_cfg": self.net.encoder.config,
             },
             os.path.join(output_dir, _CHECKPOINT_NAME),
         )
@@ -544,7 +543,7 @@ class CgmJepaForecaster(BaseTimeSeriesFoundationModel):
             weights_only=True,
         )
         self.config.quantile_levels = list(blob["quantiles"])
-        self.net = self._build_net(CgmJepaEncoder(**blob["encoder_cfg"]))
+        self.net = self._build_net(CgmJepaEncoder.from_config_dict(blob["encoder_cfg"]))
         self.net.load_state_dict(blob["state_dict"])
         self.model = self.net
         self.net.to(self._device)

@@ -887,6 +887,11 @@ class CgmJepaModelConfigSchema(BaseConfigSchema):
     def _validate_context_length(cls, value: int) -> int:
         if value % 12 != 0:
             raise ValueError("context_length must be a multiple of 12 (hourly patches)")
+        if value < 24:
+            raise ValueError(
+                "context_length must be at least 24 (the 1-h change feature needs "
+                "a reading 12 steps before the last one)"
+            )
         return value
 
 

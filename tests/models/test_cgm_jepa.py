@@ -13,6 +13,7 @@ import pytest
 torch = pytest.importorskip("torch")
 
 from src.models.cgm_jepa import CgmJepaConfig, CgmJepaForecaster  # noqa: E402
+from src.models.cgm_jepa.encoder import CgmJepaEncoder  # noqa: E402
 from src.models.cgm_jepa.model import (  # noqa: E402
     make_windows,
     pinball_loss,
@@ -58,6 +59,11 @@ def test_prepare_contexts_pads_and_fills_nan():
 def test_context_length_must_match_patch():
     with pytest.raises(ValueError, match="multiple"):
         CgmJepaForecaster(_cfg(context_length=100))
+
+
+def test_context_length_must_cover_one_hour_change():
+    with pytest.raises(ValueError, match="at least 24"):
+        CgmJepaForecaster(_cfg(context_length=12))
 
 
 def test_make_windows_drops_nonfinite():
@@ -132,6 +138,19 @@ def test_save_load_roundtrip(tmp_path):
     loaded = CgmJepaForecaster.load(str(tmp_path))
     assert loaded.is_fitted
     np.testing.assert_allclose(loaded.predict_arrays(list(x[:4])), expected, atol=1e-5)
+
+
+def test_checkpoint_rebuilds_non_default_encoder(tmp_path):
+    model = CgmJepaForecaster(_cfg())
+    # Swap in an encoder whose shape differs from the defaults
+    model.net = model._build_net(CgmJepaEncoder(mlp_ratio=2.0, kernel_size=5))
+    model.model, model.is_fitted = model.net, True
+    x, _ = _synthetic(4)
+    expected = model.predict_arrays(list(x))
+    model.save(str(tmp_path))
+    loaded = CgmJepaForecaster.load(str(tmp_path))
+    assert loaded.net.encoder.config == model.net.encoder.config
+    np.testing.assert_allclose(loaded.predict_arrays(list(x)), expected, atol=1e-5)
 
 
 def test_untrained_head_predicts_last_value():

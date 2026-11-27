@@ -1,5 +1,27 @@
 # Copyright (c) 2025 Blood-Glucose-Control
-# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2026 CRUISE Research Group
+# SPDX-License-Identifier: Apache-2.0 AND MIT
+#
+# Portions of this file are ported from https://github.com/cruiseresearchgroup/CGM-JEPA
+# and are used under the MIT License:
+#
+#   Permission is hereby granted, free of charge, to any person obtaining a copy
+#   of this software and associated documentation files (the "Software"), to deal
+#   in the Software without restriction, including without limitation the rights
+#   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#   copies of the Software, and to permit persons to whom the Software is
+#   furnished to do so, subject to the following conditions:
+#
+#   The above copyright notice and this permission notice shall be included in all
+#   copies or substantial portions of the Software.
+#
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#   SOFTWARE.
 
 """CGM-JEPA context encoder (vendored, inference/fine-tune path only).
 
@@ -199,6 +221,22 @@ class CgmJepaEncoder(nn.Module):
         jepa: bool = False,
     ) -> None:
         super().__init__()
+        # Constructor arguments, saved in checkpoints to rebuild the same shape
+        self.config: Dict[str, Any] = {
+            "dim_in": dim_in,
+            "kernel_size": kernel_size,
+            "embed_dim": embed_dim,
+            "embed_bias": embed_bias,
+            "nhead": nhead,
+            "num_layers": num_layers,
+            "mlp_ratio": mlp_ratio,
+            "qkv_bias": qkv_bias,
+            "qk_scale": qk_scale,
+            "drop_rate": drop_rate,
+            "attn_drop_rate": attn_drop_rate,
+            "time_inp_dim": time_inp_dim,
+            "jepa": jepa,
+        }
         self.dim_in = dim_in  # patch length (steps per token)
         self.embed_dim = embed_dim
         self.jepa = jepa
