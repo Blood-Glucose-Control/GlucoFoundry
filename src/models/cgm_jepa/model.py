@@ -541,7 +541,7 @@ class CgmJepaForecaster(BaseTimeSeriesFoundationModel):
         blob = torch.load(
             os.path.join(model_dir, _CHECKPOINT_NAME),
             map_location="cpu",
-            weights_only=False,
+            weights_only=True,
         )
         self.config.quantile_levels = list(blob["quantiles"])
         self.net = self._build_net(CgmJepaEncoder(**blob["encoder_cfg"]))
