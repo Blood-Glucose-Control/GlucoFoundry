@@ -1,0 +1,20 @@
+# cgmacros_ppgr/results/
+
+Run **output** for the CGMacros post-meal glucose response (PPGR) with frozen CGM representations experiment lives here — it is
+**not** committed. Everything under this directory is gitignored except this
+README; experiment runs populate it locally.
+
+Keeping run artifacts out of version control is deliberate: GlucoFoundry ships
+reusable **code**, while the artifacts of any given run belong to that run (and
+to the experiment fork that produced them).
+
+## Reproducing
+
+Run this experiment's recipe (or the forecasting workflow with
+`--experiment cgmacros_ppgr`) to generate results here, then summarize
+them with the experiment's summarizer.
+
+Paths resolve through the experiment path contract
+(`src.experiments.registry.get_experiment_paths`), so setting
+`GLUCOFOUNDRY_ARTIFACTS_ROOT` redirects large artifacts to external/scratch
+storage without moving the versioned `configs/`.
