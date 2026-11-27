@@ -9,6 +9,12 @@ repos:
       - id: check-merge-conflict
       - id: check-symlinks
       - id: check-yaml
+        exclude: "^mkdocs\\.yml$"
+      - id: check-yaml
+        name: check-yaml (mkdocs, unsafe)
+        args:
+          - --unsafe
+        files: "^mkdocs\\.yml$"
       - id: debug-statements
       - id: end-of-file-fixer
         exclude: "^docs/source/examples/"

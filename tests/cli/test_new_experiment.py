@@ -94,6 +94,18 @@ def test_derive_tokens() -> None:
     )
     assert derived["summarizer_class"] == "MealImageSummarizer"
     assert derived["experiment_type"] == "meal_image_forecasting"
+    assert derived["primary_metric"] == "rmse"  # defaults when no metrics given
+
+
+def test_derive_tokens_primary_metric_from_metrics() -> None:
+    derived = ne.derive_tokens(
+        {
+            "experiment_name": "x",
+            "task_family": "forecasting",
+            "metrics": ["mae", "rmse"],
+        }
+    )
+    assert derived["primary_metric"] == "mae"
 
 
 def test_render_text_unknown_token_raises() -> None:
@@ -120,14 +132,25 @@ def test_render_experiment_tree_and_wiring(tmp_path: Path) -> None:
         "README.md",
         "results/README.md",
         "trained_models/README.md",
+        # sweep is the default workflow
+        "hpo/__init__.py",
+        "hpo/study.py",
+        "hpo/objective.py",
+        "hpo/search_space.py",
+        "scripts/sweeps/optuna/launch_sweep.sh",
     ]:
         assert (dest / rel).is_file(), rel
     # optional dirs present when requested
     assert (dest / "configs/sweeps/.gitkeep").is_file()
     assert (dest / "notebooks/.gitkeep").is_file()
-    # rendered recipe compiles
-    for py in dest.glob("*.py"):
+    # every rendered python module compiles (incl. the hpo/ sweep stubs)
+    for py in dest.rglob("*.py"):
         py_compile.compile(str(py), doraise=True)
+    # the sweep study is wired to the shared HPO engine
+    study = (dest / "hpo/study.py").read_text()
+    assert "from src.workflows.hpo.engine import StudySpec, run_main" in study
+    assert "get_experiment_paths" in study  # artifacts under the experiment dir
+    assert '"primary_metric": "rmse"' in study  # from metrics[0]
     # register.py is wired with the derived summarizer + name
     register = (dest / "register.py").read_text()
     assert 'name="demo_exp"' in register

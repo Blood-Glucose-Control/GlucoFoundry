@@ -13,19 +13,21 @@ import pandas as pd
 def evaluate(
     model: Any,
     holdout_data: pd.DataFrame,
-    context_length: int = {{ context_length }},
-    forecast_length: int = {{ forecast_length }},
-    target_col: str = "{{ target_col }}",
-    covariate_cols: list[str] | None = None,
     **kwargs: Any,
 ) -> dict[str, Any]:
-    """Evaluate ``model`` on the {{ experiment_name }} task.
+    """Evaluate ``model`` on the {{ experiment_name }} ({{ task_family }}) task.
 
-    Builds episodes with :func:`build_episodes`, runs batched prediction via
-    ``model.predict_batch(...)``, and returns a metrics dict (for example
-    {{ metrics }}).
+    Builds evaluation units with :func:`build_episodes`, runs ``model`` over them,
+    and returns a flat metrics dict (for example {{ metrics }}). The sweep
+    objective (``hpo/objective.py``) reads the primary metric
+    ({{ primary_metric }}) from this dict.
 
-    TODO: implement the evaluation for this experiment.
+    Args:
+        model: The fitted/zero-shot model to score.
+        holdout_data: Held-out data for this experiment.
+        **kwargs: Task-specific evaluation parameters.
+
+    TODO: implement the evaluation for this {{ task_family }} task.
     """
     raise NotImplementedError(
         "Implement evaluate for the {{ experiment_name }} experiment."

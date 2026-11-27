@@ -191,9 +191,13 @@ def process_single_patient_tamborlane(
             start=generic_patient_start_date, periods=len(data_copy), freq="5min"
         )
 
-    # Set datetime as index
+    # Set datetime as index. Drop the column so "datetime" is only an index
+    # level and not also a column -- otherwise the downstream merge_asof on
+    # "datetime" in ensure_regular_time_intervals() raises "'datetime' is both an
+    # index level and a column label, which is ambiguous" (matches every other
+    # dataset cleaner, which all set_index("datetime", drop=True)).
     if "datetime" in data_copy.columns:
-        data_copy = data_copy.set_index("datetime", drop=False)  # Keep datetime column
+        data_copy = data_copy.set_index("datetime", drop=True)
 
     # Store intermediate data if requested
     if store_intermediate_data:

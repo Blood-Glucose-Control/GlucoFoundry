@@ -39,15 +39,24 @@ toolkit surface. Reproduce model-specific workflows via the canonical entrypoint
 
 ## Sweep orchestration (Optuna)
 
-Hyperparameter sweeps run through per-model-family **Optuna** studies in
-[`src/workflows/sweeps/`](/src/workflows/sweeps) (for example
-`src/workflows/sweeps/optuna_chronos2/study.py`). The earlier hand-rolled shell
-sweep harness was removed in favor of this Optuna-based orchestration.
+Hyperparameter sweeps run through per-model-family **Optuna** studies built on
+the reusable, experiment-agnostic engine in
+[`src/workflows/hpo/`](/src/workflows/hpo). Each experiment supplies its own
+sweep tree:
 
-The nocturnal experiment drives its Optuna runs from
-[`experiments/nocturnal/scripts/sweeps/optuna/`](/experiments/nocturnal/scripts/sweeps/optuna)
-(launcher + feature-cache prebuild), seeded by
-`experiments/nocturnal/configs/chronos2_optuna_poc.yaml`.
+- **MetaboNet-2026** lives in
+  [`experiments/metabonet_2026/hpo/`](/experiments/metabonet_2026/hpo) (for example
+  `experiments/metabonet_2026/hpo/chronos2/study.py`), with its tmux launcher and
+  feature-cache prebuild under
+  [`experiments/metabonet_2026/scripts/sweeps/optuna/`](/experiments/metabonet_2026/scripts/sweeps/optuna).
+- **Nocturnal** lives in
+  [`experiments/nocturnal/hpo/`](/experiments/nocturnal/hpo): per-family studies
+  that optimize WQL on the midnight-anchored holdout episodes (RMSE/Brier@3.9/MACE
+  logged per trial), launched via
+  `experiments/nocturnal/scripts/sweeps/optuna/launch_nocturnal_sweep.sh <family>`.
+
+The earlier hand-rolled shell sweep harness was removed in favor of this
+Optuna-based orchestration.
 
 ## Canonical workflow example
 
@@ -73,18 +82,14 @@ flowchart LR
     D[configs/data + raw/prepared inputs]
     W[scripts/workflows/*]
     SW[src/workflows/*]
-    A["experiments/nocturnal/scripts/{analysis,visualization}/*"]
+    A["experiments/nocturnal/scripts/{analysis,evaluation}/*"]
 
     D --> W --> SW
     SW --> A
 ```
 
-Shared visualization helpers for retained nocturnal plotting scripts now live in
+Shared visualization helpers live in
 [`src/visualization/nocturnal.py`](/src/visualization/nocturnal.py).
-
-Visualization script purposes, duplication assessment, and curated example
-outputs are documented in
-[`docs/user-guide/modeling/visualization-guide.md`](/docs/user-guide/modeling/visualization-guide.md).
 
 ## Canonical run manifest (v1)
 
@@ -109,13 +114,3 @@ Several older example scripts were removed during P1 scripts cleanup because the
 depended on model-base surfaces that were already pruned from runtime. If you need
 the old behavior, use git history for reference and prefer rebuilding on top of
 the maintained scripts listed above.
-
-## Generic visualization entrypoints
-
-Visualization entrypoints use generic plotting contracts and live with the
-experiment that produces their inputs:
-
-- [`plot_probabilistic_forecast_grid.py`](/experiments/nocturnal/scripts/visualization/plot_probabilistic_forecast_grid.py)
-- [`plot_forecast_episode_overlays.py`](/experiments/nocturnal/scripts/visualization/plot_forecast_episode_overlays.py)
-
-Each script documents its required input data format at the top of the file.

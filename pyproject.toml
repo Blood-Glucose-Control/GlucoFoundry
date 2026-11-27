@@ -18,13 +18,19 @@ dependencies = [
     "ruff>=0.3.0",
 
     # Data Science & ML
-    "datasets>=5.0.0",
+    # datasets: floor kept below 5 because the AutoGluon model-family extras pin
+    # autogluon.timeseries 1.5.0 (-> pyarrow<21), which conflicts with datasets>=5
+    # (-> pyarrow>=21). Core installs still resolve the newest compatible datasets.
+    "datasets>=2.14",
     "ipython",
     "ipywidgets",
     "jupyterlab",
     "notebook",
     "numba",
-    "numpy>=2.0,<3",
+    # numpy: floor kept at 1.26 so model-family extras can resolve older pins
+    # (e.g. the moirai extra's uni2ts requires numpy~=1.26). Core installs still
+    # resolve the newest compatible numpy 2.x.
+    "numpy>=1.26,<3",
     "openpyxl",
     "optuna",
     "pandas>=2.3,<4",
@@ -63,10 +69,16 @@ sundial = [
 chronos2 = [
     "autogluon.timeseries==1.5.0",
     "transformers==4.56.0",
+    # autogluon.timeseries 1.5.0 -> pyarrow<21; cap datasets accordingly.
+    "datasets>=2.14,<5",
+    "pyarrow>=14.0.0,<21",
 ]
 autogluon = [
     "autogluon.timeseries==1.5.0",
     "transformers==4.56.0",
+    # autogluon.timeseries 1.5.0 -> pyarrow<21; cap datasets accordingly.
+    "datasets>=2.14,<5",
+    "pyarrow>=14.0.0,<21",
 ]
 timegrad = [
     "pytorchts",
@@ -93,6 +105,9 @@ timesfm3 = [
 ]
 tide = [
     "autogluon.timeseries==1.5.0",
+    # autogluon.timeseries 1.5.0 -> pyarrow<21; cap datasets accordingly.
+    "datasets>=2.14,<5",
+    "pyarrow>=14.0.0,<21",
 ]
 darts = [
     "u8darts[torch]>=0.35.0",
@@ -102,6 +117,11 @@ moirai = [
     "gluonts>=0.14.0",
     "lightning>=2.0",
     "transformers>=4.56.0",
+    # uni2ts pins numpy~=1.26, but pyarrow>=24 requires numpy>=2.0, so an
+    # uncapped pyarrow resolves to a wheel that fails to import here. Cap it
+    # below that boundary (the publication venv runs pyarrow 23.0.1 with numpy
+    # 1.26; datasets only needs pyarrow>=12).
+    "pyarrow>=14.0.0,<24",
 ]
 toto = [
     "toto-ts",

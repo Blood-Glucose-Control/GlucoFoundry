@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Launch an Optuna sweep worker for the {{ experiment_name }} experiment.
+#
+# Run once per worker (e.g. in separate tmux panes / GPUs). All workers cooperate
+# on the same study in the experiment's shared journal DB.
+#
+# Usage:
+#   experiments/{{ experiment_name }}/scripts/sweeps/optuna/launch_sweep.sh [n_trials] [gpu]
+#
+# For a model family that needs its own interpreter, point PYTHON at the matching
+# venv (see docs/contributing.md -> model-family interpreters):
+#   PYTHON=.venvs/<family>/bin/python .../launch_sweep.sh 200 0
+
+set -euo pipefail
+
+N_TRIALS="${1:-50}"
+GPU="${2:-}"
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || {
+    echo "Error: run from within the repository"; exit 1;
+}
+cd "${REPO_ROOT}"
+
+PYTHON="${PYTHON:-${REPO_ROOT}/.venv/bin/python}"
+MODULE="experiments.{{ experiment_name }}.hpo.study"
+
+CONFIG_ARGS=()
+[ -n "${CONFIG:-}" ] && CONFIG_ARGS+=(--config "${CONFIG}")
+GPU_ARGS=()
+[ -n "${GPU}" ] && { GPU_ARGS+=(--gpu-label "${GPU}"); export CUDA_VISIBLE_DEVICES="${GPU}"; }
+
+export PYTHONPATH="${REPO_ROOT}:${PYTHONPATH:-}"
+
+echo "Launching {{ experiment_name }} sweep (n_trials=${N_TRIALS}, gpu=${GPU:-cpu})"
+"${PYTHON}" -m "${MODULE}" create "${CONFIG_ARGS[@]}"
+exec "${PYTHON}" -m "${MODULE}" run --n-trials "${N_TRIALS}" "${CONFIG_ARGS[@]}" "${GPU_ARGS[@]}"

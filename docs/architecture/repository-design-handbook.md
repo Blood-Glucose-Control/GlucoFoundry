@@ -71,8 +71,9 @@ composed approach from reputable sources:
 
 ### 3.6 Visualization
 
-- Plot/report generation utilities live in `experiments/nocturnal/scripts/visualization/` and reusable
-  plotting utilities in `src/` when shared.
+- Reusable plotting utilities live in `src/visualization/` (shared, core);
+  experiment-specific figure scripts live under the owning experiment's
+  `scripts/` directory.
 
 ## 4) Layer boundaries and ownership
 
@@ -202,7 +203,8 @@ Minimum bar for script and workflow changes:
 
 ### 11.2 Remaining open items
 
-1. Extend the task/experiment sweep dispatcher pattern (`src/workflows/sweeps/`)
+1. Extend the reusable HPO engine (`src/workflows/hpo/engine.py`) and the
+   per-experiment sweep-tree pattern (for example `experiments/metabonet_2026/hpo/`)
    with production adapters beyond the currently scaffolded set
    (`forecasting/nocturnal_forecast`, `event_detection/nocturnal_events`).
 2. Continue extending the initial `src/workflows/forecasting/` placement pattern

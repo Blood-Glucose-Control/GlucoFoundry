@@ -39,6 +39,7 @@ _SAMPLE_ANSWERS = {
     "sampling_interval_minutes": "5",
     "anchoring_strategy": "sliding_window",
     "metrics": "['rmse', 'mae']",
+    "primary_metric": "rmse",
     "summarizer_class": "DemoSummarizer",
     "experiment_type": "demo_forecasting",
 }

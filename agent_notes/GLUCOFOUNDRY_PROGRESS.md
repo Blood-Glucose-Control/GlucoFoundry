@@ -11,7 +11,7 @@
 > Note: `project_tracking.csv` was removed from GlucoFoundry (#42) as old-project
 > cruft and is **not** used here; GitHub issues (umbrella #12) are the canonical tracker.
 
-**Last updated:** 2026-11-10 · **Totals:** 44 done · 2 in progress · 19 pending
+**Last updated:** 2026-11-26 · **Totals:** 56 done · 2 in progress · 10 pending
 
 Status key: ✅ done · 🔄 in progress · ⬜ pending
 
@@ -86,6 +86,7 @@ umbrella **#64** (artifacts live inside `experiments/<name>/`; 5 decisions resol
 | Task | Status | Ref |
 |------|--------|-----|
 | RFC-001 ratified (5 decisions resolved) | ✅ | PR #63 |
+| RFC-001 status → Accepted (all 5 decisions since shipped via #66/#68/#74/#75) | ✅ | PR #86 |
 | RFC quick wins (remove dead `configs/models/timegpt/`, progress mirror) | ✅ | PR #65 |
 | Phase 2: `ExperimentPaths` resolver + workflow path resolution | ✅ | PR #66 |
 | Scrub internal planning refs from `src/` docstrings | ✅ | PR #67 |
@@ -96,7 +97,8 @@ umbrella **#64** (artifacts live inside `experiments/<name>/`; 5 decisions resol
 | Prune forecasting workflow shells; fix stale `scripts/experiments` refs | ✅ | PR #72 |
 | Phase 4a: `templates/experiment/` skeleton + interview manifest | ✅ | PR #73 |
 | Phase 4b: `glucofoundry new-experiment` CLI (full §5 interview + `--from-file`) | ✅ | PR #74 |
-| Phase 4c: `configs/models/` templates split (baseline→templates, tuned→experiment) | 🔄 | PR #75 |
+| Phase 4c: `configs/models/` templates split (baseline→templates, tuned→experiment) | ✅ | PR #75 |
+| Refresh workflow diagrams (de-MLflow main diagram + render 3 new workflow SVGs) | ✅ | PR #85 |
 | Phase 5: docs/governance update | ⬜ | #64 |
 
 ### Phase 4 review finding → Optuna-first redesign (umbrella #76)
@@ -105,17 +107,49 @@ Reviewing Phase 4 surfaced that the scaffold template is **forecasting-rigid +
 single-model-centric**, and the Optuna infra has anti-patterns + a core/experiment
 boundary violation (the "nocturnal" Optuna config actually runs on MetaboNet data).
 Workflow diagrams are in [`agent_notes/diagrams/`](./diagrams). Tracked under
-umbrella **#76**; do **R1–R5 before revisiting the scaffolder CLI (R6)**.
+umbrella **#76**. **R1–R6 are complete** (the engine, anti-pattern fixes, the
+core-vs-experiment reorg, nocturnal cleanup, nocturnal's own sweep, and the
+Optuna-first scaffolder); **R7 (docs) remains**.
 
 | Task | Status | Ref |
 |------|--------|-----|
-| R1 extract a neutral shared Optuna runner (out of `optuna_chronos2/`) | ⬜ | #77 |
-| R2 fix anti-patterns (SQLite→`JournalStorage`; monkey-patch pruning→`trial.report`) | ⬜ | #78 |
-| R3 move experiment-specific objective/data out of `src/` core | ⬜ | #79 |
-| R4 clean house on `experiments/nocturnal/` (archive rebuttal/grand-summary/viz cruft) | ⬜ | #80 |
-| R5 stand up nocturnal's Optuna on the reported core metrics | ⬜ | #81 |
-| R6 Optuna-first scaffold + de-forecasting the stubs (revises #64) | ⬜ | #82 |
+| R1 extract a neutral shared Optuna engine (out of `chronos2/`) | ✅ | PR #90 (#77) |
+| R2 unify pruning/reporting + parallel-safe storage | ✅ | #78 — (c) metrics guard PR #93 + (a) parallel-safe storage PR #94 + (b) chronos2 `fit()` monkey-patch→`ReportingChronos2Model` subclass PR #101 (review addressed) |
+| R3 reorganize HPO: engine-only core vs MetaboNet-2026 experiment sweep tree | ✅ | PR #91 (rename) + #92 (honest move); #79 closed |
+| R4 clean house on `experiments/nocturnal/` (archive rebuttal/grand-summary/viz cruft) | ✅ | PR #87 (#80) |
+| R5 stand up nocturnal's Optuna on the reported core metrics | ✅ | PR #96 — `experiments/nocturnal/hpo/`, 10 families on the shared engine; naive+statistical real-run validated |
+| R6 Optuna-first scaffold + de-forecasting the stubs (revises #64) | ✅ | PR #103 (#82) — sweep is the default generated workflow; task-general episodes/eval stubs |
 | R7 Optuna/scaffolder/single-model workflow docs | ⬜ | #83 |
+
+> **R3 deviation (shipped):** the original plan decoupled per-model
+> `objective`/`search_space` into experiment-agnostic skeletons kept in core. The
+> code proved fully MetaboNet-specific (not thin skeletons), so with maintainer
+> sign-off R3 took the **honest move**: only `engine.py` stays in core and the
+> entire family tree moved to `experiments/metabonet_2026/hpo/`. This obviated the
+> originally-planned R3c (decouple + move specs). See #79.
+
+> **R5 follow-ups:** #97 tamborlane_2008 processing bug (✅ done, PR #106) · #98
+> remove manual ablation YAML grids (✅ done — sweep-family grids removed +
+> zero-shot families trimmed to one baseline, PR #111) · #99 validate
+> deep/foundation family real runs on GPU (✅ done — all 8 families
+> smoke-validated on Blackwell; fixes in PR #107) · #100 MetaboNet-2026 HPO
+> storage under the experiment dir (✅ done, PR #105).
+>
+> **Nocturnal sweep coverage (post-#98):** added Optuna sweeps for the trainable
+> `gbm` + `tsmixer` families (PR #112; WQL 1.404 / 2.029 on Blackwell) and retired
+> their manual configs (PR #113). `timegrad` deferred (needs py3.11, unavailable
+> here; publication-dropped for being too slow) — left config-only. The four
+> zero-shot foundation families (moment/sundial/toto/ttm) keep a single baseline
+> config (no sweep — nothing to tune).
+>
+> **Issue housekeeping (2026-11-25):** closed the R2 (#78) and R5 (#81) umbrella
+> sub-issues now that all their PRs merged (R2: #93/#94/#101; R5: #96). R6 (#82)
+> and the #97/#100/#99 follow-ups auto-/closed on their PR merges
+> (#103/#106/#105/#107); #108 (moirai Blackwell torch) closed via #107.
+>
+> **(2026-11-26):** #98 closed via PR #111/#112 (grids removed/trimmed + gbm/tsmixer
+> sweeps). Also merged PR #109 (contract-suite moirai2-variant fix). PR #113
+> (gbm/tsmixer config retirement) open.
 
 ### Other open items (for pickup once this phase settles)
 
