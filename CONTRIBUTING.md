@@ -109,7 +109,7 @@ experiment cleanly.
 - **Use conventional commits**: `feat:`, `fix:`, `docs:`, `chore:`, etc.
 - **Add tests** for new functionality.
 - **Keep the core experiment-agnostic**: `src/` must never import from
-  `experiments/`. Verify with `git grep "from experiments" -- src` (should print
+  `experiments/`. Verify with `git grep -nE '^(from|import) experiments' -- src` (should print
   nothing).
 - **Run formatting/linting**: `ruff format .` and `ruff check .` (repo selection
   is `E4,E7,E9,F,I`). Run `pre-commit run --all-files` before pushing — CI lints
