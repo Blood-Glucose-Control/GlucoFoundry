@@ -89,6 +89,7 @@ TOTO_SMOKE_CONFIG_PATH = (
     / "00_bg_only.yaml"
 )
 TIMESFM_SMOKE_CONFIG_PATH = _template_baseline("timesfm")
+CGM_JEPA_SMOKE_CONFIG_PATH = _template_baseline("cgm_jepa")
 AUTOGLUON_SCHEMA_SMOKE_CONFIGS = {
     "chronos2": _template_baseline("chronos2"),
     "deepar": _template_baseline("deepar"),
@@ -516,6 +517,51 @@ def test_timesfm_runtime_adapter_reports_unknown_field() -> None:
         )
 
     assert "unknown" in str(exc_info.value)
+
+
+def test_cgm_jepa_model_config_validates_via_schema_loader() -> None:
+    loaded = load_model_config_from_yaml(
+        str(CGM_JEPA_SMOKE_CONFIG_PATH),
+        model_type="cgm_jepa",
+    )
+
+    assert loaded["model_type"] == "cgm_jepa"
+    assert loaded["context_length"] == 288
+    assert loaded["forecast_length"] == 24
+    assert loaded["pretrained_subfolder"] == "cgm_jepa"
+
+
+def test_cgm_jepa_runtime_adapter_normalizes_learning_rate_alias() -> None:
+    runtime_config = build_model_runtime_config(
+        model_type="cgm_jepa",
+        config_data={"context_length": 288, "forecast_length": 24, "lr": 0.002},
+    )
+
+    assert runtime_config["learning_rate"] == pytest.approx(0.002)
+    assert "lr" not in runtime_config
+
+
+def test_cgm_jepa_runtime_adapter_reports_unknown_field() -> None:
+    with pytest.raises(ValueError) as exc_info:
+        build_model_runtime_config(
+            model_type="cgm_jepa",
+            config_data={"context_length": 288, "forecast_length": 24, "unknown": 1},
+        )
+
+    assert "unknown" in str(exc_info.value)
+
+
+@pytest.mark.parametrize("context_length", [12, 30])
+def test_cgm_jepa_runtime_adapter_rejects_bad_context_length(
+    context_length: int,
+) -> None:
+    with pytest.raises(ValueError) as exc_info:
+        build_model_runtime_config(
+            model_type="cgm_jepa",
+            config_data={"context_length": context_length, "forecast_length": 24},
+        )
+
+    assert "context_length" in str(exc_info.value)
 
 
 def test_moirai_runtime_adapter_enforces_covariate_dim_parity() -> None:
