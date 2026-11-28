@@ -1,0 +1,17 @@
+# Copyright (c) 2025 Blood-Glucose-Control
+# SPDX-License-Identifier: Apache-2.0
+# Toolkit baseline for cgm_jepa — a generic CGM-only starting point.
+# Copy into your experiment's configs/models/ and tune from here.
+# The encoder was pre-trained on 24 h at 5 min (288 steps, hourly patches of 12).
+model_path: CRUISEResearchGroup/CGM-JEPA
+pretrained_subfolder: cgm_jepa
+training_mode: fine_tune
+context_length: 288
+forecast_length: 24
+freeze_encoder: true
+head_type: mlp
+token_pool: mean_last
+learning_rate: 0.001
+batch_size: 128
+num_epochs: 20
+window_stride: 6

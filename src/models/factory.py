@@ -23,4 +23,5 @@ SUPPORTED_MODEL_TYPES = (
     "tft",
     "tsmixer",
     "moirai2",
+    "cgm_jepa",
 )

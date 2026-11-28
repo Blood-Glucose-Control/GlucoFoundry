@@ -1,6 +1,10 @@
 {
   "schemas": [
     {
+      "file": "model_configs.cgm_jepa.schema.json",
+      "source_symbol": "src.config.schemas.model_configs.CgmJepaModelConfigSchema"
+    },
+    {
       "file": "model_configs.chronos2.schema.json",
       "source_symbol": "src.config.schemas.model_configs.Chronos2ModelConfigSchema"
     },
