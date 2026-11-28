@@ -1,6 +1,6 @@
 # Repository Design Handbook (Ratified v1)
 
-Status: Ratified v1 (2026-08-14, P1-37 Phase F1; PR-F2 scaffold complete)
+Status: Ratified v1
 
 ## 1) Purpose
 
@@ -100,7 +100,8 @@ Use `scripts/` for:
 - user-facing examples/tutorial scripts
 - launchers (local, tmux, or a cluster scheduler)
 - thin wrappers over `src` modules
-- canonical multi-run chains under `scripts/orchestration/`
+- canonical multi-run chains as thin wrappers over `src/workflows/` (for
+  example the forecasting orchestrator under `scripts/workflows/`)
 
 Avoid in `scripts/`:
 
@@ -174,23 +175,14 @@ Minimum bar for script and workflow changes:
 3. Targeted functional validation for changed runtime paths.
 4. Docs updated when entrypoints, paths, or behavioral contracts change.
 
-## 10) Adoption plan (Phase F rollout)
+## 10) Adoption
 
-1. **Ratify boundaries and naming**
-   - Confirm taxonomy (`pipeline`, `orchestrator`, `example`) and directory roles.
-2. **Normalize forecasting workflow surfaces**
-   - Rename/refactor forecasting runtime modules to match approved taxonomy.
-   - Extract model factory/config/runtime helpers into proper shared modules.
-3. **Apply to nocturnal eval unification**
-   - Reuse the same boundary rules while merging shared eval cores.
-4. **Document contributor rules**
-   - Add concise boundary checklist to `docs/contributing.md`.
-5. **Enforce with CI-adjacent checks**
-   - Keep lint/syntax checks green and ensure no stale docs references.
+These boundaries and naming conventions are adopted across the toolkit: runtime
+pipelines live under `src/workflows/`, launchers remain thin wrappers, the
+contributor boundary checklist ships in the contributing guide, and CI keeps
+lint/syntax green with no stale docs references.
 
-## 11) Decisions and remaining open items
-
-### 11.1 Confirmed decisions
+## 11) Confirmed decisions
 
 1. Create `src/workflows/` as a top-level package for multi-step runtime
    pipelines.
@@ -200,15 +192,6 @@ Minimum bar for script and workflow changes:
 3. Adopt a lightweight **canonical run manifest** (tool-agnostic JSON) as the
    tracking contract; it can be mapped into an external experiment-tracking
    backend later if one is adopted.
-
-### 11.2 Remaining open items
-
-1. Extend the reusable HPO engine (`src/workflows/hpo/engine.py`) and the
-   per-experiment sweep-tree pattern (for example `experiments/metabonet_2026/hpo/`)
-   with production adapters beyond the currently scaffolded set
-   (`forecasting/nocturnal_forecast`, `event_detection/nocturnal_events`).
-2. Continue extending the initial `src/workflows/forecasting/` placement pattern
-   to additional shared pipeline components during transition.
 
 ## 12) Canonical experiment metadata schema
 

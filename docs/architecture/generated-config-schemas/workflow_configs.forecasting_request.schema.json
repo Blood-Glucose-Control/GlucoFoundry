@@ -42,6 +42,12 @@
       "default": null,
       "title": "Epochs"
     },
+    "experiment": {
+      "default": "nocturnal",
+      "minLength": 1,
+      "title": "Experiment",
+      "type": "string"
+    },
     "model_config_path": {
       "anyOf": [
         {
