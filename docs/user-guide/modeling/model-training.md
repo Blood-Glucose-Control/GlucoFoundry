@@ -15,20 +15,27 @@ Train one model for all patients.
 The goal is to create a generic model that works as well as possible for all patients.
 
 ### Model Type
-#### Statistical Modeling
-Currently, all of our *statistical* modeling is done with ```sktime```.
-Essentially, these mostly fall under classic statistical time series techniques, almost anything that is not deep learning or a foundation model falls under this category, e.g.,: naive, ARIMA, exponential, etc
-We want to exhaustively find the best modeling parameters for each family of models.
+GlucoFoundry integrates every model through a common **`ModelAdapter`** layer
+(`src/models/`), built via `ModelFactory` / `create_model_and_config`, so the
+training and evaluation pipeline stays model-family-agnostic. New models plug in
+by implementing the `ModelAdapter` protocol. The shipped families span:
+
+#### Statistical
+Classical time-series baselines (naive, ARIMA / exponential-smoothing-style
+methods) — anything that is not deep learning or a foundation model. The toolkit
+exposes these through the `statistical` and `naive_baseline` families.
 
 #### Machine Learning
-Models that aren't statistical modeling or deep learning, for e.g.,: Gradient Boosting, Tree-based algorithms, etc.
+Gradient-boosting and other tabular/tree-based regressors (for example the `gbm`
+family).
 
 #### Deep Learning
-Currently, all of our *deep learning* modeling is done with ```sktime``` wrappers, but this will be expanding to other time series libraries, usually within the ```sktime``` ecosystem like ```pytorch forecasting```.
-Excluding foundation models, all neural network model training belongs here.
+Neural forecasters wired through the adapter layer (for example `tsmixer`,
+`patchtst`, `tide`, `tft`, and `deepar`).
 
 #### Foundational
-There are two main foundation model use cases with our projects:
-1. Fine-tuning existing foundation models with diabetes data
-    - We plan to try LagLLama, Moirai, Chronos, TimesFM, TimeGPT, TimeGPT-Long, TinyTimeMixer, and potentially others.
-2. Training diabetes foundation models from scratch with as much diabetes data that we can find.
+Pretrained time-series foundation models, fine-tuned or run zero-shot on glucose
+data — for example Chronos-2, Moirai, MOMENT, Sundial, TimesFM, Toto, and
+TinyTimeMixer. The toolkit's broader goal is both to adapt existing foundation
+models to diabetes data and to support training diabetes foundation models from
+scratch.

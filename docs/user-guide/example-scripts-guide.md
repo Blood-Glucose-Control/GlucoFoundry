@@ -1,7 +1,7 @@
 # Example Scripts Guide
 
-This guide lists the maintained scripts in `scripts/examples/`,
-`scripts/workflows/`, and `scripts/orchestration/` and when to use each one.
+This guide lists the maintained example and workflow scripts under `scripts/`
+and when to use each one.
 
 ## Creating a new experiment
 
@@ -75,7 +75,7 @@ Use the onboarding example wrapper for quick discovery:
 python scripts/examples/example_forecasting_workflow.py --help
 ```
 
-## Taxonomy flow (Wave 1)
+## Taxonomy flow
 
 ```mermaid
 flowchart LR
@@ -110,7 +110,7 @@ This includes the ratified v1 fields from the design handbook:
 
 ## Notes on legacy examples
 
-Several older example scripts were removed during P1 scripts cleanup because they
-depended on model-base surfaces that were already pruned from runtime. If you need
-the old behavior, use git history for reference and prefer rebuilding on top of
-the maintained scripts listed above.
+Several older example scripts were removed during an earlier scripts cleanup
+because they depended on model-base surfaces that were already pruned from
+runtime. If you need the old behavior, use git history for reference and prefer
+rebuilding on top of the maintained scripts listed above.

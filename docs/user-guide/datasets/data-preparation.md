@@ -5,7 +5,8 @@
 # Data Documentation
 
 ## Overview
-This document describes the data sources and standardized format used in our benchmark pipeline for nocturnal hypoglycemia prediction.
+This document describes the data sources and the standardized format that the
+GlucoFoundry data pipeline produces for glucose time-series modeling.
 
 ## Historical Context
 Our benchmark pipeline was originally built on the Kaggle Bristol Type 1 Diabetes Dataset, which has influenced some of our naming conventions and data structures. This historical context helps explain certain design decisions:
@@ -24,18 +25,20 @@ Our benchmark pipeline was originally built on the Kaggle Bristol Type 1 Diabete
 
 ## Supported Datasets
 
-1. [Bristol Type 1 Diabetes Dataset](https://www.kaggle.com/competitions/brist1d)
-      - A comprehensive dataset from Kaggle
-      - Contains both Dexcom (5-min interval) and Libre (15-min interval) users
-      - Multiple patients in a single CSV file (not that common)
+The pipeline ships loaders for the datasets registered in
+`src/data/dataset_configs.py`. Resolve the current list at runtime:
 
-2. Gluroo Dataset
-      - Internal dataset from Christopher and Walker
-      - Contains additional features like protein content and glucose trends
-      - Includes meal announcements and intervention data
+```python
+from src.data.dataset_configs import list_available_datasets
 
-3. Lynch 2022 Dataset
-4. Aleppo Dataset
+list_available_datasets()
+# ['gluroo', 'aleppo_2017', 'lynch_2022', 'tamborlane_2008',
+#  'brown_2019', 'metabonet', 'cgmacros']
+```
+
+The **Gluroo** dataset adds richer features (protein content, glucose trends,
+meal announcements, and intervention data); its dataset-specific columns are
+listed below.
 
 ## Data Format Standardization
 
@@ -193,7 +196,7 @@ loader = get_loader(
 Document all the changes
 
 ### 4. Reference Implementation
-See `src/data/gluroo/` for a working example of dataset implementation.
+See `src/data/diabetes_datasets/gluroo/` for a working example of dataset implementation.
 
 ## Future Improvements
    - Rename `bg-0:00` to `bg_mgdl-0:00` to explicitly include units
