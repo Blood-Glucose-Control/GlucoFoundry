@@ -50,7 +50,7 @@ Please run pre-commit and resolve any errors before making a PR.
 `pre-commit run --all-files`
 
 ### Testing
-`pytest --ignore=tests/models` (model-family tests run via `make test-<family>`)
+`pytest --ignore=tests/models` (model-family tests run via `make test-models` or the model-specific targets in `Makefile`)
 
 
 ## Training Models
