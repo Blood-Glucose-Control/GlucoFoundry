@@ -7,11 +7,11 @@ contributors must implement when adding a new model family.
 
 There are currently two constructor utilities in active runtime use:
 
-1. [`create_model_and_config`](/src/workflows/forecasting/modeling.py:150)
+1. [`create_model_and_config`](/src/workflows/forecasting/modeling.py)
    - used by evaluation entrypoints such as:
      - [`validate_predict_batch.py`](/src/workflows/evaluation/validate_predict_batch.py)
      - the nocturnal recipe's [`run_evaluation.py`](/experiments/nocturnal/run_evaluation.py)
-2. [`ModelFactory.create_model`](/src/workflows/forecasting/modeling.py:124) and [`ModelFactory.load_model`](/src/workflows/forecasting/modeling.py:601)
+2. [`ModelFactory.create_model`](/src/workflows/forecasting/modeling.py) and [`ModelFactory.load_model`](/src/workflows/forecasting/modeling.py)
    - used by forecasting pipeline workflows:
      - [`pipeline.py`](/src/workflows/forecasting/pipeline.py)
 
@@ -22,8 +22,8 @@ live, and both end up instantiating the same concrete model families.
 
 Model YAML overrides should be validated via:
 
-- [`load_model_config_from_yaml`](/src/workflows/forecasting/modeling.py:50)
-- schema routes in [`MODEL_CONFIG_ROUTES`](/src/config/schemas/model_configs.py:830)
+- [`load_model_config_from_yaml`](/src/workflows/forecasting/modeling.py)
+- schema routes in [`MODEL_CONFIG_ROUTES`](/src/config/schemas/model_configs.py)
 
 ## ModelRegistry role
 
@@ -39,7 +39,7 @@ It is not the runtime constructor used by evaluation/pipeline entrypoints.
 
 1. Add family code under [`src/models/`](/src/models).
 2. Set `config_class = <FamilyConfig>` on the forecaster class.
-3. Register the model class with [`ModelRegistry.register`](/src/models/base/registry.py:32).
+3. Register the model class with [`ModelRegistry.register`](/src/models/base/registry.py).
 4. Add schema + runtime adapter in [`src/config/schemas/model_configs.py`](/src/config/schemas/model_configs.py).
 5. Wire constructor handling in currently active constructor paths.
 6. Add/update tests:
