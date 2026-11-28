@@ -58,28 +58,9 @@ Run from repository root:
 python -m src.config.schemas.json_schema_artifacts
 ```
 
-This command writes JSON schema files into
-[`docs/architecture/generated-config-schemas/`](/docs/architecture/generated-config-schemas):
-
-- `model_configs.chronos2.schema.json`
-- `model_configs.deepar.schema.json`
-- `model_configs.moment.schema.json`
-- `model_configs.moirai.schema.json`
-- `model_configs.naive_baseline.schema.json`
-- `model_configs.patchtst.schema.json`
-- `model_configs.statistical.schema.json`
-- `model_configs.sundial.schema.json`
-- `model_configs.tft.schema.json`
-- `model_configs.tide.schema.json`
-- `model_configs.timegrad.schema.json`
-- `model_configs.timesfm.schema.json`
-- `model_configs.toto.schema.json`
-- `model_configs.ttm.schema.json`
-- `model_configs.tsmixer.schema.json`
-- `data_configs.holdout.schema.json`
-- `workflow_configs.forecasting_request.schema.json`
-- `workflow_configs.feature_override_envelope.schema.json`
-- `manifest.json`
+This command writes the JSON schema files — plus an auto-generated index that
+lists them — into
+[`docs/architecture/generated-config-schemas/`](/docs/architecture/generated-config-schemas).
 
 ## When to regenerate
 
@@ -94,22 +75,6 @@ contract delta.
 
 ## Artifact index
 
-- [manifest.json](/docs/architecture/generated-config-schemas/manifest.json)
-- [model_configs.chronos2.schema.json](/docs/architecture/generated-config-schemas/model_configs.chronos2.schema.json)
-- [model_configs.deepar.schema.json](/docs/architecture/generated-config-schemas/model_configs.deepar.schema.json)
-- [model_configs.moment.schema.json](/docs/architecture/generated-config-schemas/model_configs.moment.schema.json)
-- [model_configs.moirai.schema.json](/docs/architecture/generated-config-schemas/model_configs.moirai.schema.json)
-- [model_configs.naive_baseline.schema.json](/docs/architecture/generated-config-schemas/model_configs.naive_baseline.schema.json)
-- [model_configs.patchtst.schema.json](/docs/architecture/generated-config-schemas/model_configs.patchtst.schema.json)
-- [model_configs.statistical.schema.json](/docs/architecture/generated-config-schemas/model_configs.statistical.schema.json)
-- [model_configs.sundial.schema.json](/docs/architecture/generated-config-schemas/model_configs.sundial.schema.json)
-- [model_configs.tft.schema.json](/docs/architecture/generated-config-schemas/model_configs.tft.schema.json)
-- [model_configs.tide.schema.json](/docs/architecture/generated-config-schemas/model_configs.tide.schema.json)
-- [model_configs.timegrad.schema.json](/docs/architecture/generated-config-schemas/model_configs.timegrad.schema.json)
-- [model_configs.timesfm.schema.json](/docs/architecture/generated-config-schemas/model_configs.timesfm.schema.json)
-- [model_configs.toto.schema.json](/docs/architecture/generated-config-schemas/model_configs.toto.schema.json)
-- [model_configs.ttm.schema.json](/docs/architecture/generated-config-schemas/model_configs.ttm.schema.json)
-- [model_configs.tsmixer.schema.json](/docs/architecture/generated-config-schemas/model_configs.tsmixer.schema.json)
-- [data_configs.holdout.schema.json](/docs/architecture/generated-config-schemas/data_configs.holdout.schema.json)
-- [workflow_configs.forecasting_request.schema.json](/docs/architecture/generated-config-schemas/workflow_configs.forecasting_request.schema.json)
-- [workflow_configs.feature_override_envelope.schema.json](/docs/architecture/generated-config-schemas/workflow_configs.feature_override_envelope.schema.json)
+The complete, always-current list of generated schema files is itself generated
+(so it never drifts): see
+[generated-config-schemas/index.md](generated-config-schemas/index.md).
