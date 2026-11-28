@@ -23,6 +23,7 @@ nav:
       - Usage: user-guide/usage.md
       - Getting Started: user-guide/getting-started.md
       - Installation: user-guide/installation.md
+      - Example Scripts: user-guide/example-scripts-guide.md
       - Data:
         - Data Preparation: user-guide/datasets/data-preparation.md
       - Modeling:

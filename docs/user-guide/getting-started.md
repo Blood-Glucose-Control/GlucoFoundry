@@ -2,22 +2,14 @@
     This documentation is currently under active development and subject to change.
     Some sections may be incomplete or missing.
 
-There are a variety of use cases for this repository.
-
-The primary objective:
-
-    - long-range (6-8 hours) probabilistic forecasting of hypoglycemia.
-
-The secondary objectives:
-
-    - short range forecasting projects
-    - Benchmarking
-      - 1 hour forecast Kaggle submission automation of BrisT1D contest
-      - 1 hour forecast benchmark
-      - 2 hour forecast benchmark
-      - 6 hour probabilistic forecasting benchmark
-      - 8 hour probabilistic forecasting benchmark
-    - Training and evaluating diabetes foundation models for forecasting
+GlucoFoundry is a task-general, reusable toolkit for glucose time-series
+foundation-model research. You fork it to run an experiment — forecasting,
+benchmarking, fine-tuning or training foundation models, event detection, and
+more — while the reusable core (data loaders, the model-adapter layer, the Optuna
+sweep framework, evaluation, and workflows) stays shared. See the
+[toolkit architecture](../architecture/toolkit-architecture.md) for the full
+design, and the shipped `experiments/nocturnal/` recipe (overnight,
+midnight-anchored hypoglycemia forecasting) for a worked example.
 
 ## Setting up your project
 
@@ -38,17 +30,15 @@ This ensures that everyone is working with the same tools and that the code you 
     **Ubuntu:** `source .venv/bin/activate`
     **Windows:** `.venv\Scripts\Activate.ps1`
   - Your terminal should now show the venv being active:
-    - `(.venv) cjrisi@scslt520:~/Projects/diabetes/GlucoFoundry$ `
-5. Now update your venv with the required packages for our project:
+    - `(.venv) user@host:~/GlucoFoundry$ `
+5. Install the toolkit (editable) together with its dependencies:
 
-    `pip install -r requirements.txt`
-    It's good to run this command after you pull from the remote repo and there were changes because we may have added new packages; it takes the longest to run the first time, but it's usually quick.
+    `pip install -e .`
 
-#### pip-install package
-We've made this repo pip-installable we highly recommend you install and never use local file paths. Everything you need should be importable from /src/.
-
-6. In the project directory run `pip install -e .`
-  - Read more about this [here](https://goodresearch.dev/setup#create-a-pip-installable-package-recommended).
+    The repo is pip-installable — everything is importable from `src/`, so avoid
+    local file paths. Re-run this after pulling changes that touch dependencies;
+    the first run takes the longest. Read more about editable installs
+    [here](https://goodresearch.dev/setup#create-a-pip-installable-package-recommended).
 
 Congratulations! You're ready to start contributing to our project.
 
@@ -60,17 +50,15 @@ Please run pre-commit and resolve any errors before making a PR.
 `pre-commit run --all-files`
 
 ### Testing
-`pytest -v`
+`pytest --ignore=tests/models` (model-family tests run via `make test-models` or the model-specific targets in `Makefile`)
 
 
 ## Training Models
 Please see our [model training section](modeling/model-training.md#model-training) for advanced usage.
 
-A basic example is provided in this notebook:
-- [Add link to this later]()
+For runnable entrypoints, see the [example scripts guide](example-scripts-guide.md).
 
 ## Running Benchmarks
 Please see our [model benchmarking section](benchmarking/model-benchmarking.md#model-benchmarking) for advanced usage.
 
-A basic example of running our benchmarks is provided in this notebook:
-- [Add link to this later]()
+For runnable entrypoints, see the [example scripts guide](example-scripts-guide.md).
