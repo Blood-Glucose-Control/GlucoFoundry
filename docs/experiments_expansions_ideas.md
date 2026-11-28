@@ -1,5 +1,0 @@
-- Update evaluation to include measures on specific events:
-    - bolus correction prediction (events with large boluses and no carb annoucements)
-    - prandial
-    - "un"events
-    - missingness correctness (clearly a bolus for a meal but only insulin logged)

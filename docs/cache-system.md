@@ -1,6 +1,6 @@
 # Centralized Cache System
 
-The nocturnal project now uses a centralized cache system for managing dataset storage and retrieval. This system provides automatic data fetching from external sources and efficient caching of both raw and processed data.
+GlucoFoundry uses a centralized cache system for managing dataset storage and retrieval. This system provides automatic data fetching from external sources and efficient caching of both raw and processed data.
 
 ## Overview
 
